@@ -58,5 +58,10 @@ Reviewboard functionality
 - add/edit/read comments
 - approve/reject
 
+[Ruzhanskaya Anastasiya]Ideas:
+Add minimalistiс design
+If working in with SQL:syntax highlighting, automatic tabs
+Actions with packages:delete package,delete folder
+Undo operations
 
 Also integration with Skill Bench and Skill Catalyst projects is expected to be added.
