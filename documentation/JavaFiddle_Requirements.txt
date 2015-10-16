@@ -58,5 +58,8 @@ Reviewboard functionality
 - add/edit/read comments
 - approve/reject
 
+[Tsanda Artyom] Ideas:
+- add possibility to import project from an existing one on the local machine
+- add wiget with javadocs where you can search class documentation you want 
 
 Also integration with Skill Bench and Skill Catalyst projects is expected to be added.
