@@ -1,0 +1,583 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+<h:head>
+    <title>JavaFiddle</title>
+
+    <script type="text/javascript" language="JavaScript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <h:outputScript library="js" name="jquery-ui.min.js"/>
+    <h:outputScript library="js" name="jquery.layout.min.js"/>
+    <h:outputScript library="js" name="moment.min.js"/>
+    <h:outputScript library="js" name="bootstrap.min.js"/>
+
+    <h:outputScript library="ace" name="ace.js"/>
+    <h:outputScript library="ace" name="mode-java.js"/>
+    <h:outputScript library="ace" name="mode-text.js"/>
+    <h:outputScript library="ace" name="theme-idea.js"/>
+
+    <h:outputScript library="js" name="main.js"/>
+    <h:outputScript library="js" name="git.js"/>
+    <h:outputScript library="js" name="modal.js"/>
+    <h:outputScript library="js" name="sessionstorage.js"/>
+
+    <h:outputStylesheet library="css" name="layout-default.css"/>
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+
+    <h:outputStylesheet library="css" name="style.css"/>
+    <h:outputStylesheet library="css" name="tree.css"/>
+</h:head>
+<h:body>
+    <div id="header">
+        <div id="header-top">
+            <div id="header-top-left">
+                <div id="logo">
+                    <h:outputText class="bracket" value="&lt;"/>
+                    <h2><h:link value="JavaFiddle" outcome="index"/></h2>
+                    <h:outputText class="bracket" value="&gt;"/>
+                </div>
+                <h:panelGroup layout="block" id="projectname">NetCrackerTasks</h:panelGroup>
+                <div id="bottom" class="nav-collapse">
+                    <ul id="main_menu" class="nav nav-pills">
+                        <li class="dropdown">
+                            <a id="dropdown-project" class="dropdown-toggle" data-toggle="dropdown" href="#">Project</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-project">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="saveFile();">Save</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="saveAllFiles();">Save All</a></li>
+                                <!--                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="saveProject();">Commit</a></li> -->
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="closeProject();">Close Project</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a id="dropdown-edit" class="dropdown-toggle" data-toggle="dropdown" href="#">Edit</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-edit">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.undo();">Undo</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.redo();">Redo</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.findPrev();">Find Previous</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.findNext();">Find Next</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.find();">Find</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.replace();">Replace</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="editor.replaceAll();">Replace All</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a id="dropdown-view" class="dropdown-toggle" data-toggle="dropdown" href="#">View</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-view">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="toggleHeader();">Toggle Header</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="outerLayout.toggle('west');">Toggle Project Tree</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="innerLayout.toggle('south');">Toggle Console</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a id="dropdown-run" class="dropdown-toggle" data-toggle="dropdown" href="#">Run</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-run">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compile();">Compile</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="execute();">Run</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compileAndRun();">Compile&amp;Run</a></li>
+                            </ul>
+                        </li>
+                        <!--                           <li class="dropdown">
+                                                       <a id="dropdown-history" class="dropdown-toggle" data-toggle="dropdown" href="#">History</a>
+                                                       <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-history">
+                                                           <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="$('#modal-revisions').modal('show');">Commit's List</a></li>
+                                                       </ul>
+                                                   </li>
+                        -->
+                        <li class="dropdown">
+                            <a id="dropdown-history" class="dropdown-toggle" data-toggle="dropdown" href="#">Git</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-history">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="gitCommit('Testing commit')">Commit</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="$('#modal-commits').modal('show');">Commit's history</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a id="dropdown-help" class="dropdown-toggle" data-toggle="dropdown" href="#">Help</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdown-help">
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="openStaticTab('welcome');">Welcome page</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="openStaticTab('shortcuts');">Shortcuts</a></li>
+                                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="openStaticTab('about');">About JavaFiddle</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h:panelGroup layout="block" id="latest_update">Last changes: not saved yet.</h:panelGroup>
+                </div>
+            </div>
+            <div id="header-top-right">
+                <h:panelGroup layout="block" id="username" >
+                    Logged in as <h:link value="#{curUserBean.getCurUserName()}" outcome="index" />&nbsp;|&nbsp;
+                    <c:if test="${curUserBean.isLogged == false}">
+                        <a href="#modal-log" data-toggle="modal">Sign in</a>&nbsp;|&nbsp;<a href="#modal-reg" data-toggle="modal">Sign up</a>
+                    </c:if>
+                    <c:if test="${curUserBean.isLogged == true}"><a href="#modal-logout" data-toggle="modal">Log out</a>
+                    </c:if>
+                </h:panelGroup>
+                <div class="btn-group btn-group-sm sharebutton">
+                    <button type="button" class="btn btn-primary" onclick="$('#modal-share').modal('show');">
+                        <span class="glyphicon glyphicon-share-alt"/> Share Code...
+                    </button>
+                </div>
+                <!-- Registration -->
+                <!--<div id="registration" class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" onclick="$('#modal-reg').modal('show');">
+                        <span class="glyphicon glyphicon-registration-alt"/> Sign up
+                    </button>
+                </div> -->
+                <!-- Log in -->
+                <!--<div id="log" class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" onclick="$('#modal-log').modal('show');">
+                        <span class="glyphicon glyphicon-log-alt"/> Sign in
+                    </button>
+                </div>-->
+                <!-- Log in
+                <div id="log_in" class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" onclick="$('#modal-log_in').modal('show');">
+                        <span class="glyphicon glyphicon-log_in-alt"/> Log in
+                    </button>
+                </div> -->
+                <!-- Registration
+                <div id="registration" class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-primary" onclick="$('#modal-registration').modal('show');">
+                        <span class="glyphicon glyphicon-registration-alt"/> Registration
+                    </button>
+                </div>  -->
+                <!-- Share -->
+
+            </div>
+        </div>
+        <!--            </div>-->
+        <div id="header-bottom">
+            <ul id="editor_buttons">
+                <li><span class="glyphicon glyphicon-floppy-save" onclick="saveFile();" title="Save current file"/></li>
+                <li><span class="glyphicon glyphicon-save" onclick="saveAllFiles();" title="Save all files"/></li>
+                <div class="separator" />
+                <li><h:outputText value="&#160;" style="font-size:10%"/></li>
+                <li><span class="glyphicon glyphicon-arrow-left" onclick="javaEditor.execCommand('undo');" title="Undo"/></li>
+                <li><span class="glyphicon glyphicon-arrow-right" onclick="javaEditor.execCommand('redo');" title="Redo"/></li>
+                <div class="separator" />
+                <li><h:outputText value="&#160;" style="font-size:10%"/></li>
+                <li><span class="glyphicon glyphicon glyphicon-fullscreen" onclick="toggleHeader();" title="Toggle Header"/></li>
+                <li><span class="glyphicon glyphicon-list" onclick="outerLayout.toggle('west');" title="Toggle Tree"/></li>
+                <li><span class="glyphicon glyphicon-list-alt" onclick="innerLayout.toggle('south');" title="Toggle Console"/></li>
+                <div class="separator" />
+                <li><h:outputText value="&#160;" style="font-size:10%"/></li>
+                <li><span class="glyphicon glyphicon-wrench" onclick="compile();" title="Compile"/></li>
+                <li><span class="glyphicon glyphicon-play" onclick="execute();" title="Run"/></li>
+                <li><span class="glyphicon glyphicon-flag" onclick="compileAndRun();" title="Compile&amp;Run"/></li>
+            </ul>
+            <ul id="tabpanel" class="tabs">
+
+            </ul>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+    <div id="container-outer" class="container">
+        <div class="outer-west">
+            <div id="block-tree" class="mainblock">
+                <div class="block-header">
+                    Projects
+                    <button type="button" class="btn btn-xs block-header-button"><span class="glyphicon glyphicon-minus block-header-icon" onmouseup="outerLayout.close('west');" title="Minimize Panel"/></button>
+                    <button type="button" class="btn btn-xs block-header-button"><span class="glyphicon glyphicon-pushpin block-header-icon" onmouseup="toggleTree();" title="Dock"/></button>
+                </div>
+                <div id="tree"/>
+            </div>
+        </div>
+        <div id="container-inner" class="outer-center container">
+            <div class="inner-center">
+                <div id="block-editor" class="mainblock">
+                    <div id="editor"/>
+                </div>
+            </div>
+            <div class="inner-south">
+                <div id="block-console" class="mainblock">
+                    <div class="block-header">
+                        Console
+                        <button type="button" class="btn btn-xs block-header-button"><span class="glyphicon glyphicon-minus block-header-icon" onmouseup="innerLayout.close('south');" title="Minimize Panel"/></button>
+                        <button type="button" class="btn btn-xs block-header-button"><span class="glyphicon glyphicon-pushpin block-header-icon" onmouseup="toggleConsole();" title="Dock"/></button>
+                    </div>
+                    <div id="console"/>
+                    <div class="input-group input-group-sm">
+                        <h:inputText id="stdin" class="form-control input-sm" onkeypress="if (event.keyCode === 13){sendInput(); return false;}" />
+                            <span class="input-group-btn btn-group-custom">
+                                <button id="stdin-send" type="button" class="btn btn-default btn-sm">Send</button>
+                            </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //<![CDATA[
+        PATH = "#{request.contextPath}";
+        PROJECTPARAM = "#{param['h']}";
+
+        var editor = ace.edit("editor");
+        var jfconsole = ace.edit("console");
+        var outerLayout, innerLayout;
+        //]]>
+    </script>
+
+
+    <!-- Popup for Tree -->
+    <div id="treeMenu" class="dropdown clearfix contextMenu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newfile").modal("show");'>New Java Class</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newpack").modal("show");'>New Package</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newproj").modal("show");'>New Project</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compile();">Compile</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="execute();">Run</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compileAndRun();">Compile&amp;Run</a></li>
+        </ul>
+    </div>
+
+    <!-- Popup for Project -->
+    <div id="projectMenu" class="dropdown clearfix contextMenu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newpack").modal("show");'>New Package</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compile();">Compile</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="execute();">Run</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compileAndRun();">Compile&amp;Run</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-rename").modal("show");'>Rename</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-delete").modal("show");'>Close</a></li>
+        </ul>
+    </div>
+
+    <!-- Popup for SrcFolder -->
+    <div id="srcMenu" class="dropdown clearfix contextMenu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newpack").modal("show");'>New Package</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newfile").modal("show");'>New Java Class</a></li>
+        </ul>
+    </div>
+
+    <!-- Popup for Package -->
+    <div id="packageMenu" class="dropdown clearfix contextMenu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newfile").modal("show");'>New Java Class</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-newpack").modal("show");'>New Package</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-rename").modal("show");'>Rename</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-delete").modal("show");'>Delete</a></li>
+        </ul>
+    </div>
+
+    <!-- Popup for File -->
+    <div id="fileMenu" class="dropdown clearfix contextMenu">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="openTabFromTree($elClicked);">Open</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-rename").modal("show");'>Rename</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick='$("#modal-delete").modal("show");'>Delete</a></li>
+        </ul>
+    </div>
+
+    <!-- Modal add project -->
+    <div class="modal flat" id="modal-newproj" tabindex="-1" role="dialog" aria-labelledby="modal-newproj-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-newproj-header" class="modal-title">Add new project</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-newproj-name">Project Name:</label>
+                        <input id="modal-newproj-name" type="text" class="form-control enter-active" placeholder="Input project name…" onkeyup="m_newproj_updname();" />
+                        <p id ="modal-newproj-verify" style="color:red"></p>
+                    </div>
+                    <!--
+                    <div class="form-group">
+                        <label for="modal-project-hash">Project Hash:</label>
+                        <input id="modal-project-hash" type="text" class="form-control enter-active" placeholder="Input project hash…" onkeyup="m_newproj_updhash()"/>
+                    </div>
+                    -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-newproj-example-ok" type="button" class="btn btn-primary" data-dismiss="modal" onclick="addExampleProject();">Add example project</button>
+                    <button id="modal-newproj-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="addProject();">Add new project</button>
+                    <!-- <button id="modal-project-hash-ok" type="button" disabled="false"  class="btn btn-primary" data-dismiss="modal" onclick="addProjectByHash();">Add by hash</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add package -->
+    <div class="modal flat" id="modal-newpack" tabindex="-1" role="dialog" aria-labelledby="modal-newpath-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-newpath-header" class="modal-title">Add new package...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-newpack-name">Package Name:</label>
+                        <input id="modal-newpack-name" type="text" class="form-control enter-active" placeholder="Input class name…" onkeyup="m_newpack_updname();" />
+                        <p id ="modal-newpack-verify" style="color:red"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-newpack-project">Project:</label>
+                        <select id="modal-newpack-project" class="form-control" placeholder="Please wait…" onchange="m_newpack_update();" />
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-newpack-fullpath">Created Folder:</label>
+                        <input id="modal-newpack-fullpath" type="text" class="form-control" disabled="true" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-newpack-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="addPackage();">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal add new file -->
+    <div class="modal fade" id="modal-newfile" tabindex="-1" role="dialog" aria-labelledby="modal-newfile-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-newfile-header" class="modal-title">Add new Java class...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-7">
+                                <label for="modal-newfile-name">Class Name:</label>
+                                <input id="modal-newfile-name" type="text" class="form-control enter-active" placeholder="Input class name…" onkeyup="m_newfile_updname();" />
+                            </div>
+                            <div class="col-md-5">
+                                <label for="modal-newfile-classtype">Type:</label>
+                                <select id="modal-newfile-classtype" class="form-control">
+                                    <option value='class'>Java Class</option>
+                                    <option value="interface">Java Interface</option>
+                                    <option value="enumeration">Java Enum</option>
+                                    <option value="annotation">Java Annotation Type</option>
+                                    <option value="exception">Java Exception</option>
+                                    <option value="runnable">Java Main Class</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p id ="modal-newfile-verify" style="color:red"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-newfile-project">Project:</label>
+                        <select id="modal-newfile-project" class="form-control" placeholder="Please wait…" onchange="m_newfile_updproject();"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-newfile-package">Package:</label>
+                        <select id="modal-newfile-package" class="form-control" placeholder="Please wait…" onchange="m_newfile_update();"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-newfile-fullpath">Full Path:</label>
+                        <input id="modal-newfile-fullpath" type="text" class="form-control" disabled="true" />
+                        <p>Warning: It is highly recommended that you do NOT place Java classes in the default package.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-newfile-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="addFile();">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal rename -->
+    <div class="modal fade" id="modal-rename" tabindex="-1" role="dialog" aria-labelledby="modal-rename-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-rename-header" class="modal-title">Rename</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-rename-name">New Name:</label>
+                        <input id="modal-rename-name" type="text" class="form-control enter-active" placeholder="Input class name…" onkeyup="m_rename_updname($elClicked);"/>
+                        <p id ="modal-rename-verify" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-rename-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="renameElement($elClicked);">Change</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal delete -->
+    <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-labelledby="modal-delete-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-delete-header" class="modal-title">Delete...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label id="modal-delete-name">Are you sure you want to delete this file?</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-delete-ok" type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteElement($elClicked);">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal registration -->
+    <div class="modal flat" id="modal-reg" tabindex="-1" role="dialog" aria-labelledby="modal-reg-header" aria-hidden="true">
+        <div class="modal-dialog modal-sm smallmodal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-reg-header" class="modal-title">Sign up</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-reg-name">name:</label>
+                        <input id="modal-reg-name" type="text" class="form-control enter-active" placeholder="Input login…" onkeyup="m_reg_updreg();" />
+                        <!-- <p id ="modal-reg-verify" style="color:red"></p> -->
+                        <!-- </div> -->
+                        <!-- <div class="form-group"> -->
+                        <label for="modal-reg-email">email:</label>
+                        <input id="modal-reg-email" type="text" class="form-control enter-active" placeholder="Input email…" onkeyup="m_reg_updreg();" />
+                        <!-- <p id ="modal-reg-verify" style="color:red"></p> -->
+                        <!-- </div> -->
+                        <!-- <div class="form-group"> -->
+                        <label for="modal-reg-password">password:</label>
+                        <input id="modal-reg-password" type="password" class="form-control enter-active" placeholder="Input password…" onkeyup="m_reg_updreg();" />
+                        <p id ="modal-reg-verify" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-reg-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="reg();">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal log in -->
+    <div class="modal flat" id="modal-log" tabindex="-1" role="dialog" aria-labelledby="modal-log-header" aria-hidden="true">
+        <div class="modal-dialog modal-sm smallmodal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 id="modal-log-header" class="modal-title">Sign in</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-log-name">name:</label>
+                        <input id="modal-log-name" type="text" class="form-control enter-active" placeholder="Input name…" onkeyup="m_log_updlog();" />
+                        <label for="modal-log-password">password:</label>
+                        <input id="modal-log-password" type="password" class="form-control enter-active" placeholder="Input password…" onkeyup="m_log_updlog();" />
+                        <p id ="modal-log-verify" style="color:red"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-log-ok" type="button" disabled="true" class="btn btn-primary" data-dismiss="modal" onclick="log();">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal test logout -->
+    <div class="modal fade" id="modal-logout" tabindex="-1" role="dialog" aria-labelledby="modal-logout-header" aria-hidden="true">
+        <div class="modal-dialog modal-sm smallmodal">
+            <div class="modal-content">
+                <h:form>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-logout-header" id="myModalLabel">Log out...</h4>
+                    </div>
+                    <div class="modal-body">
+                        All unsaved changes will be lost. <br></br>
+                        Are you sure you want to continue?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        <h:commandLink class="btn btn-primary" value="Submit" actionListener="#{curUserBean.logout}"> </h:commandLink>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal share -->
+    <div class="modal fade" id="modal-share" tabindex="-1" role="dialog" aria-labelledby="modal-share-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-share-header" id="myModalLabel">Share project...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-share-name">Link:</label>
+                        <input id="modal-share-name" type="text" class="form-control enter-active" />
+                        <p id ="modal-share-verify"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-commits-ok" type="button" class="btn btn-primary" data-dismiss="modal" onclick="revert();">Revert</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal commit's list
+     <div class="modal flat" id="modal-revisions" tabindex="-1" role="dialog" aria-labelledby="modal-revisions-header" aria-hidden="true">
+         <div class="modal-dialog">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                     <h4 class="modal-revisions-header" id="myModalLabel">Revert to commit...</h4>
+                 </div>
+                 <div class="modal-body">
+                     <div class="form-group">
+                         <label for="modal-revisions-name">Commit:</label>
+                         <select id="modal-revisions-name" class="form-control enter-active" placeholder="Please wait…" />
+                     </div>
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                     <button id="modal-revisions-ok" type="button" class="btn btn-primary" data-dismiss="modal" onclick="revert();">Revert</button>
+                </div>
+             </div>
+         </div>
+     </div>
+
+  Real commits in modal -->
+    <div class="modal flat" id="modal-commits" tabindex="-1" role="dialog" aria-labelledby="modal-commits-header" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-commits-header" id="myModalLabel">Revert to commit...</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="modal-commits-name">Commit:</label>
+                        <select id="modal-commits-name" class="form-control enter-active" placeholder="Please wait…" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="modal-commits-ok" type="button" class="btn btn-primary" data-dismiss="modal" onclick="revertToCommit();">Revert</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</h:body>
+</html>
