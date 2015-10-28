@@ -1,7 +1,7 @@
 var PROJECTPARAM;
 var outerLayout, innerLayout;
 var $elClicked;
-
+//what is project param?
 // EVENTS
 //
 $(document).ready(function(){
@@ -600,7 +600,7 @@ function compile() {
         }
     });  
 }
-
+//what for are all those geographical names
 function execute() {
     innerLayout.open('south');
     saveProject();

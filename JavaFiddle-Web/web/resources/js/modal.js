@@ -152,6 +152,7 @@ $(document).ready(function() {
 
 // NEW PROJECT DIALOG
 //
+//for what is this function	
 function m_newproj_updname() {
     $("#modal-newproj-ok").prop('disabled', true);
     var localtimer = setTimeout(function () {
@@ -639,7 +640,7 @@ function renameElement() {
 
 // DELETE DIALOG
 // 
-
+//why do we search for the closest li
 function deleteElement($elClicked) {
     var id = $elClicked.closest('li').attr('id');
     saveProject();
@@ -672,6 +673,7 @@ function deleteElement($elClicked) {
 
 // SHARE PROJECT DIALOG
 //
+//why do we need any project hash
 function getLatestProjectHash() {
     var hash = "";
     
