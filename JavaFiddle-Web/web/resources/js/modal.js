@@ -41,7 +41,7 @@ $(document).ready(function() {
         $("#modal-newfile-package").find('option').remove();
         $("#modal-newfile-project").find('option').remove();
         $("#modal-newfile-fullpath").find('option').remove();
-
+//is here the checking of existence such name in database
         var projects = getProjectsList();
         for (var i = 0; i < projects.length; i++)
             $("#modal-newfile-project").prepend("<option>" + projects[i] +"</option>");
@@ -613,7 +613,7 @@ function m_rename_update() {
     
     return result;
 }
-
+//it can replace it by itself?
 function renameElement() {
     var name = $("#modal-rename-name").val();
     var result;

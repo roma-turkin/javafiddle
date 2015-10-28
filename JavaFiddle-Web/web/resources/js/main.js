@@ -13,7 +13,7 @@ $(document).ready(function(){
     loadPopups();
     editorSettings();    
     resizeEditor();
-    
+//why not make them the same    
     $("#main_menu .dropdown").on("mouseover", function() {
         if ($(document).find('.dropdown.open').index() !== -1) {
             $('.dropdown > ul').hide();
@@ -62,7 +62,7 @@ window.onbeforeunload = (function() {
     return "WARNING! The project has unsaved files. When the session expires, any unsaved changes will be lost!";
 });
 
-
+//when resize are called
 function resizeEditor() { 
     $("#editor").height($("#block-editor").height());
     $("#console").height($("#console-wrapper").height());
@@ -104,7 +104,7 @@ function runLayouts() {
         }
     });
 }
-
+//Why not allow user to use different grafic themes
 function editorSettings() {
     editor.setTheme("ace/theme/idea");
     editor.getSession().setMode("ace/mode/java");
@@ -144,7 +144,7 @@ function loadTabs() {
         }
     });
 }
-
+//some what we can do : ctrl+F so to say, edditing all matched names
 function openTabFromTree($el) {
     var id = $el.closest('li').attr('id') + "_tab";
     var name = $el.text();
@@ -437,7 +437,7 @@ function toggleConsole() {
         
     }
 }
-
+//why do we need all these timeouts
 // FILE REVISIONS (SERVICES)
 //
 function saveFile(id) {
