@@ -1,2 +1,2 @@
 # javafiddle
-SImple Web-based Java IDE.
+Simple Web-based Java IDE.
