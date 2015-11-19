@@ -1,14 +1,9 @@
 package ru.javafiddle.web.services;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import com.sun.media.jfxmediaimpl.NativeMediaPlayer;
-import sun.security.krb5.internal.AuthorizationData;
-
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -25,7 +20,7 @@ import java.net.URI;
  * Created by artyom on 15.11.15.
  */
 @Path("/users")
-public class UsersService {
+public class UserService {
 
     @EJB
     private UserBean userBean;
