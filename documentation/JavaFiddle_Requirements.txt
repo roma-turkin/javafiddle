@@ -64,4 +64,9 @@ If working in with SQL:syntax highlighting, automatic tabs
 Actions with packages:delete package,delete folder
 Undo operations
 
+[Fedor Erin] Ideas:
+- Add code completion for constructors, getters/setters and overrides
+- Add step-by-step debug mode
+- Maybe it matters to add embedded help about standart oracle classes (e.g. String's methods)
+
 Also integration with Skill Bench and Skill Catalyst projects is expected to be added.
