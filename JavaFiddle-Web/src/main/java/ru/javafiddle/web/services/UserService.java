@@ -1,5 +1,8 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.web.models.User;
+import ru.javafiddle.web.models.UserRegistrationData;
+
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
