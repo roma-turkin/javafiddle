@@ -1,12 +1,14 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.web.models.User;
+
+import ru.javafiddle.web.models.UserJF;
 import ru.javafiddle.web.models.UserRegistrationData;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -18,6 +20,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilderException;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+
 
 /**
  * Created by artyom on 15.11.15.
@@ -33,11 +36,11 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(UserRegistrationData userRegistrationData, @Context UriInfo uriInfo) throws UriBuilderException {
 
-        User newUser;
+        UserJF newUser;
 
         try {
             newUser = userBean.register(userRegistrationData);
-        } catch (InvalidArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(userRegistrationData).build();//!TODO make it possible to detect which field is invalid
         }
 
@@ -53,7 +56,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("nickName") String nickName) {
 
-        User user;
+        UserJF user;
 
         try {
             user = userBean.getUserInfo(nickName);
@@ -70,7 +73,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateUserInfo(@PathParam("nickName") String nickName, UserRegistrationData userRegistrationData) {
 
-        User user;
+        UserJF user;
 
         try {
             user = userBean.setUserInfo(nickName, userRegistrationData);
@@ -86,7 +89,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("nickName") String nickName) {
 
-        User user;
+        UserJF user;
 
         try {
             user = userBean.deleteUser(nickName);

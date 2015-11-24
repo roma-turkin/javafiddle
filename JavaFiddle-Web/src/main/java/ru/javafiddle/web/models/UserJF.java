@@ -7,7 +7,7 @@ import java.util.List;
  * Created by artyom on 22.11.15.
  */
 @XmlRootElement
-public class User {
+public class UserJF {
 
     private String firstName;
     private String lastName;
@@ -15,7 +15,7 @@ public class User {
     private String email;
     private List<String> projectsHashs;
 
-    public User(String firstName, String lastName, String nickName, String email, List<String> projectsHashs) {
+    public UserJF(String firstName, String lastName, String nickName, String email, List<String> projectsHashs) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
@@ -23,7 +23,7 @@ public class User {
         this.projectsHashs = projectsHashs;
     }
 
-    public User() {
+    public UserJF() {
     }
 
     public String getFirstName() {

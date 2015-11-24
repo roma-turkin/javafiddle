@@ -1,5 +1,7 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.web.models.ProjectInfo;
+
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -37,10 +39,15 @@ public class ProjectService {
         return Response.created(uri).build();
     }
 
-    @GET
     @Path("/{projectHash}/files")
-    @Produces(MediaType.APPLICATION_JSON)
-    public FileService getProjectInfo() {
+    public FileService initFileService() {
         return new FileService();
     }
+
+    @Path("/{projectHash}/libraries")
+    public LibraryService initLibraryService() { return new LibraryService(); }
+
+    @Path("/{projectHash}/groups")
+    public GroupService initGroupSrvice() { return new GroupService(); }
+
 }
