@@ -41,7 +41,7 @@ $(document).ready(function() {
         $("#modal-newfile-package").find('option').remove();
         $("#modal-newfile-project").find('option').remove();
         $("#modal-newfile-fullpath").find('option').remove();
-
+//is here the checking of existence such name in database
         var projects = getProjectsList();
         for (var i = 0; i < projects.length; i++)
             $("#modal-newfile-project").prepend("<option>" + projects[i] +"</option>");
@@ -152,6 +152,7 @@ $(document).ready(function() {
 
 // NEW PROJECT DIALOG
 //
+//for what is this function	
 function m_newproj_updname() {
     $("#modal-newproj-ok").prop('disabled', true);
     var localtimer = setTimeout(function () {
@@ -612,7 +613,7 @@ function m_rename_update() {
     
     return result;
 }
-
+//it can replace it by itself?
 function renameElement() {
     var name = $("#modal-rename-name").val();
     var result;
@@ -639,7 +640,7 @@ function renameElement() {
 
 // DELETE DIALOG
 // 
-
+//why do we search for the closest li
 function deleteElement($elClicked) {
     var id = $elClicked.closest('li').attr('id');
     saveProject();
@@ -672,6 +673,7 @@ function deleteElement($elClicked) {
 
 // SHARE PROJECT DIALOG
 //
+//why do we need any project hash
 function getLatestProjectHash() {
     var hash = "";
     

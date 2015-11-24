@@ -144,7 +144,7 @@
                     </button>
                 </div>  -->
                 <!-- Share -->
-
+<!--why not foundation, where is registration now-->
             </div>
         </div>
         <!--            </div>-->
@@ -232,7 +232,7 @@
             <li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick="compileAndRun();">Compile&amp;Run</a></li>
         </ul>
     </div>
-
+<!--modal-newfile, model-newproj-->
     <!-- Popup for Project -->
     <div id="projectMenu" class="dropdown clearfix contextMenu">
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
@@ -275,6 +275,7 @@
     </div>
 
     <!-- Modal add project -->
+	<!--considering a style labeled-by should be labeled by something upper, why modal flat?-->
     <div class="modal flat" id="modal-newproj" tabindex="-1" role="dialog" aria-labelledby="modal-newproj-header" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -286,8 +287,9 @@
                     <div class="form-group">
                         <label for="modal-newproj-name">Project Name:</label>
                         <input id="modal-newproj-name" type="text" class="form-control enter-active" placeholder="Input project name…" onkeyup="m_newproj_updname();" />
-                        <p id ="modal-newproj-verify" style="color:red"></p>
+                        <p id ="modal-newproj-verify" style="color:red"></p><!--without any text-->
                     </div>
+					<!--what for was this field-->
                     <!--
                     <div class="form-group">
                         <label for="modal-project-hash">Project Hash:</label>
@@ -310,7 +312,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><!--i quite don't understand this button-->
                     <h4 id="modal-newpath-header" class="modal-title">Add new package...</h4>
                 </div>
                 <div class="modal-body">
