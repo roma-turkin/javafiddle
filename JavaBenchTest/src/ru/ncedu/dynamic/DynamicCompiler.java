@@ -35,7 +35,7 @@ public class DynamicCompiler {
         DEFAULT_SERVER_LOG = compilerProps.getProperty("DEFAULT_SERVER_LOG");
         LOG.trace("JUNIT_LOCATION=" + JUNIT_LOCATION);
         LOG.trace("FRWK_LOCATION=" + FRWK_LOCATION);
-        LOG.trace("DEFAULT_SERVER_LOG=" + DEFAULT_SERVER_LOG);
+        LOG.trace("DEFAULT_SERVER_LOG=" + DEFAULT_SERVER_LOG);  // We have to change server log in JavaBenchProperties
     }
 
     public void init(ClassLoader parentLoader) throws Exception {
@@ -105,4 +105,17 @@ public class DynamicCompiler {
         return message;
     }
 
+
+    //
+    public void setManager(JavaFileManager manager) {
+        this.manager = manager;
+    }
+
+    public void setCompiler (JavaCompiler compiler) {
+        this.compiler = compiler;
+    }
+
+    public void setCollector (DiagnosticCollector<JavaFileObject> collector) {
+        this.collector = collector;
+    }
 }

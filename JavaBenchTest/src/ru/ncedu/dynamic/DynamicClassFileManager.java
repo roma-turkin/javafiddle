@@ -9,7 +9,7 @@ public class DynamicClassFileManager extends
 		ForwardingJavaFileManager{
     private static final Logger LOG = Logger.getLogger(DynamicClassFileManager.class);
 	private ByteArrayClassLoader loader = null;
-	DynamicClassFileManager(StandardJavaFileManager mgr, ClassLoader loader) {
+	public DynamicClassFileManager(StandardJavaFileManager mgr, ClassLoader loader) {  // It was not public
 		super(mgr);
 		try {
 			/* 2 */this.loader = loader == null ? new ByteArrayClassLoader(loader) : new CheckedByteArrayClassLoader(loader);
