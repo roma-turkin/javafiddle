@@ -1,14 +1,19 @@
-package Entities;
+package ru.javafiddle.jpa.entity;
 
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Lob;
 
 @Entity
 @Table
 
-public class Lib {
+public class Library {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,12 +22,12 @@ public class Lib {
     @Lob
     private byte[] lib;
 
-    public Lib(String lib_name, byte[] lib) {
+    public Library(String lib_name, byte[] lib) {
         this.lib_name = lib_name;
         this.lib = lib;
     }
 
-    public Lib() {
+    public Library() {
     }
 
     public int getLib_id() {
@@ -51,7 +56,7 @@ public class Lib {
 
     @Override
     public String toString() {
-        return "Lib{" +
+        return "Library{" +
                 "lib_id=" + lib_id +
                 ", lib_name='" + lib_name +
                 '}';

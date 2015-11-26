@@ -1,14 +1,19 @@
-package Entities;
+package ru.javafiddle.jpa.entity;
 
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToOne;
 
 @Entity
 @Table
 
-public class Hashes {
+public class Hash {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,12 +22,12 @@ public class Hashes {
     private Project project;
     private String hash;
 
-    public Hashes(Project project, String hash) {
+    public Hash(Project project, String hash) {
         this.project = project;
         this.hash = hash;
     }
 
-    public Hashes() {
+    public Hash() {
     }
 
     public int getID() {

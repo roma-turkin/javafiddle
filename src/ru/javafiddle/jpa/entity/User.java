@@ -1,12 +1,15 @@
-package Entities;
+package ru.javafiddle.jpa.entity;
 
 /**
  * Created by Fedor on 18.11.2015.
  */
 import java.text.DateFormat;
-import java.util.Collection;
-import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Table
@@ -15,18 +18,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int user_id;
+    private int userId;
     private String name;
     private String email;
-    private String password_hash;
+    private String passwordHash;
     private DateFormat registered;
     @ManyToOne
     private Status status;
 
-    public User(String name, String email, String password_hash, DateFormat registered, Status status) {
+    public User(String name, String email, String passwordHash, DateFormat registered, Status status) {
         this.name = name;
         this.email = email;
-        this.password_hash = password_hash;
+        this.passwordHash = passwordHash;
         this.registered = registered;
         this.status = status;
     }
@@ -35,11 +38,11 @@ public class User {
     }
 
     public int getUser_id() {
-        return user_id;
+        return userId;
     }
 
     public void setUser_id(int user_id) {
-        this.user_id = user_id;
+        this.userId = userId;
     }
 
     public String getName() {
@@ -59,11 +62,11 @@ public class User {
     }
 
     public String getPassword_hash() {
-        return password_hash;
+        return passwordHash;
     }
 
     public void setPassword_hash(String password_hash) {
-        this.password_hash = password_hash;
+        this.passwordHash = password_hash;
     }
 
     public DateFormat getRegistered() {
@@ -85,10 +88,10 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "user_id=" + user_id +
+                "userId=" + userId +
                 ", name='" + name +
                 ", email='" + email +
-                ", password_hash='" + password_hash +
+                ", passwordHash='" + passwordHash +
                 ", registered=" + registered +
                 ", status=" + status.getStatus_id() +
                 '}';

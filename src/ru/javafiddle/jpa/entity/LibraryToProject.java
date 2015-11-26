@@ -1,14 +1,19 @@
-package Entities;
+package ru.javafiddle.jpa.entity;
 
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Table
 
-public class Lib_Project {
+public class LibraryToProject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,14 +21,14 @@ public class Lib_Project {
     @ManyToOne
     private Project project;
     @ManyToOne
-    private Lib lib;
+    private Library lib;
 
-    public Lib_Project(Project project, Lib lib) {
+    public LibraryToProject(Project project, Library lib) {
         this.project = project;
         this.lib = lib;
     }
 
-    public Lib_Project() {
+    public LibraryToProject() {
     }
 
     public int getID() {
@@ -42,17 +47,17 @@ public class Lib_Project {
         this.project = project;
     }
 
-    public Lib getLib() {
+    public Library getLib() {
         return lib;
     }
 
-    public void setLib(Lib lib) {
+    public void setLib(Library lib) {
         this.lib = lib;
     }
 
     @Override
     public String toString() {
-        return "Lib_Project{" +
+        return "LibraryToProject{" +
                 "ID=" + ID +
                 ", project=" + project.getProject_id() +
                 ", lib=" + lib.getLib_id() +

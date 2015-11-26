@@ -1,15 +1,20 @@
-package Entities;
+package ru.javafiddle.jpa.entity;
 
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Table
-@Embeddable
 
-public class User_Group {
+public class UserGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,13 +26,13 @@ public class User_Group {
     @ManyToOne
     private Access access;
 
-    public User_Group(Group group, Access access, User user) {
+    public UserGroup(Group group, Access access, User user) {
         this.group = group;
         this.access = access;
         this.user = user;
     }
 
-    public User_Group() {
+    public UserGroup() {
     }
 
     public int getID() {
@@ -54,17 +59,17 @@ public class User_Group {
         this.user = user;
     }
 
-    public Access getAccess() {
+    public ru.javafiddle.jpa.entity.Access getAccess() {
         return access;
     }
 
-    public void setAccess(Access access) {
+    public void setAccess(ru.javafiddle.jpa.entity.Access access) {
         this.access = access;
     }
 
     @Override
     public String toString() {
-        return "User_Group{" +
+        return "UserGroup{" +
                 "ID=" + ID +
                 ", group=" + group.getGroup_id() +
                 ", user=" + user.getUser_id() +
