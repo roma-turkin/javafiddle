@@ -1,5 +1,8 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.ejb.beans.UserBean;
+
+import ru.javafiddle.jpa.entity.User;
 
 import ru.javafiddle.web.models.UserJF;
 import ru.javafiddle.web.models.UserRegistrationData;
@@ -33,22 +36,27 @@ public class UserService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response register(UserRegistrationData userRegistrationData, @Context UriInfo uriInfo) throws UriBuilderException {
 
-        UserJF newUser;
-
         try {
-            newUser = userBean.register(userRegistrationData);
+
+            userBean.register(userRegistrationData.getFirstName(),
+                    userRegistrationData.getLastName(),
+                    userRegistrationData.getNickName(),
+                    userRegistrationData.getEmail(),
+                    userRegistrationData.getPassword());
+
+            String nickName = userRegistrationData.getNickName();
+            URI uri = uriInfo.getAbsolutePathBuilder().path(nickName).build();
+
+            return Response.created(uri).build();
+
         } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(userRegistrationData).build();//!TODO make it possible to detect which field is invalid
+            return Response.status(Response.Status.BAD_REQUEST).build();//!TODO make it possible to detect which field is invalid
+        } catch (Exception e) {
+            return Response.serverError().build();
         }
 
-        String nickName = String.valueOf(newUser.getNickname());
-        URI uri = uriInfo.getAbsolutePathBuilder().path(nickName).build();
-        return Response.created(uri)
-                .entity(newUser)
-                .build();
     }
 
     @GET
@@ -56,32 +64,45 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("nickName") String nickName) {
 
-        UserJF user;
-
         try {
-            user = userBean.getUserInfo(nickName);
+            User user = userBean.getUser(nickName);
+
+            UserJF userJF = new UserJF(user.getFirstName(),
+                    user.getLastName(),
+                    user.getNickName(),
+                    user.getEmail(),
+                    userBean.getUserProjects(nickName));
+
+            return Response.ok(userJF).build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
         }
 
-        return Response.ok(user).build();
     }
 
     @PUT
     @Path("/{nickName}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response updateUserInfo(@PathParam("nickName") String nickName, UserRegistrationData userRegistrationData) {
 
-        UserJF user;
-
         try {
-            user = userBean.setUserInfo(nickName, userRegistrationData);
+
+            userBean.setUser(userRegistrationData.getFirstName(),
+                    userRegistrationData.getLastName(),
+                    nickName,
+                    userRegistrationData.getEmail(),
+                    userRegistrationData.getPassword());;
+
+            return Response.ok().build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
         }
-
-        return Response.ok(user).build();
     }
 
     @DELETE
@@ -89,14 +110,15 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("nickName") String nickName) {
 
-        UserJF user;
-
         try {
-            user = userBean.deleteUser(nickName);
+
+            userBean.deleteUser(nickName);
+            return Response.ok().build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
         }
-
-        return Response.ok(user).build();
     }
 }

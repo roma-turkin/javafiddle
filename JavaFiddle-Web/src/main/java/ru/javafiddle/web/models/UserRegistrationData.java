@@ -12,14 +12,14 @@ public class UserRegistrationData {
     private String lastName;
     private String nickName;
     private String email;
-    private String passwordHash;
+    private String password;
 
-    public UserRegistrationData(String firstName, String lastName, String nickName, String email, String passwordHash) {
+    public UserRegistrationData(String firstName, String lastName, String nickName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     public UserRegistrationData() { }
@@ -56,11 +56,11 @@ public class UserRegistrationData {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
