@@ -92,9 +92,8 @@ public class UserService {
 
             userBean.setUser(userRegistrationData.getFirstName(),
                     userRegistrationData.getLastName(),
-                    nickName,
                     userRegistrationData.getEmail(),
-                    userRegistrationData.getPassword());;
+                    userRegistrationData.getPassword());
 
             return Response.ok().build();
 
@@ -107,7 +106,6 @@ public class UserService {
 
     @DELETE
     @Path("/{nickName}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteUser(@PathParam("nickName") String nickName) {
 
         try {

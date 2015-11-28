@@ -2,7 +2,10 @@ package ru.javafiddle.web.services;
 
 
 
-import com.sun.org.apache.xml.internal.utils.NameSpace;
+import ru.javafiddle.ejb.beans.FilesBean;
+
+import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.web.models.FileJF;
 
 import javax.ejb.EJB;
 import javax.persistence.Access;
@@ -32,8 +35,16 @@ public class FileService {
     public Response getfiles(@PathParam("projectHash") String projectHash) {
 
         try {
-            FileJF[] files = filesBean.getProjectFiles(projectHash);
-            return Response.ok(files).build();
+            File[]      files  = filesBean.getProjectFiles(projectHash);
+            FileJF[]    filesJF= new FileJF[files.length];
+            for(int i=0; i<files.length; i++) {
+                filesJF[i] = new FileJF(files[i].getFile_id(),
+                        files[i].getFile_name(),
+                        files[i].getFile(),
+                        files[i].getType().getTypeName(),
+                        files[i].getPath());
+            }
+            return Response.ok(filesJF).build();
         } catch(AccessRightsException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         } catch(NotFoundException e) {
@@ -46,12 +57,15 @@ public class FileService {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response addFile(@PathParam("projectHash") String projectHash, FileJF newFile) {
 
         try {
-            FileJF file = filesBean.addFile(projectHash, newFile);
-            return Response.ok(file).build();
+            filesBean.addFile(projectHash,
+                    newFile.getName(),
+                    newFile.getData(),
+                    newFile.getType(),
+                    newFile.getPath());
+            return Response.ok().build();
         } catch(AccessRightsException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         } catch(NameSpaceException e) {
@@ -66,7 +80,23 @@ public class FileService {
     public Response saveProjectFiles(@PathParam("projectHash") String projectHash, FileJF[] projectFiles) {
 
         try {
-            filesBean.updateFiles(projectHash, projectFiles);
+            for(FileJF f: projectFiles){
+                Integer fileId = f.getFileId();
+                if(fileId == null) { //file has not been added yet
+                    filesBean.addFile(projectHash,
+                            f.getName(),
+                            f.getData(),
+                            f.getType(),
+                            f.getPath());
+                } else {
+                    filesBean.updateFile(projectHash,
+                            fileId,
+                            f.getName(),
+                            f.getData(),
+                            f.getType(),
+                            f.getPath());
+                }
+            }
             return Response.ok().build();
         } catch(AccessRightsException e) {
             return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
