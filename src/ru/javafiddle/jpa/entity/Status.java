@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+/**
+ * A status of user's account (registered, unconfirmed etc.)
+ */
 @Entity
 @Table
 
@@ -16,37 +19,37 @@ public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int status_id;
-    private String status_name;
+    private int statusId;
+    private String statusName;
 
-    public Status(String status_name) {
-        this.status_name = status_name;
+    public Status(String statusName) {
+        this.statusName = statusName;
     }
 
     public Status(){
     }
 
-    public int getStatus_id() {
-        return status_id;
+    public int getStatusId() {
+        return statusId;
     }
 
-    public void setStatus_id(int status_id) {
-        this.status_id = status_id;
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 
-    public String getStatus_name() {
-        return status_name;
+    public String getStatusName() {
+        return statusName;
     }
 
-    public void setStatus_name(String status_name) {
-        this.status_name = status_name;
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
     @Override
     public String toString() {
         return "Status{" +
-                "status_id=" + status_id +
-                ", status_name='" + status_name +
+                "statusId=" + statusId +
+                ", statusName='" + statusName + '\'' +
                 '}';
     }
 }

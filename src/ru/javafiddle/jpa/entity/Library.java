@@ -17,48 +17,48 @@ public class Library {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int lib_id;
-    private String lib_name;
+    private int libraryId;
+    private String libraryName;
     @Lob
-    private byte[] lib;
+    private byte[] data;
 
-    public Library(String lib_name, byte[] lib) {
-        this.lib_name = lib_name;
-        this.lib = lib;
+    public Library(String libraryName, byte[] data) {
+        this.libraryName = libraryName;
+        this.data = data;
     }
 
     public Library() {
     }
 
-    public int getLib_id() {
-        return lib_id;
+    public int getLibraryId() {
+        return libraryId;
     }
 
-    public void setLib_id(int lib_id) {
-        this.lib_id = lib_id;
+    public void setLibraryId(int libraryId) {
+        this.libraryId = libraryId;
     }
 
-    public String getLib_name() {
-        return lib_name;
+    public String getLibraryName() {
+        return libraryName;
     }
 
-    public void setLib_name(String lib_name) {
-        this.lib_name = lib_name;
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
     }
 
-    public byte[] getLib() {
-        return lib;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setLib(byte[] lib) {
-        this.lib = lib;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     @Override
     public String toString() {
         return "Library{" +
-                "lib_id=" + lib_id +
-                ", lib_name='" + lib_name +
+                "libraryId=" + libraryId +
+                ", libraryName='" + libraryName + '\'' +
                 '}';
     }
 }

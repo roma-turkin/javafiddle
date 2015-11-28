@@ -10,44 +10,47 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+/**
+ * Specifies the access type of users group (read only, edit&read etc.)
+ */
 @Entity
 @Table
 
 public class Access {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int access_id;
-    private String access_name;
+    private int accessId;
+    private String accessName;
 
-    public Access(int access_id, String access_name) {
-        this.access_id = access_id;
-        this.access_name = access_name;
+    public Access(int accessId, String accessName) {
+        this.accessId = accessId;
+        this.accessName = accessName;
     }
 
     public Access() {
     }
 
-    public int getAccess_id() {
-        return access_id;
+    public int getAccessId() {
+        return accessId;
     }
 
-    public void setAccess_id(int access_id) {
-        this.access_id = access_id;
+    public void setAccessId(int accessId) {
+        this.accessId = accessId;
     }
 
-    public String getAccess_name() {
-        return access_name;
+    public String getAccessName() {
+        return accessName;
     }
 
-    public void setAccess_name(String access_name) {
-        this.access_name = access_name;
+    public void setAccessName(String accessName) {
+        this.accessName = accessName;
     }
 
     @Override
     public String toString() {
         return "Access{" +
-                "access_id=" + access_id +
-                ", access_name='" + access_name +
+                "accessId=" + accessId +
+                ", accessName='" + accessName + '\'' +
                 '}';
     }
 }

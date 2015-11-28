@@ -9,43 +9,46 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+/**
+ * A type of file.
+ */
 @Entity
 @Table
 
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int type_id;
-    private String file_name;
+    private int typeId;
+    private String typeName;
 
-    public Type(String file_name) {
-        this.file_name = file_name;
+    public Type(String typeName) {
+        this.typeName = typeName;
     }
 
     public Type() {
     }
 
-    public int getType_id() {
-        return type_id;
+    public int getTypeId() {
+        return typeId;
     }
 
-    public void setType_id(int type_id) {
-        this.type_id = type_id;
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
     }
 
-    public String getFile_name() {
-        return file_name;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setFile_name(String file_name) {
-        this.file_name = file_name;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     @Override
     public String toString() {
         return "Type{" +
-                "type_id=" + type_id +
-                ", file_name='" + file_name +
+                "typeId=" + typeId +
+                ", typeName='" + typeName + '\'' +
                 '}';
     }
 }

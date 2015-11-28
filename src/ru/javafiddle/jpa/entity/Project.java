@@ -16,33 +16,33 @@ import javax.persistence.ManyToOne;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int project_id;
-    private String project_name;
+    private int projectId;
+    private String projectName;
     @ManyToOne
     private Group group;
 
-    public Project(String project_name, Group group) {
-        this.project_name = project_name;
+    public Project(String projectName, Group group) {
+        this.projectName = projectName;
         this.group = group;
     }
 
     public Project() {
     }
 
-    public int getProject_id() {
-        return project_id;
+    public int getProjectId() {
+        return projectId;
     }
 
-    public void setProject_id(int project_id) {
-        this.project_id = project_id;
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
-    public String getProject_name() {
-        return project_name;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setProject_name(String project_name) {
-        this.project_name = project_name;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public Group getGroup() {
@@ -56,9 +56,9 @@ public class Project {
     @Override
     public String toString() {
         return "Project{" +
-                "project_id=" + project_id +
-                ", project_name='" + project_name +
-                ", group=" + group.getGroup_id() +
+                "projectId=" + projectId +
+                ", projectName='" + projectName + '\'' +
+                ", group=" + group.getGroupId() +
                 '}';
     }
 }

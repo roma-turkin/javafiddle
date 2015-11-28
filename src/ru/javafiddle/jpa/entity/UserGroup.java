@@ -10,7 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.List;
 
+/**
+ * A relationship between users and groups.
+ */
 @Entity
 @Table
 
@@ -18,29 +22,29 @@ public class UserGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int ID;
+    private int id;
     @ManyToOne
     private Group group;
     @ManyToMany
-    private User user;
+    private List<User> client;
     @ManyToOne
     private Access access;
 
-    public UserGroup(Group group, Access access, User user) {
+    public UserGroup(Group group, List<User> client, Access access) {
         this.group = group;
+        this.client = client;
         this.access = access;
-        this.user = user;
     }
 
     public UserGroup() {
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Group getGroup() {
@@ -51,29 +55,29 @@ public class UserGroup {
         this.group = group;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getClient() {
+        return client;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClient(List<User> client) {
+        this.client = client;
     }
 
-    public ru.javafiddle.jpa.entity.Access getAccess() {
+    public Access getAccess() {
         return access;
     }
 
-    public void setAccess(ru.javafiddle.jpa.entity.Access access) {
+    public void setAccess(Access access) {
         this.access = access;
     }
 
     @Override
     public String toString() {
         return "UserGroup{" +
-                "ID=" + ID +
-                ", group=" + group.getGroup_id() +
-                ", user=" + user.getUser_id() +
-                ", access=" + access.getAccess_id() +
+                "id=" + id +
+                ", group=" + group.getGroupId() +
+                ", client=" + client.toString() +
+                ", access=" + access.getAccessId() +
                 '}';
     }
 }

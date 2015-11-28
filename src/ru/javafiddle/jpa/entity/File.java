@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Lob;
+import java.util.Arrays;
 
 @Entity
 @Table
@@ -17,19 +18,19 @@ import javax.persistence.Lob;
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int file_id;
-    private String file_name;
+    private int fileId;
+    private String fileName;
     @Lob
-    private byte[] file;
+    private byte[] data;
     @ManyToOne
     private Project project;
     @ManyToOne
     private Type type;
     private String path;
 
-    public File(String file_name, byte[] file, Project project, Type type, String path) {
-        this.file_name = file_name;
-        this.file = file;
+    public File(String fileName, byte[] data, Project project, Type type, String path) {
+        this.fileName = fileName;
+        this.data = data;
         this.project = project;
         this.type = type;
         this.path = path;
@@ -38,28 +39,28 @@ public class File {
     public File() {
     }
 
-    public int getFile_id() {
-        return file_id;
+    public int getFileId() {
+        return fileId;
     }
 
-    public void setFile_id(int file_id) {
-        this.file_id = file_id;
+    public void setFileId(int fileId) {
+        this.fileId = fileId;
     }
 
-    public String getFile_name() {
-        return file_name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFile_name(String file_name) {
-        this.file_name = file_name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public byte[] getFile() {
-        return file;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setFile(byte[] file) {
-        this.file = file;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     public Project getProject() {
@@ -89,11 +90,11 @@ public class File {
     @Override
     public String toString() {
         return "File{" +
-                "file_id=" + file_id +
-                ", file_name='" + file_name + '\'' +
-                ", project=" + project.getProject_id() +
-                ", type=" + type.getType_id() +
-                ", path='" + path +
+                "fileId=" + fileId +
+                ", fileName='" + fileName + '\'' +
+                ", project=" + project.getProjectId() +
+                ", type=" + type.getTypeId() +
+                ", path='" + path + '\'' +
                 '}';
     }
 }

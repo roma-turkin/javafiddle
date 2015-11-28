@@ -19,15 +19,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int userId;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String nickName;
     private String email;
     private String passwordHash;
     private DateFormat registered;
     @ManyToOne
     private Status status;
 
-    public User(String name, String email, String passwordHash, DateFormat registered, Status status) {
-        this.name = name;
+    public User(String firstName, String lastName, String nickName, String email, String passwordHash, DateFormat registered, Status status) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickName = nickName;
         this.email = email;
         this.passwordHash = passwordHash;
         this.registered = registered;
@@ -37,20 +41,36 @@ public class User {
     public User(){
     }
 
-    public int getUser_id() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getEmail() {
@@ -61,12 +81,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword_hash() {
+    public String getPasswordHash() {
         return passwordHash;
     }
 
-    public void setPassword_hash(String password_hash) {
-        this.passwordHash = password_hash;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public DateFormat getRegistered() {
@@ -89,11 +109,13 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", name='" + name +
-                ", email='" + email +
-                ", passwordHash='" + passwordHash +
-                ", registered=" + registered +
-                ", status=" + status.getStatus_id() +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", passwordHash='" + passwordHash + '\'' +
+                ", registered=" + registered.toString() +
+                ", status=" + status.getStatusId() +
                 '}';
     }
 }

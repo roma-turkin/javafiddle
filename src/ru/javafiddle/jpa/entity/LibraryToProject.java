@@ -17,26 +17,26 @@ public class LibraryToProject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int ID;
+    private int id;
     @ManyToOne
     private Project project;
     @ManyToOne
-    private Library lib;
+    private Library library;
 
-    public LibraryToProject(Project project, Library lib) {
+    public LibraryToProject(Project project, Library library) {
         this.project = project;
-        this.lib = lib;
+        this.library = library;
     }
 
     public LibraryToProject() {
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setID(int id) {
+        this.id = id;
     }
 
     public Project getProject() {
@@ -48,19 +48,19 @@ public class LibraryToProject {
     }
 
     public Library getLib() {
-        return lib;
+        return library;
     }
 
-    public void setLib(Library lib) {
-        this.lib = lib;
+    public void setLib(Library library) {
+        this.library = library;
     }
 
     @Override
     public String toString() {
         return "LibraryToProject{" +
-                "ID=" + ID +
-                ", project=" + project.getProject_id() +
-                ", lib=" + lib.getLib_id() +
+                "id=" + id +
+                ", project=" + project.getProjectId() +
+                ", library=" + library.getLibraryId() +
                 '}';
     }
 }

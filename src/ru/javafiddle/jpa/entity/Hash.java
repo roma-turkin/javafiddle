@@ -10,6 +10,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToOne;
 
+/**
+ * Project's hash.
+ */
 @Entity
 @Table
 
@@ -17,7 +20,7 @@ public class Hash {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int ID;
+    private int id;
     @OneToOne
     private Project project;
     private String hash;
@@ -30,12 +33,12 @@ public class Hash {
     public Hash() {
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Project getProject() {
@@ -57,8 +60,8 @@ public class Hash {
     @Override
     public String toString() {
         return "Hashes{" +
-                "ID=" + ID +
-                ", project=" + project.getProject_id() +
+                "id=" + id +
+                ", project=" + project.getProjectId() +
                 ", hash='" + hash +
                 '}';
     }

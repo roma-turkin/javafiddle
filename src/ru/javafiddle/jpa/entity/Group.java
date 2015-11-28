@@ -9,44 +9,46 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 
+/**
+ * A union of users.
+ */
 @Entity
 @Table
 
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int group_id;
-    private String group_name;
+    private int groupId;
+    private String groupName;
 
-    public Group(int group_id, String group_name) {
-        this.group_id = group_id;
-        this.group_name = group_name;
+    public Group(String groupName) {
+        this.groupName = groupName;
     }
 
     public Group() {
     }
 
-    public int getGroup_id() {
-        return group_id;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroup_id(int group_id) {
-        this.group_id = group_id;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
-    public String getGroup_name() {
-        return group_name;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setGroup_name(String group_name) {
-        this.group_name = group_name;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override
     public String toString() {
         return "Group{" +
-                "group_id=" + group_id +
-                ", group_name='" + group_name +
+                "groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
                 '}';
     }
 }
