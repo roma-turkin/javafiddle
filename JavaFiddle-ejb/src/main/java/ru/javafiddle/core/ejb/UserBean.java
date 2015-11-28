@@ -6,6 +6,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import ru.javafiddle.jpa.entity.User;
+import javax.inject.Named;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
  *
  * @author mac
@@ -14,7 +18,7 @@ import ru.javafiddle.jpa.entity.User;
 @Named(value = "userBean")
 public class UserBean {
 
-
+	private static final Integer DEFAULT_USER_STATUS = 1;
 
     @PersistenceContext(unitName = "")
     EntityManager em;
@@ -75,7 +79,7 @@ public class UserBean {
 
     }
 
-    public UserJF deleteUser(String nickName) {
+    public User deleteUser(String nickName) {
 
         User user;
 

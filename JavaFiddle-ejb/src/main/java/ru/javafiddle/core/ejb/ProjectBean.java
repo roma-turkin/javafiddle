@@ -3,13 +3,13 @@ package ru.javafiddle.ejb.beans;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-
+import javax.inject.Named;
 
 @Stateless
 @Named(value = "projectBean")
 public class ProjectBean {
 
-    private static final Integer DEFAULT_GROUP_NAME = "default";
+    private static final String DEFAULT_GROUP_NAME = "default";
 
     @PersistenceContext(unitName = "")
     EntityManager em;
@@ -42,7 +42,7 @@ public class ProjectBean {
 
         //set information about groups
         group = (Group)em.createQuery("SELECT p FROM Group p WHERE groupId =:groupId")
-                         .setParameter("proupId")
+                         .setParameter("groupid", groupId)
                          .getSingleResult();
 
         if (group == NULL) {

@@ -3,6 +3,7 @@ package ru.javafiddle.ejb.beans;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.inject.Named;
 
 @Stateless
 @Named(value = "groupBean")
@@ -67,7 +68,7 @@ public class GroupBean {
                                             .getSingleResult();
 
         em.getTransaction().begin();
-        em.remove(userGroup);
+        em.remove(usergroup);
         em.getTransaction().commit();
     }
 

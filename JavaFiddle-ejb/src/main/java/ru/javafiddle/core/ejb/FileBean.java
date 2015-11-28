@@ -5,6 +5,8 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Type;
+import java.util.List;
+import javax.inject.Named;
 
 @Stateless
 @Named(value = "fileBean")
