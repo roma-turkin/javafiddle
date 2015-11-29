@@ -30,7 +30,7 @@ public class JFiddleCompiler extends DynamicCompiler{
 
 
 
-
+    // Map : String - path to lib with libName ("C:\lib.jar"), byte[] - lib
     public void init(ClassLoader parentLoader, Map<String, byte[]> libs) {
         if (libs == null) {
             try {
@@ -76,6 +76,7 @@ public class JFiddleCompiler extends DynamicCompiler{
     }
 
 
+    // Map : String[0] - pack with "." ("ru.java.main."), String[1] - className ("MyClass.java")
     public String compile(Map<String[], byte[]> sources) {
         List<SimpleJavaFileObject> userSources = new ArrayList<>();
 
@@ -117,7 +118,7 @@ public class JFiddleCompiler extends DynamicCompiler{
             String[] packName = (String[]) entry.getKey();
             String pack = packName[0];
             String classNamePlusEnd = packName[1];
-            if (classNamePlusEnd.contains(".java")) {
+            if (classNamePlusEnd.endsWith(".java")) {
                 String className = classNamePlusEnd.substring(0, classNamePlusEnd.length() - 5); // delete .java
                 try {
                     clazz = clazzLoader.loadClass(pack + className);
@@ -139,13 +140,6 @@ public class JFiddleCompiler extends DynamicCompiler{
         return mainMeth;
     }
 
-    public String compileAndRun(Map<String[], byte[]> sources) throws Exception{
-        String message = compile(sources);
-        Method mainMeth = findMain(sources);
-        String[] arguments = {};
-        mainMeth.invoke(null, (Object) arguments);
-        return message;
-    }
 
     public void run(Map<String[], byte[]> sources) throws InvocationTargetException, IllegalAccessException {
         Method mainMeth = findMain(sources);
