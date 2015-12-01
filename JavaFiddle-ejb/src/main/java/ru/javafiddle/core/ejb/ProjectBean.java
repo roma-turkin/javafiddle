@@ -1,9 +1,13 @@
-package ru.javafiddle.ejb.beans;
+package main.java.ru.javafiddle.core.ejb;
 
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.inject.Named;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.Project;
+import ru.javafiddle.jpa.entity.Hash;
+
 
 @Stateless
 @Named(value = "projectBean")
@@ -20,7 +24,7 @@ public class ProjectBean {
 
         Group group;
         Project project = new Project();
-        Hashes hashes = new Hashes();
+        Hash hashes = new Hash();
 
         //set information related to project
         project.setName(projectName);
@@ -30,7 +34,7 @@ public class ProjectBean {
         em.persist(project);
         em.getTransaction().commit();
 
-        project = getProject(projectInfo);
+        project = getProject(projectName, groupId);
 
         //set information related to hashes
         hashes.setProjectId(project.getProjectId());
@@ -42,10 +46,10 @@ public class ProjectBean {
 
         //set information about groups
         group = (Group)em.createQuery("SELECT p FROM Group p WHERE groupId =:groupId")
-                         .setParameter("groupid", groupId)
-                         .getSingleResult();
+                .setParameter("groupid", groupId)
+                .getSingleResult();
 
-        if (group == NULL) {
+        if (group == null) {
             group = new Group();
             group.setId(groupId);
             group.setName(DEFAULT_GROUP_NAME);
@@ -56,7 +60,7 @@ public class ProjectBean {
         }
 
 
-
+        return projectHash;
 
     }
 
@@ -75,7 +79,7 @@ public class ProjectBean {
     public void deleteProject(String projectName, String groupId) {
 
 
-        Project project = getProject(projectInfo);
+        Project project = getProject(projectName, groupId);
 
         em.getTransaction().begin();
         em.remove(project);

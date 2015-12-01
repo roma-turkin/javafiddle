@@ -1,4 +1,4 @@
-package ru.javafiddle.ejb.beans;
+package main.java.ru.javafiddle.core.ejb;
 
 import java.util.List;
 import javax.ejb.Stateless;
@@ -18,12 +18,12 @@ import java.util.Date;
 @Named(value = "userBean")
 public class UserBean {
 
-	private static final Integer DEFAULT_USER_STATUS = 1;
+    private static final Integer DEFAULT_USER_STATUS = 1;
 
     @PersistenceContext(unitName = "")
     EntityManager em;
 
-    public UserJF register(String firstName, String lastName, String nickname, String email, String passwordHash) {
+    public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
         User user = new User();
 
@@ -41,6 +41,8 @@ public class UserBean {
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
+
+        return user;
     }
 
     public User getUser(String nickName) {
@@ -73,9 +75,9 @@ public class UserBean {
             return null;
         }
 
-        this.setFields(user, firstName, lastName, newNickName, email, passwordHash);
+        user = this.setFields(user, firstName, lastName, newNickName, email, passwordHash);
 
-
+        return user;
 
     }
 
@@ -104,36 +106,34 @@ public class UserBean {
     //Solve issue with JOINs (should we add links to tables in JPA)
     List<String> getUserProjects(String nickName) {
 
-       // List<int> ids = (List<int>)em.createQuery("SELECT c.groupId FROM User p JOIN p.UserGroups a JOIN Groups c where p.nickName =:nickName");
-
-
-
         //I'm not sure now that it is the right query, joins in this sql are really strange
-        List<String> result = (List<String>)em.createQuery(("SELECT x.hash FROM USER p JOIN p.UserGroups a JOIN a.Groups b JOIN b.Projects c JOIN c.Hashes x" +
-                "WHERE p.nickName =:nickName")
-                .setParameter("nickName", user.getNickName())
+        List<String> result = (List<String>)em.createQuery("SELECT distinct x.hash FROM USER p JOIN p.UserGroups a JOIN a.Groups b JOIN b.Projects c JOIN c.Hashes x" +
+                "WHERE p.nickName =:nickname")
+                .setParameter("nickname", nickName)
                 .getResultList();
 
         return result;
     }
 
 
-    public void setFields(User user, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+    public User setFields(User user, String firstName, String lastName, String newNickName, String email, String passwordHash) {
 
-        if(!firstName.equal(""))
+        if(!firstName.equals(""))
             user.setFirstName(firstName);
-        if(!lastName.equal(""))
+        if(!lastName.equals(""))
             user.setLastName(lastName);
-        if(!newNickName.equal(""))
+        if(!newNickName.equals(""))
             user.setNickName(newNickName);
-        if(!email.equal(""))
+        if(!email.equals(""))
             user.setEmail(email);
-        if(!passwordHash.equal(""))
+        if(!passwordHash.equals(""))
             user.setHash(passwordHash);
 
         em.getTransaction().begin();
         em.persist(user);
         em.getTransaction().commit();
+
+        return user;
     }
 
 
