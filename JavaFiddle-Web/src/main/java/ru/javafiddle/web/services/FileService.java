@@ -5,6 +5,7 @@ package ru.javafiddle.web.services;
 import ru.javafiddle.ejb.beans.FilesBean;
 
 import ru.javafiddle.jpa.entity.File;
+
 import ru.javafiddle.web.models.FileJF;
 
 import javax.ejb.EJB;
@@ -32,7 +33,7 @@ public class FileService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getfiles(@PathParam("projectHash") String projectHash) {
+    public Response getFiles(@PathParam("projectHash") String projectHash) {
 
         try {
             File[]      files  = filesBean.getProjectFiles(projectHash);

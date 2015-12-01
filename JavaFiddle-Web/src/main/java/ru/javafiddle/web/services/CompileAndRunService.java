@@ -1,5 +1,11 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.ejb.beans.FilesBean;
+import ru.javafiddle.ejb.beans.CompileAndRunBean;
+
+import ru.javafiddle.web.models.FileJF;
+import ru.javafiddle.web.models.ProjectJF;
+
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,15 +25,44 @@ public class CompileAndRunService {
     @EJB
     CompileAndRunBean compileAndRunBean;
 
+    @EJB
+    FilesBean filesBean;
+
     @Path("/compile")
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response compile(ProjectJF Project) {
+    public Response compile(ProjectJF project) {
 
         //It's a question what ProjectJF should contain
         try {
-            String compilationOutput = compileAndRunBean.compile(Project);
+            String projectHash = project.getProjectHash();
+            String compilationOutput = null;
+            if(projectHash == null){
+                //!user is guest!
+                //!what to do
+            }else{
+                //save firstly
+                for(FileJF f: project.getProjectFiles()){
+                    Integer fileId = f.getFileId();
+                    if(fileId == null) { //file has not been added yet
+                        filesBean.addFile(projectHash,
+                                f.getName(),
+                                f.getData(),
+                                f.getType(),
+                                f.getPath());
+                    } else {
+                        filesBean.updateFile(projectHash,
+                                fileId,
+                                f.getName(),
+                                f.getData(),
+                                f.getType(),
+                                f.getPath());
+                    }
+                }
+
+                compilationOutput = compileAndRunBean.compile(projectHash);
+            }
             return Response.ok().entity(compilationOutput).build();
         }catch (Exception e) {
             return Response.serverError().build();
@@ -42,25 +77,34 @@ public class CompileAndRunService {
         //ExecutionResult must contain Streams and may be project files
         //becouse we cun write in file
         try {
-            ExecutionResult executionResult = compileAndRunBean.run(Project);
-            return Response.ok().entity(executionResult).build();
+            String projectHash = project.getProjectHash();
+
+            if(projectHash == null){
+                //!TODO guest user
+                return null;
+            } else {
+                ExecutionResult executionResult = compileAndRunBean.run(projectHash);
+                return Response.ok().entity(executionResult).build();
+            }
+
         }catch (Exception e) {
             return Response.serverError().build();
         }
     }
 
-    @Path("/compileAndRun")
-    @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response compileAndRun(ProjectJF Project) {
-
-        try {
-            CompileAndRunResult compileAndRunResult = compileAndRunBean.compileAndRun(Project);
-            return Response.ok().entity(compileAndRunResult).build();
-        }catch (Exception e) {
-            return Response.serverError().build();
-        }
-    }
+//    @Path("/compileAndRun")
+//    @GET
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response compileAndRun(ProjectJF Project) {
+//
+//        try {
+//            String projectHash = project.getProjectHash();
+//            CompileAndRunResult compileAndRunResult = compileAndRunBean.compileAndRun(Project);
+//            return Response.ok().entity(compileAndRunResult).build();
+//        }catch (Exception e) {
+//            return Response.serverError().build();
+//        }
+//    }
 
 }

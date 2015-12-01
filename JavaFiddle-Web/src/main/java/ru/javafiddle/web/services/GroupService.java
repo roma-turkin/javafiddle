@@ -1,5 +1,8 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.ejb.beans.GroupsBean;
+import ru.javafiddle.ejb.beans.ProjectBean;
+
 import ru.javafiddle.web.models.GroupMember;
 
 import javax.ejb.EJB;
@@ -15,6 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by artyom on 24.11.15.
@@ -33,9 +37,14 @@ public class GroupService {
     public Response addNewGroupMember(GroupMember newGroupMember, @PathParam("projectHash") String projectHash) {
 
         try{
+
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.addMember(groupId, newGroupMember);
+            groupsBean.addMember(groupId,
+                    newGroupMember.getUserNickName(),
+                    newGroupMember.getAccessRights());
+
             return Response.ok().build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
@@ -49,9 +58,13 @@ public class GroupService {
     public Response getGroupMembers(@PathParam("projectHash") String projectHash) {
 
         try{
+
             int groupId = projectBean.getGroupId(projectHash);
-            List<GroupMember> groupMembers = groupsBean.getAllMembers(groupId, newGroupMember);
+            //Map<nickname, access>
+            Map<String, String> groupMembers = groupsBean.getAllMembers(groupId);
+
             return Response.ok(groupMembers).build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
@@ -64,10 +77,14 @@ public class GroupService {
     public Response deleteGroupMember(GroupMember groupMember, @PathParam("projectHash") String projectHash) {
 
         try{
+
             int groupId         = projectBean.getGroupId(projectHash);
             String userNickName = groupMember.getUserNickName();
-            groupsBean.deleteMember(groupId, userNickName);
+            groupsBean.deleteMember(groupId,
+                    userNickName);
+
             return Response.ok().build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
@@ -80,9 +97,14 @@ public class GroupService {
     public Response updateGroupMember(GroupMember groupMember, @PathParam("projectHash") String projectHash) {
 
         try{
+
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.updateMember(groupId, groupMember);
+            groupsBean.updateMember(groupId,
+                    groupMember.getUserNickName(),
+                    groupMember.getAccessRights());
+
             return Response.ok().build();
+
         } catch (NotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch (Exception e) {
