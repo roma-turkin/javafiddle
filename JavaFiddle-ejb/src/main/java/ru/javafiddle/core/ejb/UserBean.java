@@ -1,12 +1,15 @@
-package main.java.ru.javafiddle.core.ejb;
+package ru.javafiddle.core.ejb;
 
+import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import ru.javafiddle.jpa.entity.User;
-import javax.inject.Named;
+import javax.persistence.TypedQuery;
+
+import ru.javafiddle.jpa.entity.*;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,17 +18,22 @@ import java.util.Date;
  * @author mac
  */
 @Stateless
-@Named(value = "userBean")
 public class UserBean {
 
-    private static final Integer DEFAULT_USER_STATUS = 1;
+    private static final String DEFAULT_USER_STATUS = "registered";
 
     @PersistenceContext
     EntityManager em;
 
+    UserBean(){}
+
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
         User user = new User();
+        Status status = (Status)em.createQuery("SELECT s FROM Status s WHERE s.statusName =:status")
+                          .setParameter("status", DEFAULT_USER_STATUS)
+                          .getSingleResult();
+
 
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -36,7 +44,7 @@ public class UserBean {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         user.setRegistered(dateFormat.format(date));
-        user.setStatus(DEFAULT_USER_STATUS);//still add status information in userRegistration
+        user.setStatus(status);//still add status information in userRegistration
 
         em.getTransaction().begin();
         em.persist(user);
@@ -50,8 +58,8 @@ public class UserBean {
         User user;
 
         try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =: nickName")
-                    .setParameter("nickName", nickName)
+            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =: nickname")
+                    .setParameter("nickname", nickName)
                     .getSingleResult();
         } catch (NoResultException noResult) {
 
@@ -67,7 +75,7 @@ public class UserBean {
         User user;
 
         try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
+            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName = :nickName")
                     .setParameter("nickName", nickName)
                     .getSingleResult();
         } catch (NoResultException noresult) {
@@ -103,16 +111,24 @@ public class UserBean {
     }
 
 
-    //Solve issue with JOINs (should we add links to tables in JPA)
     List<String> getUserProjects(String nickName) {
 
-        //I'm not sure now that it is the right query, joins in this sql are really strange
-        List<String> result = (List<String>)em.createQuery("SELECT distinct x.hash FROM USER p JOIN p.UserGroups a JOIN a.Groups b JOIN b.Projects c JOIN c.Hashes x" +
-                "WHERE p.nickName =:nickname")
-                .setParameter("nickname", nickName)
-                .getResultList();
+        List<String> hashes = new LinkedList<String>();
+        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
+                            .setParameter("nickname", nickName)
+                            .getSingleResult();
+        List<UserGroup> groups = user.getGroups();
 
-        return result;
+        for (UserGroup g:groups) {
+
+            Group group = g.getGroup();
+            List<Project> projects = group.getProject();
+            for (Project p:projects) {
+               hashes.add(p.getHash().getHash());
+            }
+        }
+
+        return hashes;
     }
 
 
@@ -127,7 +143,7 @@ public class UserBean {
         if(!email.equals(""))
             user.setEmail(email);
         if(!passwordHash.equals(""))
-            user.setHash(passwordHash);
+            user.setPasswordHash(passwordHash);
 
         em.getTransaction().begin();
         em.persist(user);
