@@ -12,13 +12,13 @@ public class ProjectJF {
     private FileJF[]    projectFiles;
     private String[]    projectLibraries;
 
-    public ProjectJf(String projectHash, FileJF[] projectFiles, String[] projectLibraries) {
+    public ProjectJF(String projectHash, FileJF[] projectFiles, String[] projectLibraries) {
         this.projectHash = projectHash;
         this.projectFiles = projectFiles;
         this.projectLibraries = projectLibraries;
     }
 
-    public ProjectJf() {
+    public ProjectJF() {
     }
 
     public String getProjectHash() {
