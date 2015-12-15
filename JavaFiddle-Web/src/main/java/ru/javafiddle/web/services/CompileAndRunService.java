@@ -1,7 +1,7 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.ejb.beans.FilesBean;
-import ru.javafiddle.ejb.beans.CompileAndRunBean;
+import ru.javafiddle.core.ejb.FileBean;
+import ru.javafiddle.core.ejb.CompileAndRunBean;
 
 import ru.javafiddle.web.models.FileJF;
 import ru.javafiddle.web.models.ProjectJF;
@@ -26,7 +26,7 @@ public class CompileAndRunService {
     CompileAndRunBean compileAndRunBean;
 
     @EJB
-    FilesBean filesBean;
+    FileBean filesBean;
 
     @Path("/compile")
     @GET
@@ -73,17 +73,18 @@ public class CompileAndRunService {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response run(ProjectJF Project) {
+    public Response run(ProjectJF project) {
         //ExecutionResult must contain Streams and may be project files
         //becouse we cun write in file
         try {
             String projectHash = project.getProjectHash();
+            String executionResult = null;
 
             if(projectHash == null){
                 //!TODO guest user
                 return null;
             } else {
-                ExecutionResult executionResult = compileAndRunBean.run(projectHash);
+                executionResult = compileAndRunBean.run(projectHash);
                 return Response.ok().entity(executionResult).build();
             }
 

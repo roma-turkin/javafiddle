@@ -1,22 +1,21 @@
-package main.java.ru.javafiddle.core.ejb;
+package ru.javafiddle.core.ejb;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.jpa.entity.Hash;
 import ru.javafiddle.jpa.entity.Type;
 import ru.javafiddle.jpa.entity.Project;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.inject.Named;
 
 @Stateless
-@Named(value = "fileBean")
+
 public class FileBean {
 
     @PersistenceContext
@@ -27,13 +26,9 @@ public class FileBean {
 
     public List<File> getProjectFiles(String projectHash) {
 
-        List<File> files = (LinkedList<File>)em.createQuery("SELECT f FROM Hash h JOIN h.Project p JOIN p.File f WHERE h.hash=:projecthash")
-                .setParameter("projecthash", projectHash)
-                .getResultList();
+        Hash h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:projectHash");
 
-        files = removeDuplicatesList(files);//should we use remove duplicates here???
-
-        return files;
+        return h.getProject().getFiles();
 
     }
 
@@ -41,14 +36,14 @@ public class FileBean {
 
 
         File file = new File();
-        int projectId = getProjectId(projectHash);
-        int typeId = getFileTypeId(fileType);
+        Project project = getProject(projectHash);
+        Type type = getFile(fileType);
 
         file.setFileName(fileName);
         file.setData(data);
-        file.setType(typeId);
+        file.setType(type);
         file.setPath(pathToFile);
-        file.setProjectId(projectId);
+        file.setProject(project);
 
         em.getTransaction().begin();
         em.persist(file);
@@ -63,13 +58,13 @@ public class FileBean {
 
         File file = getFile(fileId);
 
-        int projectId = getProjectId(projectHash);
-        int typeId = getFileTypeId(fileType);
+        Project project = getProject(projectHash);
+        Type type = getFile(fileType);
         file.setFileName(fileName);
         file.setData(data);
-        file.setType(typeId);
+        file.setType(type);
         file.setPath(pathToFile);
-        file.setProjectId(projectId);
+        file.setProject(project);
 
         em.getTransaction().begin();
         em.persist(file);
@@ -96,44 +91,25 @@ public class FileBean {
         return file;
     }
 
-    private int getProjectId(String projectHash) {
+    private Project getProject(String projectHash) {
 
-        Project project = (Project)em.createQuery("SELECT p FROM Hash h JOIN h.Project p WHERE h.hash =:projecthash")
+        Project project = (Project)em.createQuery("SELECT p FROM Hash h JOIN Project p WHERE h.hash =:projecthash")
                 .setParameter("projecthash", projectHash)
                 .getSingleResult();
-        return project.getProjectId();
+        return project;
     }
 
-    private int getFileTypeId(String fileType) {
+    private Type getFile(String fileType) {
 
         Type type = (Type)em.createQuery("SELECT t FROM Type t WHERE t.typeName =:filetype")
                 .setParameter("filetype", fileType)
                 .getSingleResult();
-        return type.getTypeId();
+        return type;
 
 
     }
 
-    private List<File> removeDuplicatesList(List<File> files) {
-
-        Set<Object> s = new TreeSet<Object>(new Comparator<Object>() {
-
-            @Override
-            public int compare(Object o1, Object o2) {
-                File f1 = (File)o1;
-                File f2 = (File)o2;
-                int f1Id = f1.getFileId();
-                int f2Id = f2.getFileId();
-                if ((f1Id > f2Id) || (f2Id > f1Id))
-                    return 1;
-                return 0;
-            }
-        });
-        s.addAll(files);
-        List<File> res = Arrays.asList(s.toArray());
-
-        return res;
-    }
 
 
 }
+

@@ -4,12 +4,8 @@ package ru.javafiddle.jpa.entity;
  * Created by Fedor on 18.11.2015.
  */
 import java.text.DateFormat;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToOne;
+import java.util.List;
+import javax.persistence.*;
 
 @Entity
 @Table
@@ -24,11 +20,14 @@ public class User {
     private String nickName;
     private String email;
     private String passwordHash;
-    private DateFormat registered;
+    private String registered;
     @ManyToOne
     private Status status;
+    @OneToMany
+    private List<UserGroup> userGroup;
 
-    public User(String firstName, String lastName, String nickName, String email, String passwordHash, DateFormat registered, Status status) {
+
+    public User(String firstName, String lastName, String nickName, String email, String passwordHash, String registered, Status status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
@@ -89,11 +88,11 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public DateFormat getRegistered() {
+    public String getRegistered() {
         return registered;
     }
 
-    public void setRegistered(DateFormat registered) {
+    public void setRegistered(String registered) {
         this.registered = registered;
     }
 
@@ -104,6 +103,10 @@ public class User {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public List<UserGroup> getGroups() { return userGroup;}
+
+    public void setGroups(List<UserGroup> groups) { this.userGroup = groups;}
 
     @Override
     public String toString() {
