@@ -2,7 +2,7 @@ package ru.javafiddle.web.services;
 
 
 
-import ru.javafiddle.ejb.beans.FilesBean;
+import ru.javafiddle.core.ejb.FileBean;
 
 import ru.javafiddle.jpa.entity.File;
 
@@ -21,6 +21,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by artyom on 19.11.15.
@@ -29,25 +31,25 @@ import javax.ws.rs.core.Response;
 public class FileService {
 
     @EJB
-    FilesBean filesBean;
+    FileBean filesBean;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFiles(@PathParam("projectHash") String projectHash) {
 
         try {
-            File[]      files  = filesBean.getProjectFiles(projectHash);
-            FileJF[]    filesJF= new FileJF[files.length];
-            for(int i=0; i<files.length; i++) {
-                filesJF[i] = new FileJF(files[i].getFile_id(),
-                        files[i].getFile_name(),
-                        files[i].getFile(),
-                        files[i].getType().getTypeName(),
-                        files[i].getPath());
+            List<File>      files  = filesBean.getProjectFiles(projectHash);
+            List<FileJF>    filesJF= new ArrayList<FileJF>();
+            for(int i=0; i<files.size(); i++) {
+                filesJF.add(new FileJF(files.get(i).getFileId(),
+                        files.get(i).getFileName(),
+                        files.get(i).getData(),
+                        files.get(i).getType().getTypeName(),
+                        files.get(i).getPath()));
             }
             return Response.ok(filesJF).build();
-        } catch(AccessRightsException e) {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+//        } catch(AccessRightsException e) {
+//            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         } catch(NotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } catch(Exception e) {
@@ -67,10 +69,10 @@ public class FileService {
                     newFile.getType(),
                     newFile.getPath());
             return Response.ok().build();
-        } catch(AccessRightsException e) {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-        } catch(NameSpaceException e) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+//        } catch(AccessRightsException e) {
+//            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+//        } catch(NameSpaceException e) {
+//            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } catch(Exception e) {
             return Response.serverError().build();
         }
@@ -99,8 +101,8 @@ public class FileService {
                 }
             }
             return Response.ok().build();
-        } catch(AccessRightsException e) {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+//        } catch(AccessRightsException e) {
+//            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         } catch(Exception e) {
             return Response.serverError().build();
         }
@@ -115,8 +117,8 @@ public class FileService {
             return Response.ok().build();
         } catch(NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND).build();
-        } catch(AccessRightsException e) {
-            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
+//        } catch(AccessRightsException e) {
+//            return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
         } catch(Exception e) {
             return Response.serverError().build();
         }

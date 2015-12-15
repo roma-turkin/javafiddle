@@ -3,11 +3,8 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * A union of users.
@@ -20,6 +17,8 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int groupId;
     private String groupName;
+    @OneToMany
+    List<Project> projects;
 
     public Group(String groupName) {
         this.groupName = groupName;
@@ -43,6 +42,10 @@ public class Group {
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
+
+    public List<Project> getProject() { return projects; }
+
+    public void setProject(List<Project> projects) { this.projects = projects; }
 
     @Override
     public String toString() {

@@ -1,6 +1,6 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.ejb.beans.LibrariesBean;
+import ru.javafiddle.core.ejb.LibraryBean;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -21,7 +21,7 @@ import java.util.List;
 public class LibraryService {
 
     @EJB
-    LibrariesBean librariesBean;
+    LibraryBean librariesBean;
 
     @POST
     @Path("/{libraryName}")

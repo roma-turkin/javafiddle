@@ -1,6 +1,6 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.ejb.beans.ProjectBean;
+import ru.javafiddle.core.ejb.ProjectBean;
 
 import ru.javafiddle.web.models.ProjectInfo;
 

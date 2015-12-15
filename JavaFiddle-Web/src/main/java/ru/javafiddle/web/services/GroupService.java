@@ -1,7 +1,7 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.ejb.beans.GroupsBean;
-import ru.javafiddle.ejb.beans.ProjectBean;
+import ru.javafiddle.core.ejb.GroupBean;
+import ru.javafiddle.core.ejb.ProjectBean;
 
 import ru.javafiddle.web.models.GroupMember;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 public class GroupService {
 
     @EJB
-    GroupsBean groupsBean;
+    GroupBean groupsBean;
 
     @EJB
     ProjectBean projectBean;

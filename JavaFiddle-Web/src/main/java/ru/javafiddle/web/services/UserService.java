@@ -1,9 +1,7 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.ejb.beans.UserBean;
-
+import ru.javafiddle.core.ejb.UserBean;
 import ru.javafiddle.jpa.entity.User;
-
 import ru.javafiddle.web.models.UserJF;
 import ru.javafiddle.web.models.UserRegistrationData;
 
@@ -90,8 +88,10 @@ public class UserService {
 
         try {
 
-            userBean.setUser(userRegistrationData.getFirstName(),
+            userBean.setUser(userRegistrationData.getNickName(),
+                    userRegistrationData.getFirstName(),
                     userRegistrationData.getLastName(),
+                    userRegistrationData.getNickName(),
                     userRegistrationData.getEmail(),
                     userRegistrationData.getPassword());
 
