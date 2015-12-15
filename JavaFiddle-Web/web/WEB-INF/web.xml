@@ -18,7 +18,7 @@
         <listener-class>ru.javafiddle.web.utils.SessionListener</listener-class>
     </listener>
     <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
+        <welcome-file>fiddle/index.xhtml</welcome-file>
     </welcome-file-list>
     <mime-mapping>
         <extension>eot</extension>
