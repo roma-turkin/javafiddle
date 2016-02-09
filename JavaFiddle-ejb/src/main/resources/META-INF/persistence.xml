@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="JFPersistenceUnit" transaction-type="JTA"><!--transaction-type="JTA" —>
-<provider>org.hibernate.ejb.HibernatePersistence</provider>
-<!-jta-data-source>jdbc/javafiddle__pm</jta-data-source-->
-
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <persistence-unit name="JFPersistenceUnit" >
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <class>ru.javafiddle.jpa.entity.Access</class>
         <class>ru.javafiddle.jpa.entity.File</class>
         <class>ru.javafiddle.jpa.entity.Group</class>
@@ -18,31 +15,12 @@
         <class>ru.javafiddle.jpa.entity.Type</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
-            <!--property name="javax.persistence.jdbc.url" value="jdbc:postgresql://46.101.191.234:5432/javafiddle"/>
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.user" value="javafiddle"/>
-            <property name="javax.persistence.jdbc.password" value="JF#4qEz"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
-            <property name="hibernate.show_sql" value="false"/-->
-            <property name="javax.persistence.jdbc.url" value="jdbc:derby:/User/mac/simpledb;create=true"/>
-            <property name="javax.persistence.jdbc.password" value="app"/>
-            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-            <property name="javax.persistence.jdbc.user" value="app"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-            <property name="hibernate.transaction.jta.platform"       value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform" />
-        </properties>
-
-    </persistence-unit>
-
-    <!--persistence-unit name="javaFiddlePU-test" transaction-type="JTA">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://46.101.191.234:5432/javafiddle"/>
-            <property name="javax.persistence.jdbc.password" value="JF#4qEz"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
             <property name="javax.persistence.jdbc.user" value="javafiddle"/>
+            <property name="javax.persistence.jdbc.password" value="JF#4qEz"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL82Dialect"/>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="hibernate.show_sql" value="false"/>
         </properties>
-    </persistence-unit-->
+    </persistence-unit>
 </persistence>

@@ -4,12 +4,7 @@ package ru.javafiddle.jpa.entity;
  * Created by Fedor on 18.11.2015.
  */
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
+import javax.persistence.*;
 
 /**
  * Specifies the access type of users group (read only, edit&read etc.)
@@ -17,13 +12,10 @@ import javax.persistence.Column;
 @Entity
 @Table(name = "\"Access\"")
 public class Access {
-
-    public static final String READ_AND_WRITE = "rw";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"accessId\"")
     private int accessId;
-
     @Column(name = "\"accessName\"")
     private String accessName;
 
