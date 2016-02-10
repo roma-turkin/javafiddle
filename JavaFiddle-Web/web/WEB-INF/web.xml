@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>ru.javafiddle.web</param-value>
+        </init-param>
+            <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/fiddle/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/fiddle/*</url-pattern>
+        <url-pattern>/jsf/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -18,8 +30,9 @@
         <listener-class>ru.javafiddle.web.utils.SessionListener</listener-class>
     </listener>
     <welcome-file-list>
-        <welcome-file>fiddle/index.xhtml</welcome-file>
+        <welcome-file>jsf/index.xhtml</welcome-file>
     </welcome-file-list>
+    <!--
     <mime-mapping>
         <extension>eot</extension>
         <mime-type>application/vnd.ms-fontobject</mime-type>
@@ -32,4 +45,5 @@
         <extension>map</extension>
         <mime-type>application/octet-stream</mime-type>
     </mime-mapping>
+    -->
 </web-app>
