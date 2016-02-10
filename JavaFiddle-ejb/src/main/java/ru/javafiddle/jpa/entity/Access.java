@@ -4,7 +4,12 @@ package ru.javafiddle.jpa.entity;
  * Created by Fedor on 18.11.2015.
  */
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
 
 /**
  * Specifies the access type of users group (read only, edit&read etc.)
