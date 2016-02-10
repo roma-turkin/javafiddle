@@ -1,0 +1,67 @@
+JavaFiddle - simple web-based Java IDE.
+
+Following functionality is supposed to be added:
+
+Structural functions:
+a) Actions with projects:	
+  - Create new project
+    * Specify name of project
+    * Ability to generate project from existing templates
+    * Specify whether to use VCS in project
+  - Rename project
+  - Delete project (provide warning)
+  - Join project (for team work - token-based, if possible)
+b) Actions with packages:
+  - Create new package (leave possibility of default packaging)
+  - Create new folder
+  - Rename folder (with offer to update all packages inside java-files)
+  - Show folders (expanded view or shortened)
+c) Actions with files
+  - Create new file
+    * Specify file name
+    * Specify file type (class, interface, abstract class, etc.)
+    * Specify whether to add the file to VCS (if one is present)
+d) Download project code in zip-file
+e) Add libraries to the project (security issues!)
+
+
+Editor functions:
+- Syntax highlighting.
+- Code autocompletion (methods and fields for particular object, packages' import, Ctrl+Click functionality)
+- Code style support
+- Several tabs of code
+
+Authentication functions:
+- Basic user's authentication on user/password (manual user registration, automatic user registration with email-based confirmation)
+- Messages from reviewboard/administration/etc.
+- User groups management (with rights).
+
+Code compilation and running:
+- Compile project
+- Run project
+- Set limits on execution time, compilation time, RAM amount, access rights (ideal case - run executable in separate virtual machine)
+
+VCS functionality (git-based)
+- initiation on project creation
+- branching (specify name, choose branch for current work)
+- commit, revert, merge with trunk
+- show commits history (visual image)
+- pull/push functionality (git server must be specified)
+
+Reviewboard functionality
+- select fork for review
+- prepare review:
+  * select files
+  * select usergroup
+  * select reviewers
+- show diff
+- add/edit/read comments
+- approve/reject
+
+[Ruzhanskaya Anastasiya]Ideas:
+Add minimalistiс design
+If working in with SQL:syntax highlighting, automatic tabs
+Actions with packages:delete package,delete folder
+Undo operations
+
+Also integration with Skill Bench and Skill Catalyst projects is expected to be added.
