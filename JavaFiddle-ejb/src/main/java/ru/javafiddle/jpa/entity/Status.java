@@ -21,7 +21,6 @@ public class Status {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"statusId\"")
     private int statusId;
-
     @Column(name = "\"statusName\"")
     private String statusName;
 

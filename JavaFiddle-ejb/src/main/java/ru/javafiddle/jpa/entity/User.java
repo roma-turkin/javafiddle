@@ -3,57 +3,44 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
+import java.text.DateFormat;
 import java.util.List;
-
+import javax.persistence.*;
 
 @Entity
-@Cacheable(false)
 @Table(name = "\"User\"")
 public class User {
 
     @Id
-    //comm
-  //  @SequenceGenerator(name = "YOUR_ENTITY_SEQ", sequenceName = "YOUR_ENTITY_SEQ", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"userId\"")
     private int userId;
-
     @Column(name = "\"firstName\"")
     private String firstName;
-
     @Column(name = "\"lastName\"")
     private String lastName;
-
     @Column(name = "\"nickName\"")
     private String nickName;
-
     @Column(name = "\"email\"")
     private String email;
-
     @Column(name = "\"passwordHash\"")
     private String passwordHash;
-
-    @Column(name = "\"registrationDate\"")
-    private String registrationDate;
-
+    @Column(name = "\"registered\"")
+    private String registered;
     @ManyToOne
     @JoinColumn(name = "\"statusId\"")
     private Status status;
+    @OneToMany
+    private List<UserGroup> userGroup;
 
-    @OneToMany(mappedBy = "member")
-    private List<UserGroup> groups;
 
-
-    public User(String firstName, String lastName, String nickName, String email, String passwordHash, String registrationDate, Status status) {
+    public User(String firstName, String lastName, String nickName, String email, String passwordHash, String registered, Status status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
         this.email = email;
         this.passwordHash = passwordHash;
-        this.registrationDate = registrationDate;
+        this.registered = registered;
         this.status = status;
     }
 
@@ -108,12 +95,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public String getRegistrationDate() {
-        return registrationDate;
+    public String getRegistered() {
+        return registered;
     }
 
-    public void setRegistrationDate(String registrationDate) {
-        this.registrationDate = registrationDate;
+    public void setRegistered(String registered) {
+        this.registered = registered;
     }
 
     public Status getStatus() {
@@ -124,13 +111,9 @@ public class User {
         this.status = status;
     }
 
-    public List<UserGroup> getGroups() {
-        return groups;
-    }
+    public List<UserGroup> getGroups() { return userGroup;}
 
-    public void setGroups(List<UserGroup> groups) {
-        this.groups = groups;
-    }
+    public void setGroups(List<UserGroup> groups) { this.userGroup = groups;}
 
     @Override
     public String toString() {
@@ -141,7 +124,7 @@ public class User {
                 ", nickName='" + nickName + '\'' +
                 ", email='" + email + '\'' +
                 ", passwordHash='" + passwordHash + '\'' +
-                ", registrationDate=" + registrationDate.toString() +
+                ", registered=" + registered.toString() +
                 ", status=" + status.getStatusId() +
                 '}';
     }
