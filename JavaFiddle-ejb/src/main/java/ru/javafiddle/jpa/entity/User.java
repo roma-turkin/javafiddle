@@ -8,27 +8,27 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "\"User\"")
+//@Table(name = "\"user\"")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "\"userId\"")
+//    @Column(name = "\"userId\"")
     private int userId;
-    @Column(name = "\"firstName\"")
+//    @Column(name = "\"firstName\"")
     private String firstName;
-    @Column(name = "\"lastName\"")
+//    @Column(name = "\"lastName\"")
     private String lastName;
-    @Column(name = "\"nickName\"")
+//    @Column(name = "\"nickName\"")
     private String nickName;
-    @Column(name = "\"email\"")
+//    @Column(name = "\"email\"")
     private String email;
-    @Column(name = "\"passwordHash\"")
+//    @Column(name = "\"passwordHash\"")
     private String passwordHash;
-    @Column(name = "\"registered\"")
+//    @Column(name = "\"registered\"")
     private String registered;
     @ManyToOne
-    @JoinColumn(name = "\"statusId\"")
+//    @JoinColumn(name = "\"statusId\"")
     private Status status;
     @OneToMany
     private List<UserGroup> userGroup;

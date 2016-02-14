@@ -62,8 +62,10 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo(@PathParam("nickName") String nickName) {
 
-        try {
+//        try {
             User user = userBean.getUser(nickName);
+
+//            if(user == null) return Response.accepted(nickName).build();!TODO
 
             UserJF userJF = new UserJF(user.getFirstName(),
                     user.getLastName(),
@@ -73,11 +75,11 @@ public class UserService {
 
             return Response.ok(userJF).build();
 
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
-        }
+//        } catch (NotFoundException e) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        } catch (Exception e) {
+//            return Response.serverError().build();
+//        }
 
     }
 
