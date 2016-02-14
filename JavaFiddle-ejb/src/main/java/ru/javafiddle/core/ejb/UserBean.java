@@ -29,10 +29,16 @@ public class UserBean {
 
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
+//        Status st = new Status();
+//        st.setStatusId(1);
+//        st.setStatusName("registered");
+//        em.persist(st);
+
         User user = new User();
         Status status = (Status)em.createQuery("SELECT s FROM Status s WHERE s.statusName =:status")
                 .setParameter("status", DEFAULT_USER_STATUS)
                 .getSingleResult();
+
 
 
         user.setFirstName(firstName);
@@ -46,9 +52,10 @@ public class UserBean {
         user.setRegistered(dateFormat.format(date));
         user.setStatus(status);//still add status information in userRegistration
 
-        em.getTransaction().begin();
         em.persist(user);
-        em.getTransaction().commit();
+//        em.getTransaction().begin();
+//        em.persist(user);
+//        em.getTransaction().commit();
 
         return user;
     }
@@ -58,7 +65,7 @@ public class UserBean {
         User user;
 
         try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =: nickname")
+            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
                     .setParameter("nickname", nickName)
                     .getSingleResult();
         } catch (NoResultException noResult) {
