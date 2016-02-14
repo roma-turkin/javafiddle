@@ -14,14 +14,14 @@ import javax.persistence.GenerationType;
  * A status of user's account (registered, unconfirmed etc.)
  */
 @Entity
-@Table(name = "\"Status\"")
+//@Table(name = "\"Status\"")
 public class Status {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "\"statusId\"")
+//    @Column(name = "\"statusId\"")
     private int statusId;
-    @Column(name = "\"statusName\"")
+//    @Column(name = "\"statusName\"")
     private String statusName;
 
     public Status(String statusName) {
