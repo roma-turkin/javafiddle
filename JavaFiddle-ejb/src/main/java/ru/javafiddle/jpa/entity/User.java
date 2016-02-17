@@ -8,30 +8,30 @@ import java.util.List;
 import javax.persistence.*;
 
 @Entity
-//@Table(name = "\"user\"")
+@Table(name = "\"User\"")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column(name = "\"userId\"")
+    @Column(name = "\"userId\"")
     private int userId;
-//    @Column(name = "\"firstName\"")
+    @Column(name = "\"firstName\"")
     private String firstName;
-//    @Column(name = "\"lastName\"")
+    @Column(name = "\"lastName\"")
     private String lastName;
-//    @Column(name = "\"nickName\"")
+    @Column(name = "\"nickName\"")
     private String nickName;
-//    @Column(name = "\"email\"")
+    @Column(name = "\"email\"")
     private String email;
-//    @Column(name = "\"passwordHash\"")
+    @Column(name = "\"passwordHash\"")
     private String passwordHash;
-//    @Column(name = "\"registered\"")
+    @Column(name = "\"registered\"")
     private String registered;
     @ManyToOne
-//    @JoinColumn(name = "\"statusId\"")
+    @JoinColumn(name = "\"statusId\"")
     private Status status;
-    @OneToMany
-    private List<UserGroup> userGroup;
+    @ManyToMany(mappedBy = "members")
+    private List<Group> groups;
 
 
     public User(String firstName, String lastName, String nickName, String email, String passwordHash, String registered, Status status) {
@@ -111,9 +111,13 @@ public class User {
         this.status = status;
     }
 
-    public List<UserGroup> getGroups() { return userGroup;}
+    public List<Group> getGroups() {
+        return groups;
+    }
 
-    public void setGroups(List<UserGroup> groups) { this.userGroup = groups;}
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
+    }
 
     @Override
     public String toString() {

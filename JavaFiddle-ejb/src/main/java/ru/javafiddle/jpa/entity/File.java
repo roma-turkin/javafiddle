@@ -3,7 +3,9 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -13,19 +15,23 @@ import javax.persistence.Lob;
 import java.util.Arrays;
 
 @Entity
-@Table
-
+@Table(name = "\"File\"")
 public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "\"fileId\"")
     private int fileId;
+    @Column(name = "\"fileName\"")
     private String fileName;
     @Lob
+    @Column(name = "\"data\"")
     private byte[] data;
     @ManyToOne
     private Project project;
     @ManyToOne
+    @JoinColumn(name = "\"typeId\"")
     private Type type;
+    @Column(name = "\"path\"")
     private String path;
 
     public File(String fileName, byte[] data, Project project, Type type, String path) {

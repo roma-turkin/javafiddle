@@ -119,23 +119,23 @@ public class UserBean {
 
 
     public List<String> getUserProjects(String nickName) {
-
-        List<String> hashes = new LinkedList<String>();
-        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
-                .setParameter("nickname", nickName)
-                .getSingleResult();
-        List<UserGroup> groups = user.getGroups();
-
-        for (UserGroup g:groups) {
-
-            Group group = g.getGroup();
-            List<Project> projects = group.getProject();
-            for (Project p:projects) {
-                hashes.add(p.getHash().getHash());
-            }
-        }
-
-        return hashes;
+//!TODO
+//        List<String> hashes = new LinkedList<String>();
+//        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
+//                .setParameter("nickname", nickName)
+//                .getSingleResult();
+//        List<Group> groups = user.getGroups();
+//
+//        for (Group g:groups) {
+//
+//            List<Project> projects = group.getProjects();
+//            for (Project p:projects) {
+//                hashes.add(p.getHash().getHash());
+//            }
+//        }
+//
+//        return hashes;
+        return null;
     }
 
 
