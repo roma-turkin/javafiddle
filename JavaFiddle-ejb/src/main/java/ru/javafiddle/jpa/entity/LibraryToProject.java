@@ -10,17 +10,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 
-@Entity
-@Table
+//@Entity
+//@Table
 
 public class LibraryToProject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @ManyToOne
+//    @ManyToOne
     private Project project;
-    @ManyToOne
+//
     private Library library;
 
     public LibraryToProject(Project project, Library library) {

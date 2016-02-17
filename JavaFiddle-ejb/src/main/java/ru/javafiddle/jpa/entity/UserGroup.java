@@ -3,7 +3,9 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -15,19 +17,22 @@ import java.util.List;
 /**
  * A relationship between users and groups.
  */
-@Entity
-@Table
-
+//@Entity
+//@Table(name = "\"UserGroup\"")
 public class UserGroup {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "\"id\"")
     private int id;
-    @ManyToOne
+//    @ManyToOne
+//    @JoinColumn(name = "\"groupId\"")
     private Group group;
-    @ManyToMany
+//    @ManyToMany
+//    @JoinColumn(name = "\"userId\"")
     private List<User> client;
-    @ManyToOne
+//    @ManyToOne
+//    @JoinColumn(name = "\"accessId\"")
     private Access access;
 
     public UserGroup(Group group, List<User> client, Access access) {
