@@ -21,11 +21,13 @@ public class Group {
     @OneToMany
     @JoinColumn(name = "\"projectId\"")
     List<Project> projects;
-    @ManyToMany
-    @JoinTable(name = "\"UserGroup\"" ,
-        joinColumns = @JoinColumn(name = "\"groupId\""),
-        inverseJoinColumns = @JoinColumn(name = "\"userId\""))
-    private List<User> members;
+//    @ManyToMany
+//    @JoinTable(name = "\"UserGroup\"" ,
+//        joinColumns = @JoinColumn(name = "\"groupId\""),
+//        inverseJoinColumns = @JoinColumn(name = "\"userId\""))
+//    private List<User> members;
+    @OneToMany(mappedBy = "group")
+    private List<UserGroup>  clients;
 
     public Group(String groupName) {
         this.groupName = groupName;
@@ -54,12 +56,21 @@ public class Group {
 
     public void setProject(List<Project> projects) { this.projects = projects; }
 
-    public List<User> getMembers() {
-        return members;
+//    public List<User> getMembers() {
+//        return members;
+//    }
+//
+//    public void setMembers(List<User> members) {
+//        this.members = members;
+//    }
+
+
+    public List<UserGroup> getUsergroup() {
+        return clients;
     }
 
-    public void setMembers(List<User> members) {
-        this.members = members;
+    public void setUsergroup(List<UserGroup> clients) {
+        this.clients = clients;
     }
 
     @Override

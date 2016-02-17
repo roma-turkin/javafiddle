@@ -27,6 +27,7 @@ public class File {
     @Column(name = "\"data\"")
     private byte[] data;
     @ManyToOne
+    @JoinColumn(name = "files")
     private Project project;
     @ManyToOne
     @JoinColumn(name = "\"typeId\"")
