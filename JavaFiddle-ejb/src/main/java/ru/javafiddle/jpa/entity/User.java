@@ -30,8 +30,8 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "\"statusId\"")
     private Status status;
-    @ManyToMany(mappedBy = "members")
-    private List<Group> groups;
+    @OneToMany(mappedBy = "client")
+    private List<UserGroup> groups;
 
 
     public User(String firstName, String lastName, String nickName, String email, String passwordHash, String registered, Status status) {
@@ -111,11 +111,11 @@ public class User {
         this.status = status;
     }
 
-    public List<Group> getGroups() {
+    public List<UserGroup> getGroups() {
         return groups;
     }
 
-    public void setGroups(List<Group> groups) {
+    public void setGroups(List<UserGroup> groups) {
         this.groups = groups;
     }
 
