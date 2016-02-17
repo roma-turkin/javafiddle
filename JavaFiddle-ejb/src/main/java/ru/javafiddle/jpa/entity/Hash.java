@@ -3,13 +3,18 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.OneToOne;
 
 /**
  * Project's hash.
  */
 @Entity
-@Cacheable(false)
 @Table(name = "\"Hash\"")
 public class Hash {
 
@@ -17,10 +22,8 @@ public class Hash {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"id\"")
     private int id;
-
     @Column(name = "\"hash\"")
     private String hash;
-
     @OneToOne(mappedBy = "hash")
     private Project project;
 

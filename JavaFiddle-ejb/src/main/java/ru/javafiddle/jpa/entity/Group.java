@@ -3,13 +3,7 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -18,20 +12,20 @@ import java.util.List;
 @Entity
 @Table(name = "\"Group\"")
 public class Group {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"groupId\"")
     private int groupId;
-
     @Column(name = "\"groupName\"")
     private String groupName;
-
-    @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
+    @OneToMany
+    @JoinColumn(name = "\"projectId\"")
     List<Project> projects;
-
-    @OneToMany(mappedBy = "group")
-    private List<UserGroup>  members;
+    @ManyToMany
+    @JoinTable(name = "\"UserGroup\"" ,
+        joinColumns = @JoinColumn(name = "\"groupId\""),
+        inverseJoinColumns = @JoinColumn(name = "\"userId\""))
+    private List<User> members;
 
     public Group(String groupName) {
         this.groupName = groupName;
@@ -56,19 +50,15 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public List<Project> getProjects() {
-        return projects;
-    }
+    public List<Project> getProject() { return projects; }
 
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
+    public void setProject(List<Project> projects) { this.projects = projects; }
 
-    public List<UserGroup> getMembers() {
+    public List<User> getMembers() {
         return members;
     }
 
-    public void setMembers(List<UserGroup> members) {
+    public void setMembers(List<User> members) {
         this.members = members;
     }
 

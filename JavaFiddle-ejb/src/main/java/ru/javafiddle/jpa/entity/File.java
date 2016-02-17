@@ -17,30 +17,22 @@ import java.util.Arrays;
 @Entity
 @Table(name = "\"File\"")
 public class File {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"fileId\"")
     private int fileId;
-
     @Column(name = "\"fileName\"")
     private String fileName;
-
-    @Column(name = "\"path\"")
-    private String path;
-
     @Lob
     @Column(name = "\"data\"")
     private byte[] data;
-
     @ManyToOne
-    @JoinColumn(name = "\"projectId\"")
     private Project project;
-
     @ManyToOne
     @JoinColumn(name = "\"typeId\"")
     private Type type;
-
+    @Column(name = "\"path\"")
+    private String path;
 
     public File(String fileName, byte[] data, Project project, Type type, String path) {
         this.fileName = fileName;

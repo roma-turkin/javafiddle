@@ -21,13 +21,11 @@ public class Library {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"libraryId\"")
     private int libraryId;
-
     @Column(name = "\"libraryName\"")
     private String libraryName;
     @Lob
     @Column(name = "\"data\"")
     private byte[] data;
-
     @ManyToMany(mappedBy = "libs")
     private List<Project> projects;
 

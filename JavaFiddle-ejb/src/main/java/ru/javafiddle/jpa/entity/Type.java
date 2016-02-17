@@ -18,15 +18,12 @@ import java.util.List;
 @Entity
 @Table(name = "\"Type\"")
 public class Type {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"typeId\"")
     private int typeId;
-
     @Column(name = "\"typeName\"")
     private String typeName;
-
     @OneToMany(mappedBy = "type")
     private List<File> files;
 
