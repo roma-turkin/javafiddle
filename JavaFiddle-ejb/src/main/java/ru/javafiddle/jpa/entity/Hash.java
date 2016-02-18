@@ -22,8 +22,10 @@ public class Hash {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"id\"")
     private int id;
+
     @Column(name = "\"hash\"")
     private String hash;
+
     @OneToOne(mappedBy = "hash")
     private Project project;
 
