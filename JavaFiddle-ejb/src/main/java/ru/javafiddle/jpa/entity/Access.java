@@ -17,10 +17,12 @@ import javax.persistence.Column;
 @Entity
 @Table(name = "\"Access\"")
 public class Access {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"accessId\"")
     private int accessId;
+
     @Column(name = "\"accessName\"")
     private String accessName;
 

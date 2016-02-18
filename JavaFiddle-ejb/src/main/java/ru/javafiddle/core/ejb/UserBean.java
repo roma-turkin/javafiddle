@@ -49,7 +49,7 @@ public class UserBean {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
-        user.setRegistered(dateFormat.format(date));
+        user.setRegistrationDate(dateFormat.format(date));
         user.setStatus(status);//still add status information in userRegistration
 
         em.persist(user);

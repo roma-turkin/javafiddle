@@ -9,22 +9,28 @@ import java.util.List;
 @Entity
 @Table(name = "\"Project\"")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"projectId\"")
     private int projectId;
+
     @Column(name = "\"projectName\"")
     private String projectName;
+
     @ManyToOne
+    @JoinColumn(name = "\"groupId\"")
     private Group group;
+
     @OneToMany
-    @JoinColumn(name = "\"fileId\"")
     private List<File> files;
+
     @ManyToMany
     @JoinTable(name = "\"LibraryToProject\"" ,
             joinColumns = @JoinColumn(name = "\"libraryId\""),
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
+
     @OneToOne
     @JoinColumn(name = "\"id\"")
     private Hash hash;

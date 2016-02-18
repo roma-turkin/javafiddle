@@ -3,7 +3,13 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 /**
@@ -12,22 +18,20 @@ import java.util.List;
 @Entity
 @Table(name = "\"Group\"")
 public class Group {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"groupId\"")
     private int groupId;
+
     @Column(name = "\"groupName\"")
     private String groupName;
-    @OneToMany
-    @JoinColumn(name = "\"projectId\"")
-    List<Project> projects;
-//    @ManyToMany
-//    @JoinTable(name = "\"UserGroup\"" ,
-//        joinColumns = @JoinColumn(name = "\"groupId\""),
-//        inverseJoinColumns = @JoinColumn(name = "\"userId\""))
-//    private List<User> members;
+
     @OneToMany(mappedBy = "group")
-    private List<UserGroup>  clients;
+    List<Project> projects;
+
+    @OneToMany(mappedBy = "group")
+    private List<UserGroup>  members;
 
     public Group(String groupName) {
         this.groupName = groupName;
@@ -52,25 +56,20 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public List<Project> getProject() { return projects; }
-
-    public void setProject(List<Project> projects) { this.projects = projects; }
-
-//    public List<User> getMembers() {
-//        return members;
-//    }
-//
-//    public void setMembers(List<User> members) {
-//        this.members = members;
-//    }
-
-
-    public List<UserGroup> getUsergroup() {
-        return clients;
+    public List<Project> getProjects() {
+        return projects;
     }
 
-    public void setUsergroup(List<UserGroup> clients) {
-        this.clients = clients;
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
+    public List<UserGroup> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<UserGroup> members) {
+        this.members = members;
     }
 
     @Override

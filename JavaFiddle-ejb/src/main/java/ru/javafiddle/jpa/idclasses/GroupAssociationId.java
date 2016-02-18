@@ -1,4 +1,4 @@
-package ru.javafiddle.jpa.entity;
+package ru.javafiddle.jpa.idclasses;
 
 import java.io.Serializable;
 
