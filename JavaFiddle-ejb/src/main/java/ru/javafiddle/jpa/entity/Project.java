@@ -22,7 +22,7 @@ public class Project {
     @JoinColumn(name = "\"groupId\"")
     private Group group;
 
-    @OneToMany
+    @OneToMany(mappedBy = "project")
     private List<File> files;
 
     @ManyToMany
