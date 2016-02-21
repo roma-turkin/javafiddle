@@ -29,11 +29,6 @@ public class UserBean {
 
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
-//        Status st = new Status();
-//        st.setStatusId(1);
-//        st.setStatusName("registered");
-//        em.persist(st);
-
         User user = new User();
         Status status = (Status)em.createQuery("SELECT s FROM Status s WHERE s.statusName =:status")
                 .setParameter("status", DEFAULT_USER_STATUS)
@@ -53,9 +48,6 @@ public class UserBean {
         user.setStatus(status);//still add status information in userRegistration
 
         em.persist(user);
-//        em.getTransaction().begin();
-//        em.persist(user);
-//        em.getTransaction().commit();
 
         return user;
     }
@@ -110,32 +102,31 @@ public class UserBean {
             return null;
         }
 
-        em.getTransaction().begin();
         em.remove(user);
-        em.getTransaction().commit();
+
         return user;
 
     }
 
 
     public List<String> getUserProjects(String nickName) {
-//!TODO
-//        List<String> hashes = new LinkedList<String>();
-//        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
-//                .setParameter("nickname", nickName)
-//                .getSingleResult();
-//        List<Group> groups = user.getGroups();
-//
-//        for (Group g:groups) {
-//
-//            List<Project> projects = group.getProjects();
-//            for (Project p:projects) {
-//                hashes.add(p.getHash().getHash());
-//            }
-//        }
-//
-//        return hashes;
-        return null;
+
+        List<String> hashes = new LinkedList<String>();
+        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
+                .setParameter("nickname", nickName)
+                .getSingleResult();
+
+        List<UserGroup> groups = user.getGroups();
+
+        for (UserGroup g:groups) {
+
+            List<Project> projects = g.getGroup().getProjects();
+            for (Project p:projects) {
+                hashes.add(p.getHash().getHash());
+            }
+        }
+
+        return hashes;
     }
 
 
@@ -152,9 +143,7 @@ public class UserBean {
         if(!passwordHash.equals(""))
             user.setPasswordHash(passwordHash);
 
-        em.getTransaction().begin();
         em.persist(user);
-        em.getTransaction().commit();
 
         return user;
     }
