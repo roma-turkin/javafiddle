@@ -148,5 +148,21 @@ public class UserBean {
         return user;
     }
 
+    public User findUser(String nickName) {
+        User user;
+
+
+        try {
+            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
+                    .setParameter("nickName", nickName)
+                    .getSingleResult();
+        } catch (NoResultException noresult) {
+
+            return null;
+        }
+
+        return user;
+    }
+
 
 }

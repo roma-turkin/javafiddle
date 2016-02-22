@@ -34,18 +34,19 @@ public class ProjectService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createProject(ProjectInfo projectInfo, @Context UriInfo uriInfo) {
 
-        try {
+//        try {
             String projectHash;
 
-            projectHash = projectBean.createProject(projectInfo.getProjectName(),
-                    projectInfo.getGroupId());
+            projectHash = projectBean.createProject(projectInfo.getUserNickName(),
+                    projectInfo.getProjectHash(),
+                    projectInfo.getProjectName());
 
             URI uri = uriInfo.getAbsolutePathBuilder().path(projectHash).build();
             return Response.created(uri).build();
 
-        } catch(Exception e){
-            return Response.serverError().build();
-        }
+//        } catch(Exception e){
+//            return Response.serverError().build();
+//        }
 
     }
 
