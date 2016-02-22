@@ -1,11 +1,17 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.EJB;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+
+import ru.javafiddle.jpa.entity.Access;
 import ru.javafiddle.jpa.entity.Group;
 import ru.javafiddle.jpa.entity.Project;
 import ru.javafiddle.jpa.entity.Hash;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -21,37 +27,92 @@ public class ProjectBean {
     @PersistenceContext
     EntityManager em;
 
+    @EJB
+    UserBean userBean;
+
     public ProjectBean() {}
 
-    public String createProject(String projectName, int groupId) {//groupName??
+    public String createProject(String creator, String hash, String projectName) {//groupName??
 
-        Group group;
+        if(hash == null) {
+            throw new IllegalArgumentException("Error: hash argument cannot be null");
+        }
+        //New project
+        if(hash.equals("")) {
 
+            User user = userBean.findUser(creator);
+            if(user == null) {
+                throw new IllegalArgumentException("Error: the creator of the project must exist");
+            }
 
-        Project project = new Project();
-        Hash hashes = new Hash();
+            Access access;
+            try {
+                access = (Access) em.createQuery("SELECT a FROM Access a WHERE a.accessName =:access")
+                        .setParameter("access", Access.READ_AND_WRITE)
+                        .getSingleResult();
+            } catch (NoResultException e){
+                throw new RuntimeException("Project can not be created");
+            }
 
-        //get group, corresponding to this id
-        group = getGroup(groupId);
+            Hash newHash = new Hash();
+            Project project = new Project();
+            UserGroup userGroup = new UserGroup();
+            Group group = new Group();
+            List<UserGroup> usergroup = new LinkedList<>();
+            usergroup.add(userGroup);
+            List<Project> projects = new LinkedList<>();
+            projects.add(project);
 
-        //-----------------------------------------set information related to project
-        project.setProjectName(projectName);
-        project.setGroup(group);
+            newHash.setHash("123456789");//!TODO hash generator
+            em.persist(newHash);
 
-        em.getTransaction().begin();
-        em.persist(project);
-        em.getTransaction().commit();
+            group.setGroupName(DEFAULT_GROUP_NAME);
+            group.setMembers(usergroup);
+            group.setProjects(projects);
+            em.persist(group);
 
-        project = getProject(projectName, groupId);
+            userGroup.setGroup(group);
+            userGroup.setMember(user);
+            userGroup.setAccess(access);
+            userGroup.setUserId(user.getUserId());
+            userGroup.setGroupId(group.getGroupId());
+            em.persist(userGroup);
 
-        //------------------------------------------set information related to hashes
-        //  String projectHash = getHash(projectName);
-        hashes.setProject(project);
-        // hashes.setHash(projectHash);
+            project.setGroup(group);
+            project.setHash(newHash);
+            project.setProjectName(projectName);
+            em.persist(project);
 
-        em.getTransaction().begin();
-        em.persist(hashes);
-        em.getTransaction().commit();
+            return newHash.getHash();
+        }
+
+//        Group group;
+//
+//
+//        Project project = new Project();
+//        Hash hashes = new Hash();
+//
+//        //get group, corresponding to this id
+//        group = getGroup(groupId);
+//
+//        //-----------------------------------------set information related to project
+//        project.setProjectName(projectName);
+//        project.setGroup(group);
+//
+//        em.getTransaction().begin();
+//        em.persist(project);
+//        em.getTransaction().commit();
+//
+//        project = getProject(projectName, groupId);
+//
+//        //------------------------------------------set information related to hashes
+//        //  String projectHash = getHash(projectName);
+//        hashes.setProject(project);
+//        // hashes.setHash(projectHash);
+//
+//        em.getTransaction().begin();
+//        em.persist(hashes);
+//        em.getTransaction().commit();
 
 
 
