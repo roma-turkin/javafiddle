@@ -7,11 +7,13 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Cacheable(false)
 @Table(name = "\"Project\"")
 public class Project {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "YOUR_ENTITY_SEQ")
+    @SequenceGenerator(name = "YOUR_ENTITY_SEQ", sequenceName = "YOUR_ENTITY_SEQ", allocationSize = 1)
     @Column(name = "\"projectId\"")
     private int projectId;
 
