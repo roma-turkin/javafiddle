@@ -1,4 +1,4 @@
-package ru.javafiddle.core.ejb;
+/*package ru.javafiddle.core.ejb;
 
 import javax.ejb.Stateless;
 import javax.inject.Named;
@@ -8,7 +8,7 @@ import javax.persistence.PersistenceContext;
 /**
  * Created by artyom on 15.12.15.
  */
-@Stateless
+/*@Stateless
 @Named(value = "compileAndRunBean")
 public class CompileAndRunBean {
 
@@ -25,3 +25,4 @@ public class CompileAndRunBean {
         return null;
     }
 }
+*/

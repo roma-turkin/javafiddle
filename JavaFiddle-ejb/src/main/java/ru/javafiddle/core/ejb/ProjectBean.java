@@ -3,6 +3,8 @@ package ru.javafiddle.core.ejb;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.ws.rs.client.Entity;
+
 import ru.javafiddle.jpa.entity.Group;
 import ru.javafiddle.jpa.entity.Project;
 import ru.javafiddle.jpa.entity.Hash;
@@ -23,87 +25,84 @@ public class ProjectBean {
 
     public ProjectBean() {}
 
-    public String createProject(String projectName, int groupId) {//groupName??
+    public void createProject(String projectName, String groupName, EntityManager em) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
 
         Group group;
-
-
         Project project = new Project();
         Hash hashes = new Hash();
 
         //get group, corresponding to this id
-        group = getGroup(groupId);
+        group = getGroup(groupName, em);
 
         //-----------------------------------------set information related to project
         project.setProjectName(projectName);
         project.setGroup(group);
+        //-----------------------------------------set hash
+        String projectHash = getHash(projectName);
+        hashes.setHash(projectHash);
 
-        em.getTransaction().begin();
-        em.persist(project);
-        em.getTransaction().commit();
-
-        project = getProject(projectName, groupId);
-
-        //------------------------------------------set information related to hashes
-        //  String projectHash = getHash(projectName);
-        hashes.setProject(project);
-        // hashes.setHash(projectHash);
-
+        //-----------------------------------------persist hashes
         em.getTransaction().begin();
         em.persist(hashes);
+        //em.flush();
         em.getTransaction().commit();
 
 
-
-
-        return null;
-
-    }
-
-    public void renameProject(String projectName, int groupId) {
-
-        Project project;
-        project = getProject(projectName, groupId);
-
-        project.setProjectName(projectName);
-
+        //------------------------------------------get the example of the upper hash from the database
+        Hash h1 = getHashFromBase(projectName, em);
+        //------------------------------------------set the appropriate field in project( we need here exactly the hash instance from database
+        project.setHash(h1);
+        //------------------------------------------persiste project
         em.getTransaction().begin();
         em.persist(project);
         em.getTransaction().commit();
+
+        //-------------------------------------------get the insance of the upper project from the database
+        Project p = getProject(projectHash,em);
+
+        updateHashFromBase(projectName, p, em);
+
+
+
+
     }
 
-    public void deleteProject(String projectName, int groupId) {
+    private Hash getHashFromBase(String projectName, EntityManager em) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String Hash = getHash(projectName);
 
+        Hash h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:hash")
+                .setParameter("hash", Hash)
+                .getSingleResult();
 
-        Project project = getProject(projectName, groupId);
+        return h;
+
+    }
+
+    private void updateHashFromBase(String projectName, Project p, EntityManager em) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        String Hash = getHash(projectName);
+
+        Hash h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:hash")
+                .setParameter("hash", Hash)
+                .getSingleResult();
+
+        h.setProject(p);
 
         em.getTransaction().begin();
-        em.remove(project);
+        em.persist(h);
         em.getTransaction().commit();
+
+
     }
 
 
+    private Group getGroup(String groupName, EntityManager em) {
 
-    public Project getProject(String projectName, int groupId) {
-
-        Project project;
-
-        project = (Project)em.createQuery("SELECT p FROM Project p WHERE p.projectName =:projectname and p.group.groupId =:groupid")
-                .setParameter("projectname", projectName)
-                .setParameter("groupid", groupId)
+        Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
+                .setParameter("groupname", groupName)
                 .getSingleResult();
 
-        return project;
 
-    }
-
-    private Group getGroup(int groupId) {
-
-        Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-
-        NavigableMap<String, String> m = new TreeMap<>();
         return group;
     }
 
@@ -114,35 +113,74 @@ public class ProjectBean {
         g.setGroupId(groupId);
 
 
-
-
-
-
     }
 
 
 
     public String getHash(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-1");
+        /*MessageDigest digest = MessageDigest.getInstance("SHA-1");
         digest.reset();
-        byte[] input = digest.digest(password.getBytes("UTF-8"));
+        byte[] input = digest.digest(password.getBytes("UTF-8"));*/
 
-        String res = new String(input, "UTF-8");
-        return res;
+        int res = password.hashCode();
+        String strRes = String.valueOf(res);
+        return strRes;
     }
 
-    //!TODO
+    public Project getProject(String projectHash, EntityManager em) {
+        Hash h;
+        h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash =:projecthash")
+                .setParameter("projecthash", projectHash)
+                .getSingleResult();
+        int hashId = h.getId();
+
+        Project project;
+
+        project = (Project)em.createQuery("SELECT p FROM Project p WHERE p.hash.id =:projecthash")
+                .setParameter("projecthash", hashId)
+                .getSingleResult();
+
+        return project;
+
+    }
+
+
     public int getGroupId(String projectHash) {
-        return -1;
-    }
 
-    //!TODO
-    public void deleteProject(String projectHash){
+        Project p = getProject(projectHash, em);
 
-    }
+        int groupId = p.getGroup().getGroupId();
 
-    //!TODO
-    public void changeProjectName(String projectHash, String newProjectName) {
+        return groupId;
 
     }
+
+
+
+
+    public void deleteProject(String projectHash, EntityManager em){
+
+        Project project = getProject(projectHash, em);
+
+        em.getTransaction().begin();
+        em.remove(project);
+        em.getTransaction().commit();
+
+
+    }
+
+    public void changeProjectName(String projectHash, String newProjectName, EntityManager em) {
+
+        Project project;
+        project = getProject(projectHash, em);
+        project.setProjectName(newProjectName);
+
+
+        em.getTransaction().begin();
+        em.persist(project);
+        em.getTransaction().commit();
+
+
+    }
+
 }

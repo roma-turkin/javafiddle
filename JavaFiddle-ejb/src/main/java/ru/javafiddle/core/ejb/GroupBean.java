@@ -22,36 +22,39 @@ public class GroupBean {
     @PersistenceContext
     EntityManager em;
 
-    GroupBean(){}
+    public GroupBean(){}
 
     //we should get at first userId, then add this element to UserGroups
     //when we are in this method we definitly have group with such id
     public void addMember(int groupId, String userNickName, String accessRights) {
-
+//если указано имя группы то сначала вызвать метод метод создания а потом регать, если не указано то в дефолтную
         //check if this group exists
-       /* Group group;
-        if (groupId == 0) {
-            group = new Group();
-            group.setGroupName("default");//still it is not clear about group names
-            em.persist(group);
-        }*/
+        Group g = getGroup(groupId, em);
+        String groupName = "";
+        if (g == null) {
+
+            g = createGroup(groupName);
+            em.getTransaction().begin();
+            em.persist(g);
+            em.getTransaction().commit();
+        }
         User user = getUser(userNickName);
-        Access access = getAccess(accessRights);
+        Access access; //= getAccess(accessRights);
 
 
-        Group g = getGroup(groupId);
+       // Group g;// = getGroup(groupId);
         UserGroup userGroup = (UserGroup)em.createQuery("SELECT us FROM UserGroup us WHERE us.group.groupId=:groupId");
         /*Group group = getGroup(groupId);
         if (group == null) {
             group = new Group();
             group.setGroupId(groupId);
             group.setGroupName("default");//still it is not clear about group names
-        }*/
+        }
         userGroup.setAccess(access);
 
         em.getTransaction().begin();
         em.persist(userGroup);
-        em.getTransaction().commit();
+        em.getTransaction().commit();*/
 
         //check if this group exists in list of groups
         //group = (Group)em.createQuery("SELECT g from Group g WHERE g.groupId =:groupid")
@@ -90,25 +93,25 @@ public class GroupBean {
 
 
     public void updateMember(int groupId, String userNickName, String accessRights) {
-
+//do we update usernickname also?
 
         int userId = getUserId(userNickName);
         User user = getUser(userNickName);
 
-        /*UserGroup usergroup = (UserGroup)em.createQuery("SELECT u FROM UserGroup u JOIN u.client c JOIN u.group g WHERE g.groupId=:groupid AND (SELECT FROM c )")
-                .setParameter("userid", userId)
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-*/
+        UserGroup u = (UserGroup)em.createQuery("SELECT g FROM UserGroup g WHERE g.userId=:userid and g.groupId=:groupid")
+                        .setParameter("userid", userId)
+                        .setParameter("groupid", groupId)
+                        .getSingleResult();
+        Access a = getAccess(accessRights, em);
 
-        //Change info
-       /* usergroup.getAccess().setAccessName(accessRights);
-        int index = usergroup.getClient().indexOf(user);
-        usergroup.getClient().get(index).setNickName(userNickName);
-*/
+        u.setAccess(a);
+
+        em.getTransaction().begin();
+        em.persist(u);
+        em.getTransaction().commit();
     }
 
-    public void deleteMember(int groupId, String userNickName) {
+    public void deleteMember(int groupId, String userNickName, EntityManager em) {
 
         int userId = getUserId(userNickName);
 
@@ -117,22 +120,23 @@ public class GroupBean {
                 .setParameter("groupid", groupId)
                 .getSingleResult();
 
-      /*  List<UserGroup> listOfSpecificGroupUsers = (LinkedList<UserGroup>)em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId =:groupid")
+        List<UserGroup> listOfSpecificGroupUsers = (LinkedList<UserGroup>)em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId =:groupid")
                 .setParameter("groupid", groupId)
-                .getResultList();*/
+                .getResultList();
 
-      /*  if (listOfSpecificGroupUsers.isEmpty()) {
+        if (listOfSpecificGroupUsers.isEmpty()) {
             Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId =:groupid")
                     .setParameter("groupid", groupId)
                     .getSingleResult();
             em.getTransaction().begin();
             em.remove(group);
             em.getTransaction().commit();
-        }*/
+        }
 
         em.getTransaction().begin();
         em.remove(usergroup);
         em.getTransaction().commit();
+
     }
 
     private int getUserId(String userNickName) {
@@ -152,20 +156,34 @@ public class GroupBean {
         return user;
     }
 
-    private Access getAccess(String accessRights) {
+    public Access getAccess(String accessRights, EntityManager em) {
 
-        Access access = (Access)em.createQuery("SELECT p.accessId FROM Access p WHERE p.accessName =:accessrights")
-                .setParameter("accessrights", accessRights)
+        Access access = (Access)em.createQuery("SELECT p FROM Access p WHERE p.accessName =:accessname")
+                .setParameter("accessname", accessRights)
                 .getSingleResult();
         return access;
     }
 
-    private Group getGroup(int groupId) {
+    public Group getGroup(int groupId, EntityManager em) {
 
         Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
                 .setParameter("groupid", groupId)
                 .getSingleResult();
         return group;
+    }
+
+    public Group createGroup(String groupName) {
+
+        Group g = new Group(groupName);
+
+        em.getTransaction().begin();
+        em.persist(g);
+        em.getTransaction().commit();
+
+        //Group gBase = getGroup(groupName, em);
+
+        return g;
+
     }
 
     //!TODO

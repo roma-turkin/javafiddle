@@ -1,5 +1,6 @@
 package ru.javafiddle.core.ejb;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -7,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.client.Entity;
 
 import ru.javafiddle.jpa.entity.*;
 
@@ -20,7 +22,7 @@ import java.util.Date;
 @Stateless
 public class UserBean {
 
-    private static final String DEFAULT_USER_STATUS = "registered";
+    private static final int DEFAULT_USER_STATUS = 1;
 
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
@@ -29,16 +31,9 @@ public class UserBean {
 
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
-//        Status st = new Status();
-//        st.setStatusId(1);
-//        st.setStatusName("registered");
-//        em.persist(st);
-
+        //search for registered class
+        Status st = em.find(Status.class,DEFAULT_USER_STATUS);
         User user = new User();
-        Status status = (Status)em.createQuery("SELECT s FROM Status s WHERE s.statusName =:status")
-                .setParameter("status", DEFAULT_USER_STATUS)
-                .getSingleResult();
-
 
 
         user.setFirstName(firstName);
@@ -50,14 +45,15 @@ public class UserBean {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         user.setRegistrationDate(dateFormat.format(date));
-        user.setStatus(status);//still add status information in userRegistration
 
+        em.getTransaction().begin();
         em.persist(user);
-//        em.getTransaction().begin();
-//        em.persist(user);
-//        em.getTransaction().commit();
+        em.flush();
+        em.getTransaction().commit();
 
-        return user;
+        User uBase = getUser(nickname);
+        return uBase;
+
     }
 
     public User getUser(String nickName) {
@@ -90,25 +86,34 @@ public class UserBean {
             return null;
         }
 
-        user = this.setFields(user, firstName, lastName, newNickName, email, passwordHash);
+       // user = this.setFields(user, firstName, lastName, newNickName, email, passwordHash);
 
         return user;
 
     }
 
+
+    //we need to delete all entries from usergroup table too for this user
     public User deleteUser(String nickName) {
 
         User user;
 
+        user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
+                .setParameter("nickName", nickName)
+                .getSingleResult();
 
-        try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
-                    .setParameter("nickName", nickName)
-                    .getSingleResult();
-        } catch (NoResultException noresult) {
+        List<UserGroup> u = (List<UserGroup>)em.createQuery("SELECT u from UserGroup u WHERE u.userId=:userid")
+                            .setParameter("userid", user.getUserId())
+                            .getResultList();
 
-            return null;
+        for(Iterator<UserGroup> i = u.iterator(); i.hasNext(); ) {
+            UserGroup u1 = i.next();
+
+            em.getTransaction().begin();
+            em.remove(u1);
+            em.getTransaction().commit();
         }
+
 
         em.getTransaction().begin();
         em.remove(user);
@@ -119,7 +124,7 @@ public class UserBean {
 
 
     public List<String> getUserProjects(String nickName) {
-//!TODO
+
 //        List<String> hashes = new LinkedList<String>();
 //        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
 //                .setParameter("nickname", nickName)
@@ -139,7 +144,7 @@ public class UserBean {
     }
 
 
-    public User setFields(User user, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+    public User setFields(User user, String firstName, String lastName, String newNickName, String email, String passwordHash, EntityManager em) {
 
         if(!firstName.equals(""))
             user.setFirstName(firstName);
