@@ -21,6 +21,45 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/jsf/*</url-pattern>
     </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>WelcomePage</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>JFConfidentialResources</web-resource-name>
+            <url-pattern>/jsf/index.xhtml</url-pattern>
+            <url-pattern>/fiddle/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>registeredUser</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>JavaFiddleJdbcRealm</realm-name>
+        <form-login-config>
+            <form-login-page>/logon.html</form-login-page>
+            <form-error-page>/logonError.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <role-name>registeredUser</role-name>
+    </security-role>
+
+
     <session-config>
         <session-timeout>
             30
