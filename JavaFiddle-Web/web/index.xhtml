@@ -5,7 +5,7 @@
 <h:head>
     <title>JavaFiddle</title>
 
-    <script type="text/javascript" language="JavaScript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <h:outputScript library="js" name="jquery-ui.min.js"/>
     <h:outputScript library="js" name="jquery.layout.min.js"/>
     <h:outputScript library="js" name="moment.min.js"/>
@@ -107,14 +107,8 @@
                 </div>
             </div>
             <div id="header-top-right">
-                <h:panelGroup layout="block" id="username" >
-                    Logged in as <h:link value="#{curUserBean.getCurUserName()}" outcome="index" />&nbsp;|&nbsp;
-                    <c:if test="${curUserBean.isLogged == false}">
-                        <a href="#modal-log" data-toggle="modal">Sign in</a>&nbsp;|&nbsp;<a href="#modal-reg" data-toggle="modal">Sign up</a>
-                    </c:if>
-                    <c:if test="${curUserBean.isLogged == true}"><a href="#modal-logout" data-toggle="modal">Log out</a>
-                    </c:if>
-                </h:panelGroup>
+                <a href="#modal-logout" data-toggle="modal">Log out</a>&nbsp;
+                <p/>
                 <div class="btn-group btn-group-sm sharebutton">
                     <button type="button" class="btn btn-primary" onclick="$('#modal-share').modal('show');">
                         <span class="glyphicon glyphicon-share-alt"/> Share Code...
@@ -505,7 +499,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                        <h:commandLink class="btn btn-primary" value="Submit" actionListener="#{curUserBean.logout}"> </h:commandLink>
+                        <a href="https://localhost:8181/javaFiddle/logout" class="btn btn-primary">Submit</a>
                     </div>
                 </h:form>
             </div>
