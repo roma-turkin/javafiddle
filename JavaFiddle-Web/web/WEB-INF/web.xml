@@ -21,6 +21,14 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/jsf/*</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>ru.javafiddle.web.servlets.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
 
     <security-constraint>
         <web-resource-collection>
@@ -43,6 +51,7 @@
             <url-pattern>/jsf/index.xhtml</url-pattern>
             <url-pattern>/fiddle/projects/*</url-pattern>
             <url-pattern>/fiddle/compile/*</url-pattern>
+            <url-pattern>/logout</url-pattern>
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>JFConfidentialResources</web-resource-name>

@@ -58,11 +58,12 @@ public class UserService {
     }
 
     @GET
-    @Path("/{nickName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserInfo(@PathParam("nickName") String nickName) {
+    public Response getUserInfo() {
 
-        try {
+//        try {
+            String nickName = userBean.getCurUserNick();
+
             User user = userBean.getUser(nickName);
 
 //            if(user == null) return Response.accepted(nickName).build();!TODO
@@ -78,11 +79,11 @@ public class UserService {
 
             return Response.ok(userJF).build();
 
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
-        }
+//        } catch (NotFoundException e) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        } catch (Exception e) {
+//            return Response.serverError().build();
+//        }
 
     }
 

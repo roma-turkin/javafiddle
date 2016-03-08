@@ -2,7 +2,10 @@ package ru.javafiddle.core.ejb;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -21,6 +24,9 @@ import java.util.Date;
 public class UserBean {
 
     private static final String DEFAULT_USER_STATUS = "registered";
+
+    @Resource
+    private SessionContext ctx;
 
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
@@ -162,6 +168,11 @@ public class UserBean {
         }
 
         return user;
+    }
+
+    public String getCurUserNick() {
+        String nick = ctx.getCallerPrincipal().getName();
+        return nick;
     }
 
 

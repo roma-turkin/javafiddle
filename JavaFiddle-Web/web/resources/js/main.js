@@ -5,6 +5,7 @@ var $elClicked;
 // EVENTS
 //
 $(document).ready(function(){
+    getCurUser();
     openProjectByHash(PROJECTPARAM);
     runLayouts();
     loadLiHarmonica();
@@ -718,4 +719,19 @@ function hashIsCorrect(hash) {
         }
     });
     return result;
+}
+
+function getCurUser() {
+
+    $.ajax({
+        type: "GET",
+        url: "https://localhost:8181/javaFiddle/fiddle/users",
+        dataType: "json",
+        async: false,
+        success: function(data)
+        {
+            $("#header-top-right").prepend("Logged in as " + data.lastName + " " + data.firstName + "&nbsp;|&nbsp;");
+            sessionStorage.curUser = JSON.stringify(data);
+        }
+    });
 }
