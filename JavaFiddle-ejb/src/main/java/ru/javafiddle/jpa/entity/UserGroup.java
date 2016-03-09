@@ -4,6 +4,8 @@ package ru.javafiddle.jpa.entity;
  * Created by Fedor on 18.11.2015.
  */
 import ru.javafiddle.jpa.idclasses.GroupAssociationId;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -21,16 +23,18 @@ import javax.persistence.ManyToOne;
 public class UserGroup {
 
     @Id
+    @Column(name = "\"userId\"")
     private int userId;
     @Id
+    @Column(name = "\"groupId\"")
     private int groupId;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn(name = "userid", referencedColumnName = "\"userId\"")
+    @PrimaryKeyJoinColumn(name = "\"userId\"", referencedColumnName = "\"userId\"")
     private User member;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn(name = "groupid", referencedColumnName = "\"groupId\"")
+    @PrimaryKeyJoinColumn(name = "\"groupId\"", referencedColumnName = "\"groupId\"")
     private Group group;
 
     @ManyToOne
