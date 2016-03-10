@@ -29,7 +29,7 @@ public class UserBean {
     private SessionContext ctx;
 
     @PersistenceContext(name = "JFPersistenceUnit")
-    EntityManager em;
+    private EntityManager em;
 
     public UserBean(){}
 
