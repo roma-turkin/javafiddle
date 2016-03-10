@@ -36,7 +36,7 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response register(UserRegistrationData userRegistrationData, @Context UriInfo uriInfo) throws UriBuilderException {
 
-//        try {
+        try {
 
             userBean.register(userRegistrationData.getFirstName(),
                     userRegistrationData.getLastName(),
@@ -49,11 +49,11 @@ public class UserService {
 
             return Response.created(uri).build();
 
-//        } catch (IllegalArgumentException e) {
-//            return Response.status(Response.Status.BAD_REQUEST).build();//!TODO make it possible to detect which field is invalid
-//        } catch (Exception e) {
-//            return Response.serverError().build();
-//        }
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();//!TODO make it possible to detect which field is invalid
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
 
     }
 
