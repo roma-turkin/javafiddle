@@ -36,7 +36,7 @@ public class UserService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response register(UserRegistrationData userRegistrationData, @Context UriInfo uriInfo) throws UriBuilderException {
 
-//        try {
+        try {
 
             userBean.register(userRegistrationData.getFirstName(),
                     userRegistrationData.getLastName(),
@@ -49,37 +49,39 @@ public class UserService {
 
             return Response.created(uri).build();
 
-//        } catch (IllegalArgumentException e) {
-//            return Response.status(Response.Status.BAD_REQUEST).build();//!TODO make it possible to detect which field is invalid
-//        } catch (Exception e) {
-//            return Response.serverError().build();
-//        }
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST).build();//!TODO make it possible to detect which field is invalid
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
 
     }
 
     @GET
-    @Path("/{nickName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserInfo(@PathParam("nickName") String nickName) {
+    public Response getUserInfo() {
 
-//        try {
+        try {
+            String nickName = userBean.getCurUserNick();
+
             User user = userBean.getUser(nickName);
-
-//            if(user == null) return Response.accepted(nickName).build();!TODO
 
             UserJF userJF = new UserJF(user.getFirstName(),
                     user.getLastName(),
                     user.getNickName(),
                     user.getEmail(),
-                    userBean.getUserProjects(nickName));
+                    user.getRegistrationDate(),
+                    userBean.getUserProjects(nickName),
+                    user.getStatus().getStatusName());
+
 
             return Response.ok(userJF).build();
 
-//        } catch (NotFoundException e) {
-//            return Response.status(Response.Status.NOT_FOUND).build();
-//        } catch (Exception e) {
-//            return Response.serverError().build();
-//        }
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
 
     }
 
@@ -121,4 +123,5 @@ public class UserService {
             return Response.serverError().build();
         }
     }
+
 }

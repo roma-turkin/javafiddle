@@ -18,7 +18,7 @@ import java.util.TreeSet;
 
 public class FileBean {
 
-    @PersistenceContext
+    @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
     public FileBean() {}
@@ -45,9 +45,9 @@ public class FileBean {
         file.setPath(pathToFile);
         file.setProject(project);
 
-        em.getTransaction().begin();
+
         em.persist(file);
-        em.getTransaction().commit();
+
 
 
 

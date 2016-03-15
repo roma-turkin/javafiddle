@@ -8,7 +8,6 @@
         <class>ru.javafiddle.jpa.entity.Group</class>
         <class>ru.javafiddle.jpa.entity.Hash</class>
         <class>ru.javafiddle.jpa.entity.Library</class>
-        <class>ru.javafiddle.jpa.entity.LibraryToProject</class>
         <class>ru.javafiddle.jpa.entity.Project</class>
         <class>ru.javafiddle.jpa.entity.User</class>
         <class>ru.javafiddle.jpa.entity.UserGroup</class>
