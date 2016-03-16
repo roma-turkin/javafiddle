@@ -6,6 +6,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -187,6 +189,31 @@ public class UserBean {
         String nick = ctx.getCallerPrincipal().getName();
         return nick;
     }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public User updateUser(User user, String nickname) {
+        User u = em.find(User.class,1);
+        System.out.println(u.getNickName());
+        em.merge(u);
+       // User user1 = getUser(user.getNickName());
+        em.getTransaction().begin();
+        u.setNickName(nickname);
+        em.getTransaction().commit();
+       // em.refresh(u);
+        em.flush();
+
+        User u1 = getUser(nickname);
+        return u1;
+    }
+
+   /* public void wrongUpdateUser(String nickName, EntityManager em) {
+        em.getTransaction().begin();
+        User u = getUser(nickName, em);
+        u.setEmail("colsvfldkn");
+        em.getTransaction().commit();
+
+    }*/
 
 
 }

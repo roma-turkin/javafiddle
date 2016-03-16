@@ -6,9 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.ws.rs.client.Entity;
 
-import ru.javafiddle.jpa.entity.Group;
-import ru.javafiddle.jpa.entity.Project;
-import ru.javafiddle.jpa.entity.Hash;
+import ru.javafiddle.jpa.entity.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -31,8 +29,13 @@ public class ProjectBean {
 
     public ProjectBean() {}
 
-    public Project createProject(String projectName, String groupName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
+    //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
+    public Project createProject(String groupName, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
 
+        if (!hash.equals("")) {
+            return createCopy(hash);
+
+        }
         Group group;
         Project project = new Project();
         Hash hashes = new Hash();
@@ -44,41 +47,21 @@ public class ProjectBean {
         project.setProjectName(projectName);
         project.setGroup(group);
         //-----------------------------------------set hash
-        String projectHash = getHash(projectName, groupName);
+        String projectHash = getHash(project.getProjectId());
         hashes.setHash(projectHash);
-
-        //-----------------------------------------persist hashes
-//        em.getTransaction().begin();
-        em.persist(hashes);
-        //em.flush();
- //       em.getTransaction().commit();
-
-
-        //------------------------------------------get the example of the upper hash from the database
-        Hash h1 = getHashFromBase(projectName, groupName);
-        //------------------------------------------set the appropriate field in project( we need here exactly the hash instance from database
-        project.setHash(h1);
-        //------------------------------------------persiste project
-//        em.getTransaction().begin();
+        project.setHash(hashes);
+        hashes.setProject(project);
         em.persist(project);
-//        em.getTransaction().commit();
+        em.flush();
+        System.out.println("New hash id is"+hashes.getId());
+        addProject(group,project);
 
-        //-------------------------------------------get the insance of the upper project from the database
-        Project p = getProject(projectHash);
-
-        updateHashFromBase(projectName, groupName, p);
-
-
-        p = getProject(projectHash);
- //     update list of projects in groups
-        addProject(group, project);
-
-        return p;
+        return project;
 
     }
 
-    private Hash getHashFromBase(String projectName, String groupName) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        String Hash = getHash(projectName, groupName);
+    private Hash getHashFromBase(int projectId) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        String Hash = getHash(projectId);
         Hash h;
 
         try {
@@ -95,9 +78,9 @@ public class ProjectBean {
 
     }
 
-    private void updateHashFromBase(String projectName,  String groupName, Project p) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private void updateHashFromBase(int projectId, Project p) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        String Hash = getHash(projectName, groupName);
+        String Hash = getHash(projectId);
 
         Hash h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:hash")
                 .setParameter("hash", Hash)
@@ -126,48 +109,30 @@ public class ProjectBean {
     }
 
 
-   /* private Group createGroup(int groupId) {
-        Group group = new Group();
-
-        group.setGroupName("default");
-        group.setGroupId(groupId);
-
-        return group;
-    }*/
 
 
+    public String getHash(int projectId) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 
-    public String getHash(String projectName,  String groupName) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-/*
-        int res = projectName.hashCode();
-        int res2 = groupName.hashCode();
-        String strRes = String.valueOf(res);
-        String strRes2 = String.valueOf(res2);
-        String a = new StringBuilder(strRes).append(strRes2).toString();*/
+        Integer projId = new Integer(projectId);
+        String prId = projId.toString();
+        int res = prId.hashCode();
+        return String.valueOf(res);
 
-        return "";
     }
 
 
     public Project getProject(String projectHash) {
-      /*  Hash h;
-
-        try {
-            h = (Hash) em.createQuery("SELECT h FROM Hash h WHERE h.hash =:projecthash")
-                    .setParameter("projecthash", projectHash)
-                    .getSingleResult();
-        } catch (NoResultException nores) {
-
-            return null;
-        }
-
-        int hashId = h.getId();*/
 
         Project project;
 
-        project = (Project)em.createQuery("SELECT p FROM Project p WHERE p.hash.hash =:projecthash")
-                .setParameter("projecthash", projectHash)
-                .getSingleResult();
+        try {
+            project = (Project) em.createQuery("SELECT p FROM Project p WHERE p.hash.hash =:projecthash")
+                    .setParameter("projecthash", projectHash)
+                    .getSingleResult();
+        } catch(NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            return null;
+        }
 
         return project;
 
@@ -180,6 +145,20 @@ public class ProjectBean {
             p = (Project) em.createQuery("SELECT p FROM Project p WHERE p.projectName =:projectname AND p.group.groupName =:groupname")
                     .setParameter("projectname", projectName)
                     .setParameter("groupname", groupName)
+                    .getSingleResult();
+        }catch (NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            return null;
+        }
+        return p;
+    }
+
+    public Project getProjectByName(String projectName) {
+
+        Project p;
+        try {
+            p = (Project) em.createQuery("SELECT p FROM Project p WHERE p.projectName =:projectname")
+                    .setParameter("projectname", projectName)
                     .getSingleResult();
         }catch (NoResultException noResult) {
             logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
@@ -211,7 +190,7 @@ public class ProjectBean {
 
     }
 
-    public void changeProjectName(String projectHash, String newProjectName) {
+    public Project changeProjectName(String projectHash, String newProjectName) {
 
         Project project;
         project = getProject(projectHash);
@@ -219,18 +198,14 @@ public class ProjectBean {
         if (project == null) {
 
             logger.log(Level.SEVERE, "NO RESULT IN QUERY");
-            return;
+            return null;
         }
         project.setProjectName(newProjectName);
 
         em.persist(project);
+        return getProject(projectHash);
     }
 
-   /* public void addProject(Group group, Project project) {
-
-        GroupBean gb = new GroupBean();
-        gb.addProject(group,project);
-    }*/
 
     public Group addProject(Group group, Project project) {
 
@@ -243,8 +218,42 @@ public class ProjectBean {
         List<Project> p = group.getProjects();
         p.add(project);
         group.setProjects(p);
+        em.persist(group);
 
         return group;
+
+    }
+
+    public Project createCopy(String hash) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        Project oldProject = getProject(hash);
+//we create a new project and set fields -----------------------------------------
+        Project newProject = new Project();
+        newProject.setProjectName(oldProject.getProjectName());
+        List<File> files = oldProject.getFiles();
+        List<File> newFileList = new LinkedList<>(files);
+        newProject.setFileList(newFileList);
+        newProject.setGroup(oldProject.getGroup());
+        List<Library> libs = oldProject.getLibraries();
+        List<Library> newLibList = new LinkedList<>(libs);
+        newProject.setLibraries(newLibList);
+
+        em.persist(newProject);
+        em.flush();
+
+        Hash newHash = new Hash();
+        newHash.setHash(getHash(newProject.getProjectId()));
+        newProject.setHash(newHash);
+       // em.merge(newProject);
+       // em.flush();
+        newHash.setProject(newProject);
+        em.merge(newProject);
+        em.flush();
+        System.out.println(newHash.getProject().getProjectId());
+        System.out.println(newHash.getId());
+        System.out.println(newHash.getProject().getHash().getHash());
+
+        return getProject(newHash.getHash());
 
     }
 

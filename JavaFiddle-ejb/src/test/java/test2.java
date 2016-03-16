@@ -74,12 +74,12 @@ public class test2 {
 
         Assert.assertNotNull("GET MEMBERS RETURNED NULL",gr);
         Assert.assertFalse("THE LIST OF MEMBERS IS EMPTY", gr.isEmpty());
-        /*if (gr == null || gr.isEmpty()) {
+        if (gr == null || gr.isEmpty()) {
 
             logger.log(Level.SEVERE, "NO ENTITY WAS ADDED");
             System.exit(-1);
 
-        }*/
+        }
         for (UserGroup ug:gr) {
             System.out.println(ug.getMember().getFirstName());
         }

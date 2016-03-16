@@ -32,7 +32,7 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "\"id\"")
     private Hash hash;
 

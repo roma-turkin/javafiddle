@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import ru.javafiddle.jpa.entity.*;
 
@@ -17,6 +19,8 @@ import ru.javafiddle.jpa.entity.*;
 
 public class GroupBean {
 
+    private static final Logger logger =
+            Logger.getLogger(ProjectBean.class.getName());
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
@@ -37,6 +41,7 @@ public class GroupBean {
         Access access = getAccess(accessRights);
 
         UserGroup ug = new UserGroup(group, user, access);
+
 
         ug.setUserId(user.getUserId());
         ug.setGroupId(group.getGroupId());
@@ -128,35 +133,59 @@ public class GroupBean {
 
     private User getUser(String userNickName) {
 
-        User user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
-                .setParameter("nickname", userNickName)
-                .getSingleResult();
+        User user;
+        try {
+            user = (User) em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
+                    .setParameter("nickname", userNickName)
+                    .getSingleResult();
+        }catch(NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETACCESS()", noResult);
+            return null;
+        }
 
         return user;
     }
 
     public Access getAccess(String accessRights) {
+        Access access;
 
-        Access access = (Access)em.createQuery("SELECT p FROM Access p WHERE p.accessName =:accessname")
-                .setParameter("accessname", accessRights)
-                .getSingleResult();
+        try {
+            access = (Access) em.createQuery("SELECT p FROM Access p WHERE p.accessName =:accessname")
+                    .setParameter("accessname", accessRights)
+                    .getSingleResult();
+        }catch(NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETACCESS()", noResult);
+            return null;
+        }
         return access;
     }
 
     public Group getGroup(int groupId) {
 
-        Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
-                .setParameter("groupid", groupId)
-                .getSingleResult();
+        Group group = null;
+        try {
+            group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
+                    .setParameter("groupid", groupId)
+                    .getSingleResult();
+        }catch(NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETGROUP()", noResult);
+            return null;
+        }
 
         return group;
     }
 
     public Group getGroup(String groupName) {
 
-        Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
-                .setParameter("groupname", groupName)
-                .getSingleResult();
+        Group group = null;
+        try {
+            group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
+                    .setParameter("groupname", groupName)
+                    .getSingleResult();
+        }catch(NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETGROUP()", noResult);
+            return null;
+        }
         return group;
     }
 
@@ -175,6 +204,7 @@ public class GroupBean {
         Group g = new Group(groupName);
 
         em.persist(g);
+        em.flush();
 
         return g;
 
@@ -185,6 +215,7 @@ public class GroupBean {
         Access a = new Access(accessName);
 
         em.persist(a);
+        em.flush();
 
         return a;
 
@@ -228,7 +259,7 @@ public class GroupBean {
                 .setParameter("groupid", groupId)
                 .getSingleResult();
      } catch (NoResultException noResult) {
-
+         logger.log(Level.WARNING, "NO RESULT IN QUERY IN getUserGroup()", noResult);
          return null;
      }
 
@@ -250,10 +281,12 @@ public class GroupBean {
 
     }
 
+    public List<Group> getAllGroups() {
 
+        TypedQuery<Group> q= em.createQuery("SELECT g FROM Group g ",Group.class);
+        List<Group> listOfSpecificGroups= q.getResultList();
 
-   /* //!TODO
-    public Map<String, String> getAllMembers(int groupId){/
-        return null;
-    }*/
+        return listOfSpecificGroups;
+
+    }
 }

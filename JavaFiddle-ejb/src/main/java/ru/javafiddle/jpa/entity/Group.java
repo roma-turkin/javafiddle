@@ -21,7 +21,7 @@ public class Group {
     @Column(name = "\"groupName\"")
     private String groupName;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
     List<Project> projects;
 
     @OneToMany(fetch= FetchType.EAGER, mappedBy = "group")
