@@ -14,8 +14,7 @@ import javax.persistence.*;
 public class Hash {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "YOUR_ENTITY_SEQ")
-    @SequenceGenerator(name = "YOUR_ENTITY_SEQ", sequenceName = "YOUR_ENTITY_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"id\"")
     private int id;
 
