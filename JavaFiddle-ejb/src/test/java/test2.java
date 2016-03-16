@@ -64,8 +64,8 @@ public class test2 {
         initializeAndCreate(groupBean, projectBean,userBean);
         int groupId = groupBean.getGroup("extended").getGroupId();
 //added member-----------------------------------------------------------
-        groupBean.addMember(1,"extended","barny","partial");
-        groupBean.addMember(1,"extended","uollis","full");
+        groupBean.addMember("extended","barny","partial");
+        groupBean.addMember("extended","uollis","full");
 //check if member was added----------------------------------------------
         Group group = groupBean.getGroup("extended");
         Assert.assertNotNull(group);
