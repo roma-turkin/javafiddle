@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * Created by artyom on 19.11.15.
  */
-@Path("/")
 public class FileService {
 
     @EJB

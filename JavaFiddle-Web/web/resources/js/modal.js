@@ -786,21 +786,24 @@ function getPackagesList(projectname) {
     return packagesList;
 }
 
+//!TODO
 function isRightProjectName(name) {
     var result;
+
+    result = "ok"
     
-    $.ajax({
-        url: PATH + '/webapi/tree/rprojname',
-        type: 'GET',
-        data: {
-            name: name
-        },
-        dataType: "json",
-        async: false,
-        success: function(data) {
-            result = data;
-        }
-    }); 
+    //$.ajax({
+    //    url: PATH + '/webapi/tree/rprojname',
+    //    type: 'GET',
+    //    data: {
+    //        name: name
+    //    },
+    //    dataType: "json",
+    //    async: false,
+    //    success: function(data) {
+    //        result = data;
+    //    }
+    //});
     
     return result;
 }
