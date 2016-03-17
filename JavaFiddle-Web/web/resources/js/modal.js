@@ -786,6 +786,7 @@ function getPackagesList(projectname) {
     return packagesList;
 }
 
+//!TODO
 function isRightProjectName(name) {
     var result;
 

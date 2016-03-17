@@ -31,7 +31,8 @@ public class UserBean {
     @PersistenceContext(name = "JFPersistenceUnit")
     private EntityManager em;
 
-    public UserBean(){}
+    public UserBean() {
+    }
 
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 

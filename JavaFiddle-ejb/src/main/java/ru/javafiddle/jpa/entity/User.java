@@ -39,6 +39,7 @@ public class User {
     @Column(name = "\"passwordHash\"")
     private String passwordHash;
 
+    //!TODO change type to Date
     @Column(name = "\"registrationDate\"")
     private String registrationDate;
 

@@ -13,7 +13,7 @@ public class UserJF {
     private String lastName;
     private String nickName;
     private String email;
-    private String registrationDate;
+    private String registrationDate;//!TODO change type to Date
     private List<String> projectsHashs;
     private String status;
 
