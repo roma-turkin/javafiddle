@@ -3,27 +3,26 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Project's hash.
  */
 @Entity
-@Table
-
+@Cacheable(false)
+@Table(name = "\"Hash\"")
 public class Hash {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "\"id\"")
     private int id;
-    @OneToOne
-    private Project project;
+
+    @Column(name = "\"hash\"")
     private String hash;
+
+    @OneToOne(mappedBy = "hash")
+    private Project project;
 
     public Hash(Project project, String hash) {
         this.project = project;

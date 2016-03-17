@@ -10,15 +10,22 @@ import java.util.List;
  * A union of users.
  */
 @Entity
-@Table
-
+@Table(name = "\"Group\"")
 public class Group {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "\"groupId\"")
     private int groupId;
+
+    @Column(name = "\"groupName\"")
     private String groupName;
-    @OneToMany
+
+    @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
     List<Project> projects;
+
+    @OneToMany(fetch= FetchType.EAGER, mappedBy = "group")
+    private List<UserGroup>  members;
 
     public Group(String groupName) {
         this.groupName = groupName;
@@ -43,9 +50,21 @@ public class Group {
         this.groupName = groupName;
     }
 
-    public List<Project> getProject() { return projects; }
+    public List<Project> getProjects() {
+        return projects;
+    }
 
-    public void setProject(List<Project> projects) { this.projects = projects; }
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
+    }
+
+    public List<UserGroup> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<UserGroup> members) {
+        this.members = members;
+    }
 
     @Override
     public String toString() {

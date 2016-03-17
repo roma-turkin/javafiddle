@@ -3,48 +3,75 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+import ru.javafiddle.jpa.idclasses.GroupAssociationId;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import java.util.List;
 
 /**
  * A relationship between users and groups.
  */
 @Entity
-@Table
-
+@Table(name = "\"UserGroup\"")
+@IdClass(GroupAssociationId.class)
 public class UserGroup {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @Column(name = "\"userId\"")
+    private int userId;
+    @Id
+    @Column(name = "\"groupId\"")
+    private int groupId;
+
     @ManyToOne
+    @PrimaryKeyJoinColumn(name = "\"userId\"", referencedColumnName = "\"userId\"")
+    private User member;
+
+    @ManyToOne
+    @PrimaryKeyJoinColumn(name = "\"groupId\"", referencedColumnName = "\"groupId\"")
     private Group group;
-    @ManyToMany
-    private List<User> client;
+
     @ManyToOne
+    @JoinColumn(name = "\"accessId\"")
     private Access access;
 
-    public UserGroup(Group group, List<User> client, Access access) {
+    public UserGroup(Group group, User member, Access access) {
         this.group = group;
-        this.client = client;
+        this.member = member;
         this.access = access;
     }
 
     public UserGroup() {
     }
 
-    public int getId() {
-        return id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public User getMember() {
+        return member;
+    }
+
+    public void setMember(User member) {
+        this.member = member;
     }
 
     public Group getGroup() {
@@ -53,14 +80,6 @@ public class UserGroup {
 
     public void setGroup(Group group) {
         this.group = group;
-    }
-
-    public List<User> getClient() {
-        return client;
-    }
-
-    public void setClient(List<User> client) {
-        this.client = client;
     }
 
     public Access getAccess() {
@@ -74,10 +93,9 @@ public class UserGroup {
     @Override
     public String toString() {
         return "UserGroup{" +
-                "id=" + id +
-                ", group=" + group.getGroupId() +
-                ", client=" + client.toString() +
-                ", access=" + access.getAccessId() +
+                "userId=" + userId +
+                ", groupId=" + groupId +
+                ", access=" + access.getAccessName() +
                 '}';
     }
 }

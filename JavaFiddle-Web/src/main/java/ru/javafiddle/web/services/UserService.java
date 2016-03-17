@@ -58,18 +58,22 @@ public class UserService {
     }
 
     @GET
-    @Path("/{nickName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUserInfo(@PathParam("nickName") String nickName) {
+    public Response getUserInfo() {
 
         try {
+            String nickName = userBean.getCurUserNick();
+
             User user = userBean.getUser(nickName);
 
             UserJF userJF = new UserJF(user.getFirstName(),
                     user.getLastName(),
                     user.getNickName(),
                     user.getEmail(),
-                    userBean.getUserProjects(nickName));
+                    user.getRegistrationDate(),
+                    userBean.getUserProjects(nickName),
+                    user.getStatus().getStatusName());
+
 
             return Response.ok(userJF).build();
 
@@ -119,4 +123,5 @@ public class UserService {
             return Response.serverError().build();
         }
     }
+
 }
