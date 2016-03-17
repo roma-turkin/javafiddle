@@ -30,8 +30,10 @@ public class ProjectBean {
     @EJB
     UserBean userBean;
 
-    public ProjectBean() {}
+    public ProjectBean() {
+    }
 
+    //!TODO
     public String createProject(String creator, String hash, String projectName) {//groupName??
 
         if(hash == null) {
