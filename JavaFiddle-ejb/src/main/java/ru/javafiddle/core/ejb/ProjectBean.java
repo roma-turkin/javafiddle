@@ -1,5 +1,7 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
@@ -30,7 +32,8 @@ public class ProjectBean {
     public ProjectBean() {}
 
     //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
-    public Project createProject(String groupName, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
 
         if (!hash.equals("")) {
             return createCopy(hash);
@@ -41,7 +44,7 @@ public class ProjectBean {
         Hash hashes = new Hash();
 
         //get group, corresponding to this id
-        group = getGroup(groupName);
+        group = getGroup(groupId);
 
         //-----------------------------------------set information related to project
         project.setProjectName(projectName);
@@ -52,9 +55,10 @@ public class ProjectBean {
         project.setHash(hashes);
         hashes.setProject(project);
         em.persist(project);
-        em.flush();
+        //em.flush();
         System.out.println("New hash id is"+hashes.getId());
         addProject(group,project);
+        System.out.println("The number of projects in this group is  " + group.getProjects().size());
 
         return project;
 
@@ -104,6 +108,22 @@ public class ProjectBean {
          logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
          return null;
      }
+
+        return group;
+    }
+
+    private Group getGroup(int groupId) {
+
+        Group group;
+        try {
+            group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
+                    .setParameter("groupid", groupId)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
+
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            return null;
+        }
 
         return group;
     }
@@ -207,6 +227,7 @@ public class ProjectBean {
     }
 
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Group addProject(Group group, Project project) {
 
         if (group.getProjects() == null) {
@@ -224,6 +245,7 @@ public class ProjectBean {
 
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public Project createCopy(String hash) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
         Project oldProject = getProject(hash);
@@ -239,7 +261,7 @@ public class ProjectBean {
         newProject.setLibraries(newLibList);
 
         em.persist(newProject);
-        em.flush();
+        //em.flush();
 
         Hash newHash = new Hash();
         newHash.setHash(getHash(newProject.getProjectId()));
@@ -247,12 +269,12 @@ public class ProjectBean {
        // em.merge(newProject);
        // em.flush();
         newHash.setProject(newProject);
-        em.merge(newProject);
-        em.flush();
+       // System.out.println("After refreshing we have a concrete hash "+newProject.getHash().getHash());
+        //em.flush();
         System.out.println(newHash.getProject().getProjectId());
         System.out.println(newHash.getId());
         System.out.println(newHash.getProject().getHash().getHash());
-
+        em.flush();
         return getProject(newHash.getHash());
 
     }

@@ -1,5 +1,7 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
@@ -30,10 +32,11 @@ public class GroupBean {
 
 //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
 
-    public void addMember(String groupName, String userNickName, String accessRights) {
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addMember(int groupId, String groupName,String userNickName, String accessRights) {
 
 
-        Group group = getGroup(groupName);
+        Group group = getGroup(groupId);
         if (group.getGroupId() == -1) {
             createGroup(groupName);
         }
