@@ -58,15 +58,17 @@ public class test3 {
 
 
         initialize(userBean, groupBean, projectBean);
-        Project project = projectBean.createProject("default","","first_proj");
+        Project project = projectBean.createProject(1,"","first_proj");
+
         Group g = groupBean.getGroup("default");
 
         Assert.assertNotNull(project);
         for(Project p: g.getProjects()){
             Assert.assertEquals("NOT ONE ENTITY WAS ADDED", "first_proj", p.getProjectName());
+            System.out.println(p.getProjectName());
         }
 
-        Project project2 = projectBean.createProject("default",project.getHash().getHash(),"first_proj");
+        Project project2 = projectBean.createProject(1,project.getHash().getHash(),"first_proj");
         Assert.assertNotNull(project2);
         Assert.assertFalse("HASHES ARE IDENTICAL", project.getHash().getHash().equals(project2.getHash().getHash()));
 
