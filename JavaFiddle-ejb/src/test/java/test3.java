@@ -54,8 +54,6 @@ public class test3 {
         }
         Assert.assertNotNull(userBean);
 
-        //Status s = new Status("ff");
-
 
         initialize(userBean, groupBean, projectBean);
         Project project = projectBean.createProject(1,"","first_proj");
