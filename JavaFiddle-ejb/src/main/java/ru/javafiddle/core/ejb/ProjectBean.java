@@ -69,7 +69,7 @@ public class ProjectBean {
         Hash h;
 
         try {
-             h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:hash")
+            h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:hash")
                     .setParameter("hash", Hash)
                     .getSingleResult();
         } catch (NoResultException noResult) {
@@ -99,15 +99,15 @@ public class ProjectBean {
     private Group getGroup(String groupName) {
 
         Group group;
-     try {
-        group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
-                .setParameter("groupname", groupName)
-                .getSingleResult();
-     } catch (NoResultException noResult) {
+        try {
+            group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
+                    .setParameter("groupname", groupName)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
 
-         logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
-         return null;
-     }
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            return null;
+        }
 
         return group;
     }
@@ -266,10 +266,10 @@ public class ProjectBean {
         Hash newHash = new Hash();
         newHash.setHash(getHash(newProject.getProjectId()));
         newProject.setHash(newHash);
-       // em.merge(newProject);
-       // em.flush();
+        // em.merge(newProject);
+        // em.flush();
         newHash.setProject(newProject);
-       // System.out.println("After refreshing we have a concrete hash "+newProject.getHash().getHash());
+        // System.out.println("After refreshing we have a concrete hash "+newProject.getHash().getHash());
         //em.flush();
         System.out.println(newHash.getProject().getProjectId());
         System.out.println(newHash.getId());

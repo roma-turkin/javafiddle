@@ -72,14 +72,14 @@ public class GroupBean {
 
         for (UserGroup ug: usergroup) {
 
-           // UserGroup userGroup = arrayOfUserGroup[i];
+            // UserGroup userGroup = arrayOfUserGroup[i];
             User nickName = (User)em.createQuery("SELECT u.member FROM UserGroup u WHERE u.member.userId =:userid")
                     .setParameter("userid", ug.getUserId())
                     .getSingleResult();
             Access access =   (Access)em.createQuery("SELECT u.access FROM UserGroup u WHERE u.access.accessId =:accessid")
                     .setParameter("accessid", ug.getAccess().getAccessId())
                     .getSingleResult();
-             mappedUserGroup.put(nickName.getNickName(), access.getAccessName());
+            mappedUserGroup.put(nickName.getNickName(), access.getAccessName());
 
         }
         return mappedUserGroup;
@@ -245,10 +245,10 @@ public class GroupBean {
         ug.setUserId(u.getUserId());
         ug.setGroupId(g.getGroupId());
 
-      //  em.getTransaction().begin();
+        //  em.getTransaction().begin();
         em.persist(ug);
         //       em.flush();
-      //  em.getTransaction().commit();
+        //  em.getTransaction().commit();
         return ug;
 
     }
@@ -256,15 +256,15 @@ public class GroupBean {
     public UserGroup getUserGroup(int userId, int groupId) {
 
         UserGroup ug;
-     try {
+        try {
             ug = (UserGroup)em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.userId =:userid AND ug.groupId =:groupid")
-                .setParameter("userid", userId)
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-     } catch (NoResultException noResult) {
-         logger.log(Level.WARNING, "NO RESULT IN QUERY IN getUserGroup()", noResult);
-         return null;
-     }
+                    .setParameter("userid", userId)
+                    .setParameter("groupid", groupId)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
+            logger.log(Level.WARNING, "NO RESULT IN QUERY IN getUserGroup()", noResult);
+            return null;
+        }
 
         return ug;
     }

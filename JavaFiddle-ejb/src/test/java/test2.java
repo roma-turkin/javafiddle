@@ -84,7 +84,7 @@ public class test2 {
             System.out.println(ug.getMember().getFirstName());
         }
 
-        //groupBean.getAllMembers("extended");
+
 //check getAllMembers()----------------------------------------------------------------
         Assert.assertEquals("NOT ENOUGH MEMBERS IN MAP", 2,groupBean.getAllMembers(groupId).size());
         for (Map.Entry<String, String> entry : groupBean.getAllMembers(groupId).entrySet()) {

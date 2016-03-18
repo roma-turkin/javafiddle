@@ -43,6 +43,7 @@ public class UserBean {
 
     public UserBean(){}
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
         //search for registered class
@@ -62,8 +63,8 @@ public class UserBean {
 
         //em.getTransaction().begin();
         em.persist(user);
- //       em.flush();
-       // em.getTransaction().commit();
+        //       em.flush();
+        // em.getTransaction().commit();
 
         User uBase = getUser(nickname);
         return uBase;
@@ -87,7 +88,7 @@ public class UserBean {
         return user;
 
     }
-//In services there is a problem with this function
+    //In services there is a problem with this function
 //Look and correct two types of nicks.
     public User setUser(String nickName, String firstName, String lastName, String newNickName, String email, String passwordHash) {
 
@@ -196,11 +197,11 @@ public class UserBean {
         User u = em.find(User.class,1);
         System.out.println(u.getNickName());
         em.merge(u);
-       // User user1 = getUser(user.getNickName());
+        // User user1 = getUser(user.getNickName());
         em.getTransaction().begin();
         u.setNickName(nickname);
         em.getTransaction().commit();
-       // em.refresh(u);
+        // em.refresh(u);
         em.flush();
 
         User u1 = getUser(nickname);

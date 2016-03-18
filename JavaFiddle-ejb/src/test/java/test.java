@@ -55,7 +55,6 @@ public class test {
         }
         Assert.assertNotNull(userBean);
 
-        //Status s = new Status("ff");
 
 
         initialize(userBean, groupBean, projectBean);

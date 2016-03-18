@@ -3,13 +3,7 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -30,7 +24,7 @@ public class Group {
     @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
     List<Project> projects;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(fetch= FetchType.EAGER, mappedBy = "group")
     private List<UserGroup>  members;
 
     public Group(String groupName) {
