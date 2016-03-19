@@ -35,11 +35,11 @@ public class ProjectService {
     public Response createProject(ProjectInfo projectInfo, @Context UriInfo uriInfo) {
 
         try {
-            String projectHash;
-
-            projectHash = projectBean.createProject(projectInfo.getUserNickName(),
-                    projectInfo.getProjectHash(),
-                    projectInfo.getProjectName());
+            String projectHash = "INVALID PROJECT HASH";
+//!TODO
+//            projectHash = projectBean.createProject(projectInfo.getUserNickName(),
+//                    projectInfo.getProjectHash(),
+//                    projectInfo.getProjectName());
 
             URI uri = uriInfo.getAbsolutePathBuilder().path(projectHash).build();
             return Response.created(uri).build();

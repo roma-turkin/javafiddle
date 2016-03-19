@@ -1,21 +1,31 @@
 package ru.javafiddle.core.ejb;
 
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.Project;
+import ru.javafiddle.jpa.entity.Status;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.faces.bean.ManagedBean;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import ru.javafiddle.jpa.entity.*;
-
+import javax.ws.rs.client.Entity;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 /**
  *
  * @author mac
@@ -23,24 +33,25 @@ import java.util.Date;
 @Stateless
 public class UserBean {
 
-    private static final String DEFAULT_USER_STATUS = "registered";
-
     @Resource
     private SessionContext ctx;
 
+    private static final Logger logger =
+            Logger.getLogger(UserBean.class.getName());
+
+    private static final int DEFAULT_USER_STATUS = 1;
+
     @PersistenceContext(name = "JFPersistenceUnit")
-    private EntityManager em;
+    EntityManager em;
 
-    public UserBean() {
-    }
+    public UserBean(){}
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
 
+        //search for registered class
+        Status st = em.find(Status.class,DEFAULT_USER_STATUS);
         User user = new User();
-        Status status = (Status)em.createQuery("SELECT s FROM Status s WHERE s.statusName =:status")
-                .setParameter("status", DEFAULT_USER_STATUS)
-                .getSingleResult();
-
 
 
         user.setFirstName(firstName);
@@ -48,15 +59,20 @@ public class UserBean {
         user.setNickName(nickname);
         user.setEmail(email);
         user.setPasswordHash(passwordHash);
+        user.setStatus(st);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         user.setRegistrationDate(dateFormat.format(date));
-        user.setStatus(status);//still add status information in userRegistration
 
+        //em.getTransaction().begin();
         em.persist(user);
+        //       em.flush();
+        // em.getTransaction().commit();
 
-        return user;
+        User uBase = getUser(nickname);
+        return uBase;
+
     }
 
     public User getUser(String nickName) {
@@ -69,13 +85,15 @@ public class UserBean {
                     .getSingleResult();
         } catch (NoResultException noResult) {
 
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
             return null;
         }
 
         return user;
 
     }
-
+    //In services there is a problem with this function
+//Look and correct two types of nicks.
     public User setUser(String nickName, String firstName, String lastName, String newNickName, String email, String passwordHash) {
 
         User user;
@@ -84,8 +102,9 @@ public class UserBean {
             user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName = :nickName")
                     .setParameter("nickName", nickName)
                     .getSingleResult();
-        } catch (NoResultException noresult) {
+        } catch (NoResultException noResult) {
 
+            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
             return null;
         }
 
@@ -95,22 +114,28 @@ public class UserBean {
 
     }
 
+
+    //we need to delete all entries from usergroup table too for this user
     public User deleteUser(String nickName) {
 
         User user;
 
+        user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
+                .setParameter("nickName", nickName)
+                .getSingleResult();
 
-        try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
-                    .setParameter("nickName", nickName)
-                    .getSingleResult();
-        } catch (NoResultException noresult) {
 
-            return null;
+        TypedQuery<UserGroup> query =
+                em.createQuery("SELECT u FROM UserGroup u WHERE u.userId =:userid", UserGroup.class);
+        List<UserGroup> u = query.setParameter("userid", user.getUserId()).getResultList();
+
+        for(Iterator<UserGroup> i = u.iterator(); i.hasNext(); ) {
+            UserGroup u1 = i.next();
+
+            em.remove(u1);
         }
 
         em.remove(user);
-
         return user;
 
     }
@@ -122,18 +147,26 @@ public class UserBean {
         User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
                 .setParameter("nickname", nickName)
                 .getSingleResult();
-
         List<UserGroup> groups = user.getGroups();
 
-        for (UserGroup g:groups) {
+     /*   for (UserGroup g:) {
+            List<Project> projects = UserGroup.getProjects();
+            for (Project p:projects) {
+                hashes.add(p.getHash().getHash());
+            }
+        }*/
 
-            List<Project> projects = g.getGroup().getProjects();
+        for (UserGroup userGroup:groups) {
+
+            Group group = userGroup.getGroup();
+            List<Project> projects = group.getProjects();
             for (Project p:projects) {
                 hashes.add(p.getHash().getHash());
             }
         }
 
         return hashes;
+
     }
 
 
@@ -150,23 +183,8 @@ public class UserBean {
         if(!passwordHash.equals(""))
             user.setPasswordHash(passwordHash);
 
+
         em.persist(user);
-
-        return user;
-    }
-
-    public User findUser(String nickName) {
-        User user;
-
-
-        try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
-                    .setParameter("nickName", nickName)
-                    .getSingleResult();
-        } catch (NoResultException noresult) {
-
-            return null;
-        }
 
         return user;
     }
@@ -175,6 +193,30 @@ public class UserBean {
         String nick = ctx.getCallerPrincipal().getName();
         return nick;
     }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public User updateUser(User user, String nickname) {
+        User u = em.find(User.class,1);
+        System.out.println(u.getNickName());
+        em.merge(u);
+        // User user1 = getUser(user.getNickName());
+        em.getTransaction().begin();
+        u.setNickName(nickname);
+        em.getTransaction().commit();
+        // em.refresh(u);
+        em.flush();
+
+        User u1 = getUser(nickname);
+        return u1;
+    }
+
+   /* public void wrongUpdateUser(String nickName, EntityManager em) {
+        em.getTransaction().begin();
+        User u = getUser(nickName, em);
+        u.setEmail("colsvfldkn");
+        em.getTransaction().commit();
+    }*/
 
 
 }

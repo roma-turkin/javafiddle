@@ -21,7 +21,9 @@ public class FileBean {
     @PersistenceContext
     EntityManager em;
 
-    public FileBean() {}
+    public FileBean() {
+
+    }
 
 
     public List<File> getProjectFiles(String projectHash) {
@@ -45,11 +47,7 @@ public class FileBean {
         file.setPath(pathToFile);
         file.setProject(project);
 
-        em.getTransaction().begin();
         em.persist(file);
-        em.getTransaction().commit();
-
-
 
     }
 

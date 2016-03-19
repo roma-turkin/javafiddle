@@ -39,9 +39,10 @@ public class GroupService {
         try{
 
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.addMember(groupId,
-                    newGroupMember.getUserNickName(),
-                    newGroupMember.getAccessRights());
+            //!TODO
+//            groupsBean.addMember(groupId,
+//                    newGroupMember.getUserNickName(),
+//                    newGroupMember.getAccessRights());
 
             return Response.ok().build();
 
@@ -99,9 +100,10 @@ public class GroupService {
         try{
 
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.updateMember(groupId,
-                    groupMember.getUserNickName(),
-                    groupMember.getAccessRights());
+            //!TODO
+//            groupsBean.updateMember(groupId,
+//                    groupMember.getUserNickName(),
+//                    groupMember.getAccessRights());
 
             return Response.ok().build();
 
