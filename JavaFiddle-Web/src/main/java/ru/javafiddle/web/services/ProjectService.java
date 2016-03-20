@@ -37,8 +37,9 @@ public class ProjectService {
         try {
             String projectHash;
 
-            projectHash = projectBean.createProject(projectInfo.getProjectName(),
-                    projectInfo.getGroupId());
+            projectHash = projectBean.createProject(projectInfo.getUserNickName(),
+                    projectInfo.getProjectHash(),
+                    projectInfo.getProjectName());
 
             URI uri = uriInfo.getAbsolutePathBuilder().path(projectHash).build();
             return Response.created(uri).build();

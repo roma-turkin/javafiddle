@@ -10,12 +10,12 @@ public class ProjectInfo {
 
     private String projectHash;
     private String projectName;
-    private int groupId;
+    private String userNickName;
 
-    public ProjectInfo(String projectHash, String projectName, int groupId) {
+    public ProjectInfo(String projectHash, String projectName, String userNickName) {
         this.projectHash = projectHash;
         this.projectName = projectName;
-        this.groupId = groupId;
+        this.userNickName = userNickName;
     }
 
     public ProjectInfo() {
@@ -37,11 +37,11 @@ public class ProjectInfo {
         this.projectName = projectName;
     }
 
-    public int getGroupId() {
-        return groupId;
+    public String getUserNickName() {
+        return userNickName;
     }
 
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
     }
 }

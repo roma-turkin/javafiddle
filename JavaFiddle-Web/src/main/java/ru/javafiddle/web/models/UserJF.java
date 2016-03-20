@@ -13,14 +13,18 @@ public class UserJF {
     private String lastName;
     private String nickName;
     private String email;
+    private String registrationDate;//!TODO change type to Date
     private List<String> projectsHashs;
+    private String status;
 
-    public UserJF(String firstName, String lastName, String nickName, String email, List<String> projectsHashs) {
+    public UserJF(String firstName, String lastName, String nickName, String email, String registrationDate, List<String> projectsHashs, String status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
         this.email = email;
+        this.registrationDate = registrationDate;
         this.projectsHashs = projectsHashs;
+        this.status = status;
     }
 
     public UserJF() {
@@ -64,5 +68,21 @@ public class UserJF {
 
     public void setProjectsHashs(List<String> projectsHashs) {
         this.projectsHashs = projectsHashs;
+    }
+
+    public String getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(String registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

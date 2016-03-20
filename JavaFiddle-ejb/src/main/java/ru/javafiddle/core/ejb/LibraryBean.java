@@ -42,43 +42,46 @@ public class LibraryBean {
 
     }
 
+    //!TODO
     public List<String> getAll(String projectHash) {
 
-        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")
-                .setParameter("projecthash", projectHash)
-                .getSingleResult();
+//        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")
+//                .setParameter("projecthash", projectHash)
+//                .getSingleResult();
+//
+//        Project project = hash.getProject();
+//
+//        List<LibraryToProject> libs = project.getLibraries();
+//        List<String> libNames = new LinkedList<>();
+//
+//        for (LibraryToProject l:libs) {
+//
+//            libNames.add(l.getLib().getLibraryName());
+//        }
+//
+//        return libNames;
 
-        Project project = hash.getProject();
-
-        List<LibraryToProject> libs = project.getLibraries();
-        List<String> libNames = new LinkedList<>();
-
-        for (LibraryToProject l:libs) {
-
-            libNames.add(l.getLib().getLibraryName());
-        }
-
-        return libNames;
-
-
+    return null;
 
 
     }
 
+    //!TODO
     public void remove(String projectHash, String libraryName) {
 
-        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")
-                .setParameter("projecthash", projectHash)
-                .getSingleResult();
+//        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")
+//                .setParameter("projecthash", projectHash)
+//                .getSingleResult();
+//
+//        Project project = hash.getProject();
+//
+//        List<LibraryToProject> libs = project.getLibraries();
+//        for (LibraryToProject l:libs) {
+//
+//            if (l.getLib().getLibraryName().equals(libraryName))
+//                em.remove(l);
+//        }
 
-        Project project = hash.getProject();
-
-        List<LibraryToProject> libs = project.getLibraries();
-        for (LibraryToProject l:libs) {
-
-            if (l.getLib().getLibraryName().equals(libraryName))
-                em.remove(l);
-        }
 
     }
 

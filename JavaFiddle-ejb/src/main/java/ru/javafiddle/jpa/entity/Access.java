@@ -9,17 +9,22 @@ import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Column;
 
 /**
  * Specifies the access type of users group (read only, edit&read etc.)
  */
 @Entity
-@Table
-
+@Table(name = "\"Access\"")
 public class Access {
+
+    public static final String READ_AND_WRITE = "rw";
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "\"accessId\"")
     private int accessId;
+
+    @Column(name = "\"accessName\"")
     private String accessName;
 
     public Access(int accessId, String accessName) {

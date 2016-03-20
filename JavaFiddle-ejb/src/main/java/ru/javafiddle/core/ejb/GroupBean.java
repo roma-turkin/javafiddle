@@ -22,7 +22,8 @@ public class GroupBean {
     @PersistenceContext
     EntityManager em;
 
-    GroupBean(){}
+    public GroupBean() {
+    }
 
     //we should get at first userId, then add this element to UserGroups
     //when we are in this method we definitly have group with such id

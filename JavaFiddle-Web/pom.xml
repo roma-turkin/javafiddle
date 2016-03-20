@@ -7,7 +7,7 @@
     <groupId>ru.javafiddle.web</groupId>
     <artifactId>JavaFiddle-web</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <dependencyManagement>
         <dependencies>
