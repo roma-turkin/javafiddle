@@ -16,6 +16,11 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4-1201-jdbc41</version>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -35,6 +40,7 @@
             </plugin>
         </plugins>
     </build>
+
 
 
 </project>

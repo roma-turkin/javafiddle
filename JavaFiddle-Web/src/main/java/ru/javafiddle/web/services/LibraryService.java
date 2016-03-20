@@ -17,7 +17,6 @@ import java.util.List;
 /**
  * Created by artyom on 22.11.15.
  */
-@Path("/")
 public class LibraryService {
 
     @EJB

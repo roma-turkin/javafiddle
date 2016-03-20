@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * Created by artyom on 24.11.15.
  */
-@Path("/")
 public class GroupService {
 
     @EJB
