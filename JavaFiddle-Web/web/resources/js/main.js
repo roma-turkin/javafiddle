@@ -250,7 +250,7 @@ function closeAllTabs() {
 
 
 
-function loadLiHarmonica() {
+function    loadLiHarmonica() {
     (function ($) {
         $.fn.liHarmonica = function (params) {
             var p = $.extend({

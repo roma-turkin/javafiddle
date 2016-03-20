@@ -4,6 +4,7 @@ function buildTree() {
     $("#tree").empty();
 
     var userProjects = getUserProjects();
+    sessionStorage.userProjects = JSON.stringify(userProjects);
 
     if (userProjects.length == 0) {
         //Write "no projects yet" and the welcome tab.
@@ -12,6 +13,7 @@ function buildTree() {
 
     for (var i = 0; i < userProjects.length; i++) {
         var projectStructure = getProjectStructure(userProjects[i]);
+        sessionStorage.setItem(userProjects[i], JSON.stringify(projectStructure));
         $("#projectname").text(projectStructure.name);
         setProjectId(userProjects[i]);
         appendNodes(projectStructure, '#tree');
@@ -82,8 +84,8 @@ function appendNodes(projectStructure, selector) {
     else if(projectStructure.type === "package" && projectStructure.name !== "<default_package>") {
 
         $(selector).append('<li id = "node_' + projectStructure.fileId + '" class = "open">\
-                        <a href="#" class="'+ projectStructure.type +'" onclick="changeNodeState($(this));>"' + projectStructure.name + '</a>\
-                        <ul id ="node_' + projectStructure.fileId + '_' + projectStructure.type + '"/></li>');
+                            <a href="#" class="' + projectStructure.type + '" onclick="changeNodeState($(this));">' + projectStructure.name + '</a>\
+                            <ul id ="node_' + projectStructure.fileId + '_' + projectStructure.type + '"/></li>');
     }else {
 
         $(selector).append('<li id = "node_' + projectStructure.fileId + '" class = "open">\
