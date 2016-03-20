@@ -34,6 +34,7 @@
         <web-resource-collection>
             <web-resource-name>AllPages</web-resource-name>
             <url-pattern>/*</url-pattern>
+            <url-pattern>/fiddle/projects/*</url-pattern>
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>Registration service</web-resource-name>
@@ -49,7 +50,7 @@
         <web-resource-collection>
             <web-resource-name>JFConfidentialResources</web-resource-name>
             <url-pattern>/jsf/index.xhtml</url-pattern>
-            <url-pattern>/fiddle/projects/*</url-pattern>
+            <!--<url-pattern>/fiddle/projects/*</url-pattern>-->
             <url-pattern>/fiddle/compile/*</url-pattern>
             <url-pattern>/logout</url-pattern>
         </web-resource-collection>

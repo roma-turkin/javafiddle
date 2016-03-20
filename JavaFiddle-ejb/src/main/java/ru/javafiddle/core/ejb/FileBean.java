@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Hash;
 import ru.javafiddle.jpa.entity.Type;
@@ -28,7 +30,8 @@ public class FileBean {
 
     public List<File> getProjectFiles(String projectHash) {
 
-        Hash h = (Hash)em.createQuery("SELECT h FROM Hash h WHERE h.hash=:projectHash");
+        TypedQuery<Hash> query = em.createQuery("SELECT h FROM Hash h WHERE h.hash=:projectHash", Hash.class);
+        Hash h = query.setParameter("projectHash",projectHash).getSingleResult();
 
         return h.getProject().getFiles();
 
