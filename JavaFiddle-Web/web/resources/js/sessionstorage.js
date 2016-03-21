@@ -130,8 +130,9 @@ function getCurrentFileText() {
 
         editor.session.getUndoManager().reset();
         editor.setReadOnly(false);
-    } else
+    } else {
         getFileContent(id);
+    }
     
     changeModifiedState(id, modified);
 }

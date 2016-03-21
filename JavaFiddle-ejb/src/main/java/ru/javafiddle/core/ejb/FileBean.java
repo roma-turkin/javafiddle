@@ -84,7 +84,7 @@ public class FileBean {
 
     }
 
-    private File getFile(int fileId) {
+    public File getFile(int fileId) {
 
         File file = (File)em.createQuery("SELECT f FROM File f where f.fileId =:fileid")
                 .setParameter("fileid", fileId)

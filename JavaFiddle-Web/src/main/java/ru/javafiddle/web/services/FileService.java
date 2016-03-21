@@ -1,7 +1,5 @@
 package ru.javafiddle.web.services;
 
-
-
 import ru.javafiddle.core.ejb.FileBean;
 
 import ru.javafiddle.jpa.entity.File;
@@ -27,10 +25,25 @@ import java.util.List;
 /**
  * Created by artyom on 19.11.15.
  */
+@Path("/projects/{projectHash}/files")
 public class FileService {
 
     @EJB
     FileBean filesBean;
+
+    @GET
+    @Path("/{fileId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFile(@PathParam("fileId") int fileId) {
+        File file = filesBean.getFile(fileId);
+        FileJF json = new FileJF(file.getFileId(),
+                file.getFileName(),
+                file.getData(),
+                file.getType().getTypeName(),
+                file.getPath());
+
+        return Response.ok(json).build();
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

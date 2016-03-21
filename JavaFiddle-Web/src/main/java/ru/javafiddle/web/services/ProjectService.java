@@ -163,12 +163,6 @@ public class ProjectService {
 
     }
 
-
-    @Path("/{projectHash}/files")
-    public FileService initFileService() {
-        return new FileService();
-    }
-
     @Path("/{projectHash}/libraries")
     public LibraryService initLibraryService() {
         return new LibraryService();
