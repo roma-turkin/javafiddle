@@ -56,6 +56,8 @@ public class UserBean {
         user.setNickName(nickname);
         user.setEmail(email);
         user.setPasswordHash(passwordHash);
+        user.setStatus(st);
+        //--
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
