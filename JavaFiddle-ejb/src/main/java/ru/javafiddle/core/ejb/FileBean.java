@@ -94,19 +94,27 @@ public class FileBean {
         File file = getFile(fileId);
         Project p = getProject(projectHash);
         Type t = file.getType();
-        List<File> f = p.getFiles();
-        for (Iterator<File> iter = f.listIterator(); iter.hasNext(); ) {
+        List<File> pList = p.getFiles();
+        List<File> tList = t.getFiles();
+        for (Iterator<File> iter = pList.listIterator(); iter.hasNext(); ) {
             File a = iter.next();
             if (a.getFileId() == fileId)
                 iter.remove();
         }
-        System.out.println("size after rem "+f.size());
-        //em.merge(t);
+        for (Iterator<File> iter = tList.listIterator(); iter.hasNext(); ) {
+            File a = iter.next();
+            if (a.getFileId() == fileId)
+                iter.remove();
+        }
+
+        System.out.println("size after rem "+tList.size());
+        System.out.println("size after rem "+pList.size());
+       /* em.merge(p);
 
         //f = p.getFiles();
         //f.remove(file);
-        //p.setFileList(f);
-         //em.remove(file);
+        //p.setFileList(f);*/
+        em.remove(file);
 
 
     }

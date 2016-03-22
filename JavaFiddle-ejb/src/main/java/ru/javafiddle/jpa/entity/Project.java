@@ -27,7 +27,7 @@ public class Project {
     private Group group;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "project")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval = true, mappedBy = "project")
     private List<File> files;
 
     @ManyToMany

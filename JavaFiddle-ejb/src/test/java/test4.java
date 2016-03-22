@@ -70,6 +70,7 @@ public class test4 {
         File file = fileBean.getFile(f.getFileId());
         Assert.assertEquals("GOT WRONG NAME","ff", file.getFileName());
         Assert.assertEquals("WRONG LIST SIZE",1,projectBean.getProject("48").getFiles().size());
+        Assert.assertEquals("WRONG LIST SIZE",1,projectBean.getProject("48").getFiles().size());
 
         Assert.assertEquals("NAME WAS NOT CHANGED", fileBean.updateFile("48",1,"ff2",myvar,"java","/g/g").getFileName(), "ff2");
         List<File> ff = fileBean.getType("java").getFiles();
