@@ -3,13 +3,12 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.Column;
+import org.hibernate.annotations.*;
+
+import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import java.util.List;
 
 /**
@@ -27,7 +26,8 @@ public class Type {
     @Column(name = "\"typeName\"")
     private String typeName;
 
-    @OneToMany(mappedBy = "type")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(orphanRemoval = true, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE}, mappedBy = "type")
     private List<File> files;
 
     public Type(String typeName) {

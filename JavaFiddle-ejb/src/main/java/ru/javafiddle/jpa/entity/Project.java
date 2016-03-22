@@ -3,6 +3,9 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -23,7 +26,8 @@ public class Project {
     @JoinColumn(name = "\"groupId\"")
     private Group group;
 
-    @OneToMany(mappedBy = "project")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "project")
     private List<File> files;
 
     @ManyToMany
