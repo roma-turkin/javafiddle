@@ -40,7 +40,7 @@ public class FileBean {
 //we don't need to create file FileJF while passing it to functions, as this is a new file and we don't know id
 //I assume that we already have a table of possible types
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addFile(String projectHash, String fileName, byte[] data, String fileType, String pathToFile) {
+    public File addFile(String projectHash, String fileName, byte[] data, String fileType, String pathToFile) {
 
 
         File file = new File();
@@ -57,13 +57,13 @@ public class FileBean {
         files.add(file);
         type.getFiles().add(file);
         //project.setFileList(files);
-
+        em.persist(file);
         //em.merge(project);
         //em.merge(type);
 
        // System.out.println(file.getFileId());
        // System.out.println("project after persistence "+ project.getProjectId()+" and file in it "+project.getFiles().size());
-        //return file;
+        return file;
 
 
     }
@@ -96,6 +96,9 @@ public class FileBean {
         Type t = file.getType();
         List<File> pList = p.getFiles();
         List<File> tList = t.getFiles();
+        System.out.println("size before rem "+tList.size());
+        System.out.println("size before rem "+pList.size());
+
         for (Iterator<File> iter = pList.listIterator(); iter.hasNext(); ) {
             File a = iter.next();
             if (a.getFileId() == fileId)
@@ -114,7 +117,7 @@ public class FileBean {
         //f = p.getFiles();
         //f.remove(file);
         //p.setFileList(f);*/
-        em.remove(file);
+        //em.remove(file);
 
 
     }
@@ -135,7 +138,7 @@ public class FileBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    private Project getProject(String projectHash) {
+    public Project getProject(String projectHash) {
 
         Project project;
         try {
@@ -174,6 +177,16 @@ public class FileBean {
         em.persist(t);
 
         return t;
+    }
+
+    public boolean checkNumberOfFiles (String fileName,int number) {
+        TypedQuery<File> query =
+                em.createQuery("SELECT f FROM File f WHERE f.fileName=:filename", File.class);
+        List<File> u = query.setParameter("filename", fileName).getResultList();
+
+        return (u.size() == number);
+
+
     }
 
 

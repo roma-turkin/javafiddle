@@ -56,21 +56,26 @@ public class test4 {
         }
 
 
-
+        //Initialize necessary entities
         Access a = groupBean.createAccess("full");
         Group g = groupBean.createGroup("default");
         Type t = fileBean.createType("java");
-       // initialize(userBean, groupBean, projectBean);
         Project project = projectBean.createProject(1,"","first_proj");
+
+        //Check if size is 0
         Assert.assertTrue("WRONG LIST SIZE",projectBean.getProject("48").getFiles().size() == 0);
         byte[] myvar = "Any String you want".getBytes();
         System.out.println(project.getHash().getHash());
-        fileBean.addFile(project.getHash().getHash(),"ff",myvar,"java","/g/g");
+
+        File newFile = fileBean.addFile(project.getHash().getHash(),"ff",myvar,"java","/g/g");
+        Assert.assertEquals("WRONG FILE WAS CREATED","ff", newFile.getFileName());
         File f = fileBean.getFile(1);
         File file = fileBean.getFile(f.getFileId());
+        Assert.assertTrue("WRONG LIST SIZE", fileBean.checkNumberOfFiles("ff",1));
+
         Assert.assertEquals("GOT WRONG NAME","ff", file.getFileName());
         Assert.assertEquals("WRONG LIST SIZE",1,projectBean.getProject("48").getFiles().size());
-        Assert.assertEquals("WRONG LIST SIZE",1,projectBean.getProject("48").getFiles().size());
+        Assert.assertEquals("WRONG LIST SIZE",1,fileBean.getType("java").getFiles().size());
 
         Assert.assertEquals("NAME WAS NOT CHANGED", fileBean.updateFile("48",1,"ff2",myvar,"java","/g/g").getFileName(), "ff2");
         List<File> ff = fileBean.getType("java").getFiles();
@@ -80,23 +85,17 @@ public class test4 {
         }
 
         fileBean.deleteFile("48",1);
+
         List<File> gotfiles = fileBean.getType("java").getFiles();
         for (File curFile1:gotfiles) {
             System.out.println("----"+curFile1.getFileName());
         }
-//        Assert.assertNull("THE OBJECT WAS NOT NULL", projectBean.getProject("48"));
+
         Assert.assertNull("THE OBJECT WAS NOT NULL", fileBean.getFile(1));
 
         Assert.assertEquals("FILE WAS NOT DELETED", fileBean.getType("java").getFiles().size(),0);
-        System.out.println(fileBean.getType("java").getFiles().size());
-       // Assert.assertEquals("FILE WAS NOT DELETED", fileBean.getProjectFiles("48").size() == 0);
 
-
-
-
-    }
-
-    private void initialize(UserBean userBean, GroupBean groupBean, ProjectBean projectBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Assert.assertTrue("FILE WAS NOT DELETED", fileBean.getProject("48").getFiles().size() == 0);
 
 
 
