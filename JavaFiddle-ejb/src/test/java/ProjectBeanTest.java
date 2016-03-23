@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by mac on 16.03.16.
  */
-public class test3 {
+public class ProjectBeanTest{
 
 
     EJBContainer ejbContainer;

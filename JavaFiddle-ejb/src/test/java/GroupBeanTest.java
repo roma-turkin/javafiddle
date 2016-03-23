@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * Created by mac on 14.03.16.
  */
-public class test2 {
+public class GroupBeanTest {
 
 
     private static final Logger logger =

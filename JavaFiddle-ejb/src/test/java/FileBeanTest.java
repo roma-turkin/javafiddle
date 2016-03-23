@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by mac on 21.03.16.
  */
-public class test4 {
+public class FileBeanTest {
 
     EJBContainer ejbContainer;
     Context context;
@@ -40,7 +40,7 @@ public class test4 {
     }
 
     @org.junit.Test
-    public void testUserOperations() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void testFileOperations() throws UnsupportedEncodingException, NoSuchAlgorithmException {
         UserBean userBean = null;
         GroupBean groupBean = null;
         ProjectBean projectBean = null;

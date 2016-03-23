@@ -1,5 +1,3 @@
-import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,19 +5,20 @@ import org.junit.Test;
 import ru.javafiddle.core.ejb.GroupBean;
 import ru.javafiddle.core.ejb.ProjectBean;
 import ru.javafiddle.core.ejb.UserBean;
-import ru.javafiddle.jpa.entity.*;
+import ru.javafiddle.jpa.entity.Access;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
-public class test {
+public class UserBeanTest {
 
     EJBContainer ejbContainer;
     Context context;
