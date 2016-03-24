@@ -23,7 +23,7 @@ public class Project {
     @JoinColumn(name = "\"groupId\"")
     private Group group;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,mappedBy = "project")
     private List<File> files;
 
     @ManyToMany
@@ -32,7 +32,7 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "\"id\"")
     private Hash hash;
 

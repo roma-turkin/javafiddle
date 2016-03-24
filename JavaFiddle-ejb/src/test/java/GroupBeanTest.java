@@ -19,7 +19,7 @@ import java.util.logging.Logger;
 /**
  * Created by mac on 14.03.16.
  */
-public class test2 {
+public class GroupBeanTest {
 
 
     private static final Logger logger =
@@ -86,8 +86,8 @@ public class test2 {
 
 
 //check getAllMembers()----------------------------------------------------------------
-        Assert.assertEquals("NOT ENOUGH MEMBERS IN MAP", 2,groupBean.getAllMembers(groupId).size());
-        for (Map.Entry<String, String> entry : groupBean.getAllMembers(groupId).entrySet()) {
+        Assert.assertEquals("NOT ENOUGH MEMBERS IN MAP", 2,groupBean.getMemberAccessMap(groupId).size());
+        for (Map.Entry<String, String> entry : groupBean.getMemberAccessMap(groupId).entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
 

@@ -23,10 +23,13 @@ public class GroupBean {
 
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
+
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    public GroupBean(){}
+    public GroupBean(){
+
+    }
 
 //we always know that the group were we are trying to add a user exits now
 
@@ -58,7 +61,7 @@ public class GroupBean {
 
     }
 
-    public  Map<String, String> getAllMembers(int groupId){
+    public  Map<String, String> getMemberAccessMap(int groupId){
 
         //int groupId = getGroupId(groupName);
 
@@ -113,12 +116,12 @@ public class GroupBean {
         //int groupId = getGroupId(groupName);
 
         TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid",UserGroup.class);
-        List<UserGroup> listOfSpecificGroupUsers = q.setParameter("groupid", groupId)
+        List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
                 .setParameter("userid", userId)
                 .getResultList();
 
 
-        for(UserGroup ug:listOfSpecificGroupUsers) {
+        for (UserGroup ug:userGroupsToDelete) {
             em.remove(ug);
 
         }
@@ -142,7 +145,8 @@ public class GroupBean {
                     .setParameter("nickname", userNickName)
                     .getSingleResult();
         }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETACCESS()", noResult);
+            logger.log(Level.WARNING, "No result in getUser()", noResult);
+
             return null;
         }
 
@@ -157,7 +161,7 @@ public class GroupBean {
                     .setParameter("accessname", accessRights)
                     .getSingleResult();
         }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETACCESS()", noResult);
+            logger.log(Level.WARNING, "No result in getAccess()", noResult);
             return null;
         }
         return access;
@@ -171,7 +175,7 @@ public class GroupBean {
                     .setParameter("groupid", groupId)
                     .getSingleResult();
         }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETGROUP()", noResult);
+            logger.log(Level.WARNING, "No result in getGroup()", noResult);
             return null;
         }
 
@@ -186,7 +190,7 @@ public class GroupBean {
                     .setParameter("groupname", groupName)
                     .getSingleResult();
         }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "NO RESULT IN QUERY IN GETGROUP()", noResult);
+            logger.log(Level.WARNING, "No result in getGroup()", noResult);
             return null;
         }
         return group;
@@ -262,7 +266,7 @@ public class GroupBean {
                     .setParameter("groupid", groupId)
                     .getSingleResult();
         } catch (NoResultException noResult) {
-            logger.log(Level.WARNING, "NO RESULT IN QUERY IN getUserGroup()", noResult);
+            logger.log(Level.WARNING, "No result in getUserGroup()", noResult);
             return null;
         }
 
@@ -287,9 +291,9 @@ public class GroupBean {
     public List<Group> getAllGroups() {
 
         TypedQuery<Group> q= em.createQuery("SELECT g FROM Group g ",Group.class);
-        List<Group> listOfSpecificGroups= q.getResultList();
+        List<Group> listOfGroups= q.getResultList();
 
-        return listOfSpecificGroups;
+        return listOfGroups;
 
     }
 }

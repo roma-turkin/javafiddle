@@ -41,7 +41,9 @@ public class UserBean {
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    public UserBean(){}
+    public UserBean(){
+
+    }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
@@ -83,7 +85,7 @@ public class UserBean {
                     .getSingleResult();
         } catch (NoResultException noResult) {
 
-            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            logger.log(Level.WARNING, "No result in getUser()", noResult);
             return null;
         }
 
@@ -102,7 +104,7 @@ public class UserBean {
                     .getSingleResult();
         } catch (NoResultException noResult) {
 
-            logger.log(Level.WARNING, "NO RESULT IN QUERY", noResult);
+            logger.log(Level.WARNING, "No result in retrieving user", noResult);
             return null;
         }
 
