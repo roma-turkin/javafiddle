@@ -24,7 +24,6 @@ public class FileBean {
     EntityManager em;
 
     public FileBean() {
-
     }
 
 

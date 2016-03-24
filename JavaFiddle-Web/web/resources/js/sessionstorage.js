@@ -54,7 +54,7 @@ function isFileStored(projectStructure, fileId) {
 
 // OPENED TABS
 
-function    openedTabs() {
+function openedTabs() {
    return getListFromStorage('openedtabs'); 
 }
 
@@ -130,7 +130,7 @@ function getCurrentFileText() {
 
         editor.session.getUndoManager().reset();
         editor.setReadOnly(false);
-    } else {
+    }else {
         getFileContent(id);
     }
     

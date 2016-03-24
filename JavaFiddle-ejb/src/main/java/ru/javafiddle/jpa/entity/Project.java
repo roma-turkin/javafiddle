@@ -3,6 +3,7 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,7 +41,7 @@ public class Project {
     private List<File> files;
 
     @ManyToMany
-    @JoinTable(name = "\"LibraryToProject\"" ,
+    @JoinTable(name = "\"LibraryToProject\"",
             joinColumns = @JoinColumn(name = "\"libraryId\""),
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
@@ -81,18 +82,30 @@ public class Project {
         this.group = group;
     }
 
-    public List<File> getFiles() { return files; }
+    public List<File> getFiles() {
+        return files;
+    }
 
-    public void setFileList(List<File> files) { this.files = files; }
+    public void setFileList(List<File> files) {
+        this.files = files;
+    }
 
-    public Hash getHash() { return hash; }
+    public Hash getHash() {
+        return hash;
+    }
 
-    public void setHash( Hash hash) { this.hash = hash; }
+    public void setHash(Hash hash) {
+        this.hash = hash;
+    }
 
 
-    public List<Library> getLibraries() { return libs; }
+    public List<Library> getLibraries() {
+        return libs;
+    }
 
-    public void setLibraries( List<Library> libs) { this.libs = libs; }
+    public void setLibraries(List<Library> libs) {
+        this.libs = libs;
+    }
 
     @Override
     public String toString() {

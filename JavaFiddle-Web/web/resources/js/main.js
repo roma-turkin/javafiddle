@@ -250,7 +250,7 @@ function closeAllTabs() {
 
 
 
-function    loadLiHarmonica() {
+function loadLiHarmonica() {
     (function ($) {
         $.fn.liHarmonica = function (params) {
             var p = $.extend({
@@ -503,27 +503,6 @@ function getFileContent(id) {
                 $('#latest_update').text("File not found in project.");
         }
     });
-
-    //$.ajax({
-    //    url: PATH + '/webapi/data/file',
-    //    type:'GET',
-    //    data: {id : id},
-    //    async: false,
-    //    dataType: "json",
-    //    contentType: "application/json",
-    //    success: function(data) {
-    //        editor.setValue(data.value);
-    //        editor.clearSelection();
-    //        editor.session.getUndoManager().reset();
-    //        editor.setReadOnly(false);
-    //        addCurrentFileTimeStamp(data.time); //TO BE REDONE
-    //        changeModifiedState(id, false);
-    //    },
-    //    error: function(jqXHR) {
-    //        if (jqXHR.status === 406)
-    //            $('#latest_update').text("File not found in project.");
-    //    }
-    //});
 }
 
 

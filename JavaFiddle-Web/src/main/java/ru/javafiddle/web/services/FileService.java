@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +37,10 @@ public class FileService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFile(@PathParam("fileId") int fileId) {
         File file = filesBean.getFile(fileId);
+        String data = new String(file.getData(), StandardCharsets.UTF_8);
         FileJF json = new FileJF(file.getFileId(),
                 file.getFileName(),
-                file.getData(),
+                data,
                 file.getType().getTypeName(),
                 file.getPath());
 
@@ -55,7 +57,7 @@ public class FileService {
             for(int i=0; i<files.size(); i++) {
                 filesJF.add(new FileJF(files.get(i).getFileId(),
                         files.get(i).getFileName(),
-                        files.get(i).getData(),
+                        new String(files.get(i).getData(),StandardCharsets.UTF_8),
                         files.get(i).getType().getTypeName(),
                         files.get(i).getPath()));
             }
@@ -77,7 +79,7 @@ public class FileService {
         try {
             filesBean.addFile(projectHash,
                     newFile.getName(),
-                    newFile.getData(),
+                    newFile.getData().getBytes(),
                     newFile.getType(),
                     newFile.getPath());
             return Response.ok().build();
@@ -100,14 +102,14 @@ public class FileService {
                 if(fileId == null) { //file has not been added yet
                     filesBean.addFile(projectHash,
                             f.getName(),
-                            f.getData(),
+                            f.getData().getBytes(),
                             f.getType(),
                             f.getPath());
                 } else {
                     filesBean.updateFile(projectHash,
                             fileId,
                             f.getName(),
-                            f.getData(),
+                            f.getData().getBytes(),
                             f.getType(),
                             f.getPath());
                 }
