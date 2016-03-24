@@ -29,8 +29,9 @@ public class CompileAndRunBean extends DynamicCompiler {
     @PersistenceContext
     EntityManager em;
 
-    public static final String DEFAULT_PACKAGE_PREFFIX  = "";
+    public static final String DEFAULT_PACKAGE_PREFFIX = "";
     private static final Logger LOG = Logger.getLogger(CompileAndRunBean.class);
+
     public void init(ClassLoader parentLoader) {
         try {
             super.init(parentLoader);
@@ -40,7 +41,7 @@ public class CompileAndRunBean extends DynamicCompiler {
     }
 
     //!TODO
-    public String compile(String projectHash){
+    public String compile(String projectHash) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
         PrintStream old = System.out;
@@ -51,22 +52,32 @@ public class CompileAndRunBean extends DynamicCompiler {
         sources = fb.getProjectFiles(projectHash);
         init(ClassLoader.getSystemClassLoader());
         List<SimpleJavaFileObject> userSources = new ArrayList<>();
-        for(int i = 0; i < sources.size(); i++) {
-            byte[] userFByte = sources.get(i).getData();
-            String userFile = "";
-            for(int j = 0; j < userFByte.length; j++) {
-                userFile += (char)userFByte[j];
+        for (int i = 0; i < sources.size(); i++) {
+            File file = sources.get(i);
+            // typeId = 8 - "class", typeId = 9 - "interface", typeId = 10 - "exception"
+            // typeId = 5 - "runnable", typeId = 11 - "enum", typeId = 12 - "annotation"
+            int typeId = file.getType().getTypeId();
+            if (typeId == 8 || typeId == 9 || typeId == 10 || typeId == 5 || typeId == 11 || typeId == 12) {
+                byte[] userFByte = file.getData();
+                String userFile = "";
+                for (int j = 0; j < userFByte.length; j++) {
+                    userFile += (char) userFByte[j];
+                }
+                String s = findSrc(sources);
+                String src = file.getPath();
+                src = src.replaceFirst(s + "/", "");
+                src = src.replace("/", ".");
+                int pos = src.lastIndexOf(file.getFileName());
+                String pack = src.substring(0, pos);
+                String className = file.getFileName() + ".java";
+                SimpleJavaFileObject sjf = null;
+                if (pack != null) {
+                    sjf = counstructResource(className, userFile, pack);
+                } else {
+                    sjf = counstructResource(className, userFile);
+                }
+                userSources.add(sjf);
             }
-            String pack = sources.get(i).getPath() + ".";
-            String className = sources.get(i).getFileName() + "." + sources.get(i).getType().getTypeName();
-            SimpleJavaFileObject sjf = null;
-            if (pack != null) {
-                sjf = counstructResource(className, userFile, pack);
-            }
-            else {
-                sjf = counstructResource(className, userFile);
-            }
-            userSources.add(sjf);
         }
 
         String message = "";
@@ -83,7 +94,7 @@ public class CompileAndRunBean extends DynamicCompiler {
     }
 
     //!TODO
-    public String run(String projectHash){
+    public String run(String projectHash) {
         List<File> sources;
         FileBean fb = new FileBean();
         sources = fb.getProjectFiles(projectHash);
@@ -115,19 +126,24 @@ public class CompileAndRunBean extends DynamicCompiler {
         int count = 0;
         Class clazz = null;
         Method mainMeth = null;
-        for(int i = 0; i < sources.size(); i++) {
-            String packSource = sources.get(i).getPath();
-            String pack = "";
-            if (!packSource.equals("")) {
-                pack = packSource + ".";
-            }
-            if(sources.get(i).getType().getTypeName().equals("java")) {
-                String className = pack + sources.get(i).getFileName();
+        for (int i = 0; i < sources.size(); i++) {
+            File file = sources.get(i);
+            // typeId = 8 - "class", typeId = 9 - "interface", typeId = 10 - "exception"
+            // typeId = 5 - "runnable", typeId = 11 - "enum", typeId = 12 - "annotation"
+            int typeId = file.getType().getTypeId();
+            if (typeId == 8 || typeId == 9 || typeId == 10 || typeId == 5 || typeId == 11 || typeId == 12) {
+                String src = findSrc(sources);
+                String packSource = file.getPath().replaceFirst(src, "").replace("/", ".").replaceFirst(".", "");
+//                String pack = "";
+//                if (!packSource.equals("")) {
+//                    pack = packSource + ".";
+//                }
+                String className = packSource;//pack + file.getFileName();
                 try {
                     clazz = clazzLoader.loadClass(className);
                     Method[] meth = clazz.getDeclaredMethods();
                     int j = 0;
-                    while (j != meth.length) {
+                    while (meth != null && j != meth.length) {
                         if (meth[j].getName().equals("main")) {
                             mainMeth = meth[j];
                             count++;
@@ -141,6 +157,7 @@ public class CompileAndRunBean extends DynamicCompiler {
                 }
             }
         }
+
         if (count != 1) {
             try {
                 throw new Exception();
@@ -148,18 +165,28 @@ public class CompileAndRunBean extends DynamicCompiler {
                 LOG.error("Too many main functions", e);
             }
             return null;
-        }
-        else {
+        } else {
             return mainMeth;
         }
     }
 
-    public SimpleJavaFileObject counstructResource(String className, String source){
+    public String findSrc(List<File> sources) {
+        String src = "";
+        for (int i = 0; i < sources.size(); i++) {
+            File file = sources.get(i);
+            if (file.getType().getTypeId() == 3) { //typeId = 3 - "sources"
+                src = file.getPath();
+            }
+        }
+        return src;
+    }
+
+    public SimpleJavaFileObject counstructResource(String className, String source) {
         return counstructResource(className, source, DEFAULT_PACKAGE_PREFFIX);
     }
 
-    public static SimpleJavaFileObject counstructResource(String className, String source, String packagePreffix){
-        if(className.lastIndexOf(".java") < 0){
+    public static SimpleJavaFileObject counstructResource(String className, String source, String packagePreffix) {
+        if (className.lastIndexOf(".java") < 0) {
             return new ByteArrayResource(className, source.getBytes());
         } else {
             return new StringJavaFileObject(packagePreffix + className.substring(0, className.lastIndexOf(".java")), source);

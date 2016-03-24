@@ -1,19 +1,12 @@
 package ru.javafiddle.core.ejb;
 
-import ru.javafiddle.execution.test.DBWorker;
 import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.jpa.entity.Hash;
 import ru.javafiddle.jpa.entity.Project;
 import ru.javafiddle.jpa.entity.Type;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.*;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.List;
 
 @Stateless
@@ -23,69 +16,79 @@ public class FileBean {
     @PersistenceContext
     EntityManager em;
 
+    @PersistenceUnit(unitName = "test")
+    EntityManagerFactory entityManagerFactory;
+
     public FileBean() {}
 
 
+
+//    /////////////////////////
 //    public List<File> getProjectFiles(String projectHash) {
-//
-//
-//        Hash h = (Hash)em.createQuery("SELECT h FROM \"Hash\" h WHERE h.hash=\'" + projectHash + "\'");
-//
-//        return h.getProject().getFiles();
+//        List<File> fileList = new ArrayList<>();
+//        int projectId = getProjectId(projectHash);
+//        DBWorker dbWorker = new DBWorker();
+//        String queryFiles = "select * from \"File\" f, \"Project\" p where f.\"projectId\" = p.\"projectId\"" + "and p.\"projectId\" = " + projectId;
+//        try {
+//            Statement statement = dbWorker.getConnection().createStatement();
+//            ResultSet resultSet = statement.executeQuery(queryFiles);
+//            while (resultSet.next()) {
+//                File file = new File();
+//                file.setData(resultSet.getBytes("data"));
+//                file.setFileId(resultSet.getInt("fileId"));
+//                file.setFileName(resultSet.getString("fileName"));
+//                file.setPath(resultSet.getString("path"));
+//                Type type = new Type();
+//                String queryType = "select t.\"typeName\", t.\"typeId\" from \"Type\" t, \"File\" f where f.\"typeId\" = t.\"typeId\" and f.\"typeId\" = "
+//                        + resultSet.getInt("typeId") + " and f.\"fileName\" = \'" + resultSet.getString("fileName") + "\'";
+//                Statement statement1 = dbWorker.getConnection().createStatement();
+//                ResultSet res = statement1.executeQuery(queryType);
+//                while(res.next()) {
+//                    type.setTypeName(res.getString("typeName"));
+//                    type.setTypeId(res.getInt("typeId"));
+//                }
+//                file.setType(type);
+//                fileList.add(file);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            dbWorker.getConnection().close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return fileList;
 //
 //    }
+//
+//    public int getProjectId(String projectHash) {
+//        DBWorker dbWorker = new DBWorker();
+//        int projectId = 0;
+//        String query = "select p.\"projectId\", p.\"projectName\" from \"Hash\" h, \"Project\" p "
+//                + "where h.\"id\" = p.\"id\" and h.\"hash\"=\'" + projectHash + "\'";
+//        try {
+//            Statement statement = dbWorker.getConnection().createStatement();
+//            ResultSet res = statement.executeQuery(query);
+//            while (res.next()) {
+//                projectId = res.getInt("projectId");
+//            }
+//            dbWorker.getConnection().close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return projectId;
+//    }
+//    ////////////////////////
 
-    /////////////////////////
     public List<File> getProjectFiles(String projectHash) {
-        List<File> fileList = new ArrayList<>();
-        int projectId = getProjectId(projectHash);
-        DBWorker dbWorker = new DBWorker();
-        String queryFiles = "select * from \"File\" f, \"Project\" p where f.\"projectId\" = p.\"projectId\"" + "and p.\"projectId\" = " + projectId;
-        try {
-            Statement statement = dbWorker.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(queryFiles);
-            while (resultSet.next()) {
-                File file = new File();
-                file.setData(resultSet.getBytes("data"));
-                file.setFileId(resultSet.getInt("fileId"));
-                file.setFileName(resultSet.getString("fileName"));
-                file.setPath(resultSet.getString("path"));
-                Type type = new Type();
-                type.setTypeId(1);
-                type.setTypeName("java");
-                file.setType(type);
-                fileList.add(file);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            dbWorker.getConnection().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return fileList;
+
+        TypedQuery<Hash> query = em.createQuery("SELECT h FROM Hash h WHERE h.hash=:projectHash", Hash.class);
+        Hash h = query.setParameter("projectHash",projectHash).getSingleResult();
+
+        return h.getProject().getFiles();
 
     }
-
-    public int getProjectId(String projectHash) {
-        DBWorker dbWorker = new DBWorker();
-        int projectId = 0;
-        String query = "select p.\"projectId\", p.\"projectName\" from \"Hash\" h, \"Project\" p "
-                + "where h.\"id\" = p.\"id\" and h.\"hash\"=\'" + projectHash + "\'";
-        try {
-            Statement statement = dbWorker.getConnection().createStatement();
-            ResultSet res = statement.executeQuery(query);
-            while (res.next()) {
-                projectId = res.getInt("projectId");
-            }
-            dbWorker.getConnection().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return projectId;
-    }
-    ////////////////////////
 
     public void addFile(String projectHash, String fileName, byte[] data, String fileType, String pathToFile) {
 
