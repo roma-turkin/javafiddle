@@ -388,43 +388,39 @@ function toggleConsole() {
 }
 
 // FILE REVISIONS (SERVICES)
-//
-function saveFile(id) {
-    console.log("Saving file " + id);
-   
-    if(arguments.length === 0) {
-        id = getCurrentFileID();
-        addCurrentFileText();
-        $('#latest_update').text("Saving...");
-    }
-    
-    var time = new Date().getTime();
+//!TODO working with dates
+function saveFile(toBeSavedFileTabId) {
+
+    var curFileTabId = (arguments.length === 0) ? getCurrentFileID() : toBeSavedFileTabId; //node_[number]_tab
+    var curFileId = curFileTabId.match(/[\d]+/);//id extraction
+    var toBeSavedFile = JSON.parse(sessionStorage.getItem("file_" + curFileId));
+
+    //data extraction
+    addCurrentFileText();
+    var toBeSavedData = getOpenedFileText(curFileTabId);
+    toBeSavedFile.data = toBeSavedData;
+
+    console.log("Saving file " + toBeSavedFile.fileId);
+    $('#latest_update').text("Saving...");
+
     $.ajax({
-        url: PATH + '/webapi/data/file',
-        type:'POST', 
-        async: false,
-        data: {id: id, timeStamp: time, value: getOpenedFileText(id)},
+        type: "PUT",
+        url: PATH + "/fiddle/files/" + toBeSavedFile.fileId,
+        contentType: "application/json",
+        'data': JSON.stringify(toBeSavedFile),
         success: function(data) {
-            if (id === "node_4_tab") {
-                sessionStorage.clear();
-                buildTree();
-                closeAllTabs();
-                id = addDefaultFileToGit();
-                console.log("Default File addition worked: " + id);
-                selectTab(addTabToPanel("node_" + id + "_tab","Main", "runnable active"));
-                console.log("New tree has been built");
-            }
-            unModifiedTab(id);
-            addCurrentFileTimeStamp(time);
-            if (isCurrent(id))
+            unModifiedTab(curFileTabId);
+            sessionStorage.setItem("file_" + toBeSavedFile.fileId, JSON.stringify(toBeSavedFile));
+            if (isCurrent(curFileTabId))
                 $('#latest_update').text("All changes saved.");
         },
-        error: function(jqXHR) {
+        error: function(textStatus, errorThrown) {
             if (jqXHR.status === 406)
                 $('#latest_update').text("Saving isn't acceptable.");
         }
     });
 }
+
 
 function saveAllFiles() {
     addCurrentFileText();
@@ -480,11 +476,10 @@ function getFileContent(id) {
     if(arguments.length === 0) {
         id = getCurrentFileID();
     }
-    var fileId = id.substring(id.indexOf('_') + 1 , id.lastIndexOf('_'));
-    var projectId = sessionStorage.projectID;
+    var fileId = id.match(/[\d]+/);
 
     $.ajax({
-        url: PATH + "/fiddle/projects/" + projectId + "/files/" + fileId,
+        url: PATH + "/fiddle/files/" + fileId,
         type: "GET",
         dataType: "json",
         async: false,
@@ -494,6 +489,7 @@ function getFileContent(id) {
             editor.clearSelection();
             editor.session.getUndoManager().reset();
             editor.setReadOnly(false);
+            sessionStorage.setItem("file_" + data.fileId, JSON.stringify(data));
             //!TODO temporary 500 must be redone
             addCurrentFileTimeStamp(500);
             changeModifiedState(id, false);

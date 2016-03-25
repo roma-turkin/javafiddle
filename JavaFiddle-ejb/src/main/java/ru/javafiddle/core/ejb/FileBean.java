@@ -54,21 +54,30 @@ public class FileBean {
     }
 
 
-    public void updateFile(String projectHash, int fileId, String fileName, byte[] data, String fileType, String pathToFile) {
+    public File updateFile(int fileId, String fileName, byte[] data, String fileType, String pathToFile) {
 
         File file = getFile(fileId);
 
-        Project project = getProject(projectHash);
-        Type type = getFile(fileType);
+        Type type = getType(fileType);
         file.setFileName(fileName);
         file.setData(data);
         file.setType(type);
         file.setPath(pathToFile);
-        file.setProject(project);
 
-        em.getTransaction().begin();
         em.persist(file);
-        em.getTransaction().commit();
+
+        return file;
+
+
+    }
+
+    public Type getType(String fileType) {
+
+        Type type = (Type)em.createQuery("SELECT t FROM Type t WHERE t.typeName =:filetype")
+                .setParameter("filetype", fileType)
+                .getSingleResult();
+        return type;
+
 
     }
 
@@ -93,7 +102,7 @@ public class FileBean {
 
     private Project getProject(String projectHash) {
 
-        Project project = (Project)em.createQuery("SELECT p FROM Hash h JOIN Project p WHERE h.hash =:projecthash")
+        Project project = (Project)em.createQuery("SELECT p FROM Project p WHERE p.hash.hash =:projecthash")
                 .setParameter("projecthash", projectHash)
                 .getSingleResult();
         return project;

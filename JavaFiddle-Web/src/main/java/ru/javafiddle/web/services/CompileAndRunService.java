@@ -52,8 +52,7 @@ public class CompileAndRunService {
                                 f.getType(),
                                 f.getPath());
                     } else {
-                        filesBean.updateFile(projectHash,
-                                fileId,
+                        filesBean.updateFile(fileId,
                                 f.getName(),
                                 f.getData().getBytes(),
                                 f.getType(),

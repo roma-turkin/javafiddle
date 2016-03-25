@@ -34,7 +34,7 @@ function buildTree() {
 }
 
 function appendNodes(projectStructure, selector) {
-    if(projectStructure.type === "root" || projectStructure.type === "source") {
+    if(projectStructure.type === "root" || projectStructure.type === "sources") {
 
         $(selector).append('<li id = "node_' + projectStructure.fileId + '" class = "open">\
                             <a href="#" class="' + projectStructure.type + '">' + projectStructure.name + '</a>\
