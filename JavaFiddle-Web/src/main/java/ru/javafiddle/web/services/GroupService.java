@@ -100,7 +100,7 @@ public class GroupService {
         try{
 
             int groupId = projectBean.getGroupId(projectHash);
-            //!TODO !TODO let's postpone it for later untill signature in GroupBean methods will be established
+            //!TODO let's postpone it for later untill signature in GroupBean methods will be established
 //            groupsBean.updateMember(groupId,
 //                    groupMember.getUserNickName(),
 //                    groupMember.getAccessRights());

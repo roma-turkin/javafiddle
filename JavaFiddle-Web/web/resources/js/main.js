@@ -414,7 +414,7 @@ function saveFile(toBeSavedFileTabId) {
             if (isCurrent(curFileTabId))
                 $('#latest_update').text("All changes saved.");
         },
-        error: function(textStatus, errorThrown) {
+        error: function(jqXHR) {
             if (jqXHR.status === 406)
                 $('#latest_update').text("Saving isn't acceptable.");
         }

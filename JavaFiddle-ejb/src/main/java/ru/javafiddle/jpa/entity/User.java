@@ -23,8 +23,6 @@ import java.util.List;
 public class User {
 
     @Id
-    //comm
-    //  @SequenceGenerator(name = "YOUR_ENTITY_SEQ", sequenceName = "YOUR_ENTITY_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"userId\"")
     private int userId;
@@ -44,6 +42,7 @@ public class User {
     @Column(name = "\"passwordHash\"")
     private String passwordHash;
 
+    //!TODO change type to Date
     @Column(name = "\"registrationDate\"")
     private String registrationDate;
 

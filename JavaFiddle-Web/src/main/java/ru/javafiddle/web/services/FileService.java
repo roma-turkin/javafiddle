@@ -36,7 +36,7 @@ public class FileService {
     @Path("/{fileId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFile(@PathParam("fileId") int fileId) {
-        
+
         File file = filesBean.getFile(fileId);
         String data = new String(file.getData(), StandardCharsets.UTF_8);
         FileJF json = new FileJF(file.getFileId(),
