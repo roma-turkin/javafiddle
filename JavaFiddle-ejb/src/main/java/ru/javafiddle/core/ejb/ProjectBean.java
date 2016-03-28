@@ -7,11 +7,8 @@ import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 
-import ru.javafiddle.jpa.entity.Hash;
-import ru.javafiddle.jpa.entity.Project;
-import ru.javafiddle.jpa.entity.Group;
-import ru.javafiddle.jpa.entity.File;
-import ru.javafiddle.jpa.entity.Library;
+import ru.javafiddle.jpa.entity.*;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -36,24 +33,28 @@ public class ProjectBean {
     }
 
     //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
-    public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName??
-
-        if (!hash.equals("")) {
-            return createCopy(hash);
+ //   public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
+    public Project createProject(int groupId, Project project) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
+ //groupid or Group???
+        if (project.getHash() != null) {
+            if (!project.getHash().getHash().equals(""))
+                return createCopy(project.getHash());
 
         }
         Group group;
-        Project project = new Project();
+        //Project project = new Project();
         Hash hashes = new Hash();
 
         //-----------------------------------------get group, corresponding to this id
-        group = getGroupByGroupId(groupId);
+        group = GroupBean.class.newInstance().getGroupByGroupId(groupId);
 
         //-----------------------------------------set information related to project
-        project.setProjectName(projectName);
+        project.setProjectName(project.getProjectName());
         project.setGroup(group);
+        em.persist(project);
+        em.flush();
         //-----------------------------------------set hash
-        String projectHash = getHashForNewProject(project.getProjectId());
+        String projectHash = HashBean.class.newInstance().getHashForNewProject(project.getProjectId());
         hashes.setHash(projectHash);
         project.setHash(hashes);
         hashes.setProject(project);
@@ -68,9 +69,9 @@ public class ProjectBean {
 
     }
 
-    public Project createCopy(String hash) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public Project createCopy(Hash hash) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
 
-        Project oldProject = getProjectByProjectHash(hash);
+        Project oldProject = getProjectByProjectHash(hash.getHash());
 //------------------------------------------------------------we create a new project and set fields
         Project newProject = new Project();
         newProject.setProjectName(oldProject.getProjectName());
@@ -86,7 +87,7 @@ public class ProjectBean {
         em.persist(newProject);
 
         Hash newHash = new Hash();
-        newHash.setHash(getHashForNewProject(newProject.getProjectId()));
+        newHash.setHash(HashBean.class.newInstance().getHashForNewProject(newProject.getProjectId()));
         newProject.setHash(newHash);
 //------------------------------------------------------------we don't need to persist hash entity separetely
 //------------------------------------------------------------as cascade type is mentioned
@@ -119,20 +120,20 @@ public class ProjectBean {
 
     }
 
-    public Project updateProject(String projectHash, String newProjectName) {
+    public Project updateProject(Project newProject) {
 
         Project project;
-        project = getProjectByProjectHash(projectHash);
+        project = getProjectByProjectHash(newProject.getHash().getHash());
 
         if (project == null) {
 
             logger.log(Level.WARNING, "No result in getProject()");
             return null;
         }
-        project.setProjectName(newProjectName);
+        project.setProjectName(newProject.getProjectName());
 
         em.persist(project);
-        return getProjectByProjectHash(projectHash);
+        return getProjectByProjectHash(project.getHash().getHash());
     }
 
 
@@ -145,39 +146,6 @@ public class ProjectBean {
 
     }
 
-    public Group getGroupByGroupId(int groupId) {
-
-        Group group;
-        try {
-            group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
-                    .setParameter("groupid", groupId)
-                    .getSingleResult();
-        } catch (NoResultException noResult) {
-
-            logger.log(Level.WARNING, "No result in getGroupByGroupId()", noResult);
-            return null;
-        }
-
-        return group;
-    }
-
-
-
-
-    public String getHashForNewProject(int projectId) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-
-        Integer projId = new Integer(projectId);
-        String prId = projId.toString();
-
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        byte[] array = md.digest(prId.getBytes());
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < array.length; ++i) {
-            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
-        }
-        return sb.toString();
-
-    }
 
 
     public Project getProjectByProjectHash(String projectHash) {
@@ -194,6 +162,31 @@ public class ProjectBean {
         }
 
         return project;
+
+    }
+
+    public List<String> getUserProjects(User user) {
+        List<String> hashes = new LinkedList<String>();
+        List<UserGroup> groups = user.getGroups();
+
+     /*   for (UserGroup g:) {
+
+            List<Project> projects = UserGroup.getProjects();
+            for (Project p:projects) {
+                hashes.add(p.getHash().getHash());
+            }
+        }*/
+
+        for (UserGroup userGroup:groups) {
+
+            Group group = userGroup.getGroup();
+            List<Project> projects = group.getProjects();
+            for (Project p:projects) {
+                hashes.add(p.getHash().getHash());
+            }
+        }
+
+        return hashes;
 
     }
 

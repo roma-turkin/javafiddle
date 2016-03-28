@@ -110,30 +110,6 @@ public User updateUser(User newUser) {
 
     }
 
-    public List<String> getUserProjects(User user) {
-        List<String> hashes = new LinkedList<String>();
-        List<UserGroup> groups = user.getGroups();
-
-     /*   for (UserGroup g:) {
-
-            List<Project> projects = UserGroup.getProjects();
-            for (Project p:projects) {
-                hashes.add(p.getHash().getHash());
-            }
-        }*/
-
-        for (UserGroup userGroup:groups) {
-
-            Group group = userGroup.getGroup();
-            List<Project> projects = group.getProjects();
-            for (Project p:projects) {
-                hashes.add(p.getHash().getHash());
-            }
-        }
-
-        return hashes;
-
-    }
 
 
     public void setFields(User user, String firstName, String lastName, String email, String passwordHash) {

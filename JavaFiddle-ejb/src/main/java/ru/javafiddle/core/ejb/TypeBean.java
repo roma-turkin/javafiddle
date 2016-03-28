@@ -1,5 +1,6 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 /**
  * Created by mac on 27.03.16.
  */
+@Stateless
 public class TypeBean {
 
     private static final Logger logger =

@@ -1,8 +1,5 @@
 import org.junit.*;
-import ru.javafiddle.core.ejb.GroupBean;
-import ru.javafiddle.core.ejb.HashBean;
-import ru.javafiddle.core.ejb.ProjectBean;
-import ru.javafiddle.core.ejb.UserBean;
+import ru.javafiddle.core.ejb.*;
 import ru.javafiddle.jpa.entity.*;
 
 import javax.ejb.embeddable.EJBContainer;
@@ -40,17 +37,19 @@ public class ProjectBeanTest {
     }
 
     @org.junit.Test
-    public void testProjectOperations() throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public void testProjectOperations() throws UnsupportedEncodingException, NoSuchAlgorithmException, InstantiationException, IllegalAccessException {
         UserBean userBean = null;
         GroupBean groupBean = null;
         ProjectBean projectBean = null;
         HashBean hashBean = null;
+        AccessBean accessBean = null;
 
         try {
             projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
             userBean = (UserBean) context.lookup("java:global/JavaFiddle-ejb/UserBean");
             groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
             hashBean = (HashBean) context.lookup("java:global/JavaFiddle-ejb/HashBean");
+            accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
 
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
@@ -58,8 +57,9 @@ public class ProjectBeanTest {
         Assert.assertNotNull(userBean);
 
 
-        initialize(userBean, groupBean);
-        Project project = projectBean.createProject(1,"","first_proj");
+        initialize(userBean, groupBean, accessBean);
+        Project project = new Project("first_proj", null);
+        project = projectBean.createProject(1,project);
 
         Group g = groupBean.getGroup("default");
 
@@ -68,12 +68,16 @@ public class ProjectBeanTest {
             Assert.assertEquals("Not only one entity was added", "first_proj", p.getProjectName());
         }
 
-        Project project2 = projectBean.createProject(1,project.getHash().getHash(),"first_proj");
+        Project project2 = new Project("first_proj", null);
+        //project2.setHash(new Hash());
+        project2 = projectBean.createProject(1,project2);
         Assert.assertNotNull(project2);
-        Assert.assertFalse("Hashe are identical", project.getHash().getHash().equals(project2.getHash().getHash()));
+        Assert.assertFalse("Hashes are identical", project.getHash().getHash().equals(project2.getHash().getHash()));
 
         //projectBean.changeProjectName(project2.getHash().getHash(),"second_proj");
-        Assert.assertTrue("The name of the project was not changed", projectBean.updateProject(project2.getHash().getHash(),"second_proj").getProjectName().equals("second_proj"));
+        Project newProject = new Project("second_proj", null);
+        newProject.setHash(project2.getHash());
+        Assert.assertTrue("The name of the project was not changed", projectBean.updateProject(newProject).getProjectName().equals("second_proj"));
         projectBean.deleteProject(project2.getHash().getHash());
         Assert.assertNull(hashBean.getHash(2));
         Assert.assertNull("The project was not deleted", projectBean.getProjectByProjectHash(project2.getHash().getHash()));
@@ -82,16 +86,25 @@ public class ProjectBeanTest {
 
     }
 
-    private void initialize(UserBean userBean, GroupBean groupBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private void initialize(UserBean userBean, GroupBean groupBean, AccessBean accessBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        User uu = userBean.register("Nastia", "Ruzh", "skotti", "aa", "12345");
-        userBean.register("Vania", "Truf", "vivi", "fff", "hvoehvfknd");
-        Access a = groupBean.createAccess("full");
-        Group g = groupBean.createGroup("default");
+        User user1 = new User("Nastia", "Ruzh", "skotti", "aa", "12345", null, null);
+        User uu = userBean.register(user1);
+        User user2 = new User("Vania", "Truf", "vivi", "fff", "hvoehvfknd", null, null);
+        User uu2 = userBean.register(user2);
+
+        Access access = new Access("full");
+        Access a = accessBean.createAccess(access);
+
+        Group group = new Group("default");
+        Group g = groupBean.createGroup(group);
+
 
         groupBean.createUserGroup(uu,g,a);
-        User uu1 = userBean.register("Bar", "Stins", "barny", "aa", "123gg5");
-        groupBean.createUserGroup(uu1,g,a);
+
+        User user3 = new User("Bar", "Stins", "barny", "aa", "123gg5", null, null);
+        User uu3 = userBean.register(user3);
+        groupBean.createUserGroup(uu3,g,a);
 
 
     }

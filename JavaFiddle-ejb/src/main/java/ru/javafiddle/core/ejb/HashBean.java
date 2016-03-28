@@ -7,6 +7,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,6 +43,21 @@ public class HashBean {
             return null;
         }
         return hash;
+
+    }
+
+    public String getHashForNewProject(int projectId) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+        Integer projId = new Integer(projectId);
+        String prId = projId.toString();
+
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        byte[] array = md.digest(prId.getBytes());
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < array.length; ++i) {
+            sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+        }
+        return sb.toString();
 
     }
 

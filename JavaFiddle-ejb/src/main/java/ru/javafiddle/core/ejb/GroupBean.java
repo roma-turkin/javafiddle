@@ -20,6 +20,7 @@ import ru.javafiddle.jpa.entity.*;
 @Stateless
 
 public class GroupBean {
+    UserGroupBean userGroupBean = new UserGroupBean();
 
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
@@ -36,15 +37,16 @@ public class GroupBean {
 //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addMember(int groupId, String groupName,String userNickName, String accessRights) {
+//    public void addMember(int groupId, String groupName,String userNickName, String accessRights) {
+    public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
-
-        Group group = getGroup(groupId);
+       // Group group = getGroupByGroupId(groupId);
         if (group.getGroupId() == -1) {
-            createGroup(groupName);
+            //createGroup(groupName);
+            createGroup(group);
         }
-        User user = getUser(userNickName);
-        Access access = getAccess(accessRights);
+        //User user = getUser(userNickName);
+        //Access access = getAccess(accessRights);
 
         UserGroup ug = new UserGroup(group, user, access);
 
@@ -55,7 +57,7 @@ public class GroupBean {
         //  em.getTransaction().begin();
         em.persist(ug);
 
-        ug = getUserGroup(user.getUserId(), group.getGroupId());
+        ug = userGroupBean.getUserGroup(user.getUserId(), group.getGroupId());
         addUserGroupToGroupList(group, ug);
 
 
@@ -167,7 +169,7 @@ public class GroupBean {
         return access;
     }
 
-    public Group getGroup(int groupId) {
+    public Group getGroupByGroupId(int groupId) {
 
         Group group = null;
         try {
@@ -217,7 +219,7 @@ public class GroupBean {
 
 
     }
-    public Group createGroup(String groupName) {
+ /*   public Group createGroup(String groupName) {
 
         Group g = new Group(groupName);
 
@@ -227,18 +229,7 @@ public class GroupBean {
         return g;
 
 
-    }
-
-
-    public Access createAccess(String accessName) {
-        Access a = new Access(accessName);
-
-        em.persist(a);
-        em.flush();
-
-        return a;
-
-    }
+    }*/
 
     public UserGroup createUserGroup(User u, Group g, Access a) {
 
@@ -269,7 +260,7 @@ public class GroupBean {
 
     }
 
-    public UserGroup getUserGroup(int userId, int groupId) {
+/*    public UserGroup getUserGroup(int userId, int groupId) {
 
         UserGroup ug;
         try {
@@ -283,7 +274,7 @@ public class GroupBean {
         }
 
         return ug;
-    }
+    }*/
 
     public void addUserGroupToGroupList(Group group, UserGroup userGroup) {
         if (group.getMembers() == null) {

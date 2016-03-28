@@ -4,10 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.javafiddle.core.ejb.AccessBean;
-import ru.javafiddle.core.ejb.GroupBean;
-import ru.javafiddle.core.ejb.ProjectBean;
-import ru.javafiddle.core.ejb.UserBean;
+import ru.javafiddle.core.ejb.*;
 import ru.javafiddle.jpa.entity.*;
 
 import javax.ejb.embeddable.EJBContainer;
@@ -47,12 +44,14 @@ public class UserBeanTest {
         GroupBean groupBean = null;
         ProjectBean projectBean = null;
         AccessBean accessBean = null;
+        UserGroupBean userGroupBean = null;
 
         try {
             userBean = (UserBean) context.lookup("java:global/JavaFiddle-ejb/UserBean");
             groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
             projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
             accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
+            userGroupBean = (UserGroupBean) context.lookup("java:global/JavaFiddle-ejb/UserGroupBean");
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
         }
@@ -69,13 +68,13 @@ public class UserBeanTest {
         Assert.assertNotNull("NO USER", u);
         Assert.assertEquals("NOT EXPECTED USER", "skotti",u.getNickName());
         //2) Check usergroup  adding-------------------------------------------------------------
-        UserGroup uug = groupBean.getUserGroup(1,1);
+        UserGroup uug = userGroupBean.getUserGroup(1,1);
         Assert.assertNotNull(uug);
 
         //3) Info printing
         System.out.println(uug.getGroupId());
         System.out.println(u.getFirstName());
-        
+
         //4)Updating user information
         User newUser = new User( "Anastasia", "Ruzh", "skotti", "aa", "12345", null, null);
         userBean.updateUser(newUser);
