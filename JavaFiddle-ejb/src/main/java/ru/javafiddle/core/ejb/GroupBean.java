@@ -1,5 +1,6 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
@@ -20,7 +21,9 @@ import ru.javafiddle.jpa.entity.*;
 @Stateless
 
 public class GroupBean {
-    UserGroupBean userGroupBean = new UserGroupBean();
+
+    @EJB
+    private UserGroupBean userGroup;
 
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
@@ -33,20 +36,15 @@ public class GroupBean {
     }
 
 //we always know that the group were we are trying to add a user exits now
-
 //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 //    public void addMember(int groupId, String groupName,String userNickName, String accessRights) {
     public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
-       // Group group = getGroupByGroupId(groupId);
         if (group.getGroupId() == -1) {
-            //createGroup(groupName);
             createGroup(group);
         }
-        //User user = getUser(userNickName);
-        //Access access = getAccess(accessRights);
 
         UserGroup ug = new UserGroup(group, user, access);
 
@@ -54,10 +52,9 @@ public class GroupBean {
         ug.setUserId(user.getUserId());
         ug.setGroupId(group.getGroupId());
 
-        //  em.getTransaction().begin();
         em.persist(ug);
-
-        ug = userGroupBean.getUserGroup(user.getUserId(), group.getGroupId());
+        em.flush();
+        ug = userGroup.getUserGroup(user.getUserId(), group.getGroupId());
         addUserGroupToGroupList(group, ug);
 
 
@@ -115,7 +112,6 @@ public class GroupBean {
     public void deleteMember(int groupId, String userNickName) {
 
         int userId = getUserId(userNickName);
-        //int groupId = getGroupId(groupName);
 
         TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid",UserGroup.class);
         List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
@@ -139,36 +135,6 @@ public class GroupBean {
         return user.getUserId();
     }
 
-    private User getUser(String userNickName) {
-
-        User user;
-        try {
-            user = (User) em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
-                    .setParameter("nickname", userNickName)
-                    .getSingleResult();
-        }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "No result in getUser()", noResult);
-
-            return null;
-        }
-
-        return user;
-    }
-
-    public Access getAccess(String accessRights) {
-        Access access;
-
-        try {
-            access = (Access) em.createQuery("SELECT p FROM Access p WHERE p.accessName =:accessname")
-                    .setParameter("accessname", accessRights)
-                    .getSingleResult();
-        }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "No result in getAccess()", noResult);
-            return null;
-        }
-        return access;
-    }
-
     public Group getGroupByGroupId(int groupId) {
 
         Group group = null;
@@ -184,33 +150,7 @@ public class GroupBean {
         return group;
     }
 
-    public Group getGroup(String groupName) {
-
-        Group group = null;
-        try {
-            group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupName=:groupname")
-                    .setParameter("groupname", groupName)
-                    .getSingleResult();
-        }catch(NoResultException noResult) {
-            logger.log(Level.WARNING, "No result in getGroup()", noResult);
-            return null;
-        }
-        return group;
-    }
-
-    public int getGroupId(String groupName) {
-
-        Group group = getGroup(groupName);
-        if (group == null) {
-            return -1;
-        }
-        return group.getGroupId();
-
-    }
-
     public Group createGroup(Group group) {
-
-       // Group g = new Group(groupName);
 
         em.persist(group);
         em.flush();
@@ -219,62 +159,7 @@ public class GroupBean {
 
 
     }
- /*   public Group createGroup(String groupName) {
 
-        Group g = new Group(groupName);
-
-        em.persist(g);
-        em.flush();
-
-        return g;
-
-
-    }*/
-
-    public UserGroup createUserGroup(User u, Group g, Access a) {
-
-
-/*
-        Access a = (Access)em.createQuery("SELECT a FROM Access a WHERE a.accessId =:accessid")
-                            .setParameter("accessid", accessId)
-                            .getSingleResult();
-
-        Group g = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId =:groupid")
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-
-        User u = (User)em.createQuery("SELECT u FROM User u WHERE u.userId =:userid")
-                .setParameter("userid", userId)
-                .getSingleResult();*/
-
-        UserGroup ug = new UserGroup(g, u, a);
-
-        ug.setUserId(u.getUserId());
-        ug.setGroupId(g.getGroupId());
-
-        //  em.getTransaction().begin();
-        em.persist(ug);
-        //       em.flush();
-        //  em.getTransaction().commit();
-        return ug;
-
-    }
-
-/*    public UserGroup getUserGroup(int userId, int groupId) {
-
-        UserGroup ug;
-        try {
-            ug = (UserGroup)em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.userId =:userid AND ug.groupId =:groupid")
-                    .setParameter("userid", userId)
-                    .setParameter("groupid", groupId)
-                    .getSingleResult();
-        } catch (NoResultException noResult) {
-            logger.log(Level.WARNING, "No result in getUserGroup()", noResult);
-            return null;
-        }
-
-        return ug;
-    }*/
 
     public void addUserGroupToGroupList(Group group, UserGroup userGroup) {
         if (group.getMembers() == null) {
@@ -286,7 +171,7 @@ public class GroupBean {
         List<UserGroup> p = group.getMembers();
         p.add(userGroup);
         group.setMembers(p);
-        em.persist(group);
+        em.persist(em.contains(group) ? group : em.merge(group));
 
 
     }

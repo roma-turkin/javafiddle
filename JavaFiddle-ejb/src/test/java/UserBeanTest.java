@@ -59,7 +59,7 @@ public class UserBeanTest {
 
 
 
-        initialize(userBean, groupBean, projectBean, accessBean);
+        initialize(userBean, groupBean, projectBean, accessBean, userGroupBean);
         //1) Check user adding-------------------------------------------------------------------
         User u = userBean.getUser("skotti");
         //projectBean.createCopy();
@@ -90,7 +90,7 @@ public class UserBeanTest {
 
     }
 
-    private void initialize(UserBean userBean, GroupBean groupBean, ProjectBean projectBean, AccessBean accessBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private void initialize(UserBean userBean, GroupBean groupBean, ProjectBean projectBean, AccessBean accessBean, UserGroupBean userGroupBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
         User user1 = new User("Nastia", "Ruzh", "skotti", "aa", "12345", null, null);
         User uu = userBean.register(user1);
@@ -101,11 +101,11 @@ public class UserBeanTest {
         Access access = new Access("full");
         Access a = accessBean.createAccess(access);
         UserGroup userGroup = new UserGroup(g,uu,a);
-        groupBean.createUserGroup(uu,g,a);
+        userGroupBean.createUserGroup(uu,g,a);
         User user3 = new User("Bar", "Stins", "barny", "aa", "123gg5", null, null);
         User uu2 = userBean.register(user3);
       //  User uu1 = userBean.register("Bar", "Stins", "barny", "aa", "123gg5");
-        groupBean.createUserGroup(uu2,g,a);
+        userGroupBean.createUserGroup(uu2,g,a);
 
        // Project p = projectBean.createProject(1, "", "firstproj");
 

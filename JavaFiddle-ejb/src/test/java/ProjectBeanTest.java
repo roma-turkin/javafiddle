@@ -43,6 +43,7 @@ public class ProjectBeanTest {
         ProjectBean projectBean = null;
         HashBean hashBean = null;
         AccessBean accessBean = null;
+        UserGroupBean userGroupBean = null;
 
         try {
             projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
@@ -50,6 +51,7 @@ public class ProjectBeanTest {
             groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
             hashBean = (HashBean) context.lookup("java:global/JavaFiddle-ejb/HashBean");
             accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
+            userGroupBean = (UserGroupBean) context.lookup("java:global/JavaFiddle-ejb/UserGroupBean");
 
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
@@ -57,11 +59,11 @@ public class ProjectBeanTest {
         Assert.assertNotNull(userBean);
 
 
-        initialize(userBean, groupBean, accessBean);
+        initialize(userBean, groupBean, accessBean, userGroupBean);
         Project project = new Project("first_proj", null);
         project = projectBean.createProject(1,project);
 
-        Group g = groupBean.getGroup("default");
+        Group g = groupBean.getGroupByName("default");
 
         Assert.assertNotNull(project);
         for(Project p: g.getProjects()){
@@ -86,7 +88,7 @@ public class ProjectBeanTest {
 
     }
 
-    private void initialize(UserBean userBean, GroupBean groupBean, AccessBean accessBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private void initialize(UserBean userBean, GroupBean groupBean, AccessBean accessBean, UserGroupBean userGroupBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
         User user1 = new User("Nastia", "Ruzh", "skotti", "aa", "12345", null, null);
         User uu = userBean.register(user1);
@@ -100,11 +102,11 @@ public class ProjectBeanTest {
         Group g = groupBean.createGroup(group);
 
 
-        groupBean.createUserGroup(uu,g,a);
+        userGroupBean.createUserGroup(uu,g,a);
 
         User user3 = new User("Bar", "Stins", "barny", "aa", "123gg5", null, null);
         User uu3 = userBean.register(user3);
-        groupBean.createUserGroup(uu3,g,a);
+        userGroupBean.createUserGroup(uu3,g,a);
 
 
     }

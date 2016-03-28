@@ -65,7 +65,8 @@ public class GroupBeanTest {
 
 
         initializeAndCreate(groupBean, projectBean,userBean, accessBean);
-        int groupId = groupBean.getGroup("extended").getGroupId();
+        int groupId = groupBean.getGroupByGroupId(1).getGroupId();
+      //  userGroupBean.getUserGroup(1,1);
 //added member-----------------------------------------------------------
         Group group = groupBean.getGroupByGroupId(1);
         User user1 = userBean.getUser("barny");
@@ -75,7 +76,7 @@ public class GroupBeanTest {
         groupBean.addMember(group,user1,access1);
         groupBean.addMember(group,user2,access2);
 //check if member was added----------------------------------------------
-        group = groupBean.getGroup("extended");
+        group = groupBean.getGroupByGroupId(1);
         Assert.assertNotNull(group);
         System.out.println(group.getGroupName());
         List<UserGroup> gr = group.getMembers();
@@ -124,6 +125,10 @@ public class GroupBeanTest {
         Access a = accessBean.createAccess(access);
         Access access2 = new Access("full");
         Access a2 = accessBean.createAccess(access2);
+
+       // groupBean.createUserGroup(uu,g,a);
+
+
     }
 }
 

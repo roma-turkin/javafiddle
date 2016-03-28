@@ -1,5 +1,6 @@
 package ru.javafiddle.core.ejb;
 
+import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.NoResultException;
@@ -19,6 +20,12 @@ import java.util.logging.Logger;
 
 @Stateless
 public class ProjectBean {
+
+    @EJB
+    private HashBean hashBean;
+
+    @EJB
+    private GroupBean groupBean;
 
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
@@ -46,7 +53,7 @@ public class ProjectBean {
         Hash hashes = new Hash();
 
         //-----------------------------------------get group, corresponding to this id
-        group = GroupBean.class.newInstance().getGroupByGroupId(groupId);
+        group = groupBean.getGroupByGroupId(groupId);
 
         //-----------------------------------------set information related to project
         project.setProjectName(project.getProjectName());
@@ -54,7 +61,7 @@ public class ProjectBean {
         em.persist(project);
         em.flush();
         //-----------------------------------------set hash
-        String projectHash = HashBean.class.newInstance().getHashForNewProject(project.getProjectId());
+        String projectHash = hashBean.getHashForNewProject(project.getProjectId());
         hashes.setHash(projectHash);
         project.setHash(hashes);
         hashes.setProject(project);
@@ -87,7 +94,7 @@ public class ProjectBean {
         em.persist(newProject);
 
         Hash newHash = new Hash();
-        newHash.setHash(HashBean.class.newInstance().getHashForNewProject(newProject.getProjectId()));
+        newHash.setHash(hashBean.getHashForNewProject(newProject.getProjectId()));
         newProject.setHash(newHash);
 //------------------------------------------------------------we don't need to persist hash entity separetely
 //------------------------------------------------------------as cascade type is mentioned
