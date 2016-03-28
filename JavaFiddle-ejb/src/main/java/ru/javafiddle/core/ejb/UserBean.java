@@ -46,7 +46,6 @@ public class UserBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    //public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
     public User register(User user) {
         //search for registered class
         Status st = em.find(Status.class,DEFAULT_USER_STATUS);
@@ -84,9 +83,7 @@ public class UserBean {
         return user;
 
     }
-    //In services there is a problem with this function
-//Look and correct two types of nicks.
-   // public User setUser(String nickName, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+
 public User updateUser(User newUser) {
 
         User oldUser = getUser(newUser.getNickName());
@@ -96,18 +93,7 @@ public User updateUser(User newUser) {
 
     }
 
-
-    //we need to delete all entries from usergroup table too for this user
-    //if we set deleteUser(User user) it seems to me, that this entity will be detached from the context
-    //will merge help????
-    public User deleteUser(String nickName) {
-
-        User user;
-
-        user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName =:nickName")
-                .setParameter("nickName", nickName)
-                .getSingleResult();
-
+    public User deleteUser(User user) {
 
         TypedQuery<UserGroup> query =
                 em.createQuery("SELECT u FROM UserGroup u WHERE u.userId =:userid", UserGroup.class);
@@ -119,13 +105,11 @@ public User updateUser(User newUser) {
             em.remove(u1);
         }
 
-        em.remove(user);
+        em.remove(em.contains(user) ? user : em.merge(user));
         return user;
 
     }
 
-
-//    public List<String> getUserProjects(String nickName)
     public List<String> getUserProjects(User user) {
         List<String> hashes = new LinkedList<String>();
         List<UserGroup> groups = user.getGroups();
@@ -190,7 +174,5 @@ public User updateUser(User newUser) {
 
         return false;
     }
-
-
 
 }

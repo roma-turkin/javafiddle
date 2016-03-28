@@ -75,14 +75,7 @@ public class UserBeanTest {
         //3) Info printing
         System.out.println(uug.getGroupId());
         System.out.println(u.getFirstName());
-
-        /* Separate scenario
-        userBean.deleteUser("skotti");
-        u = userBean.getUser("skotti");
-        uug = groupBean.getUserGroup(1,1);
-        if (u == null && uug == null ) {
-            System.out.println("SUCCESS");
-        }*/
+        
         //4)Updating user information
         User newUser = new User( "Anastasia", "Ruzh", "skotti", "aa", "12345", null, null);
         userBean.updateUser(newUser);
@@ -92,11 +85,8 @@ public class UserBeanTest {
         Assert.assertEquals("SET USER DIDN'T CHANGE INFO CORRECTLY","Nastia", userBean.getUser("skotti").getFirstName());
 
 
-       // Project p = projectBean.getProject("firstproj","default");
-       // Assert.assertNotNull("NO SUCH PROJECT",p);
-       // System.out.println(p.getProjectName());
-
-        userBean.deleteUser("skotti");
+        User oldUser = userBean.getUser("skotti");
+        userBean.deleteUser(oldUser);
         Assert.assertNull("THE OBJECT WASN'T DELETED",userBean.getUser("skotti"));
 
     }
