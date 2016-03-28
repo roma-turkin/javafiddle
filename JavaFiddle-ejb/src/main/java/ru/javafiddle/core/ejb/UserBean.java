@@ -46,32 +46,24 @@ public class UserBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
-
+    //public User register(String firstName, String lastName, String nickname, String email, String passwordHash) {
+    public User register(User user) {
         //search for registered class
         Status st = em.find(Status.class,DEFAULT_USER_STATUS);
-        User user = new User();
+        if(checkCorrectnessOfNick(user.getNickName())) {
+            user.setStatus(st);
 
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Date date = new Date();
+            user.setRegistrationDate(dateFormat.format(date));
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setNickName(nickname);
-        user.setEmail(email);
-        user.setPasswordHash(passwordHash);
-        user.setStatus(st);
-        //--
+            em.persist(user);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        user.setRegistrationDate(dateFormat.format(date));
-
-        //em.getTransaction().begin();
-        em.persist(user);
-        //       em.flush();
-        // em.getTransaction().commit();
-
-        User uBase = getUser(nickname);
-        return uBase;
+            User uBase = getUser(user.getNickName());
+            return uBase;
+        } else {
+            return null;
+        }
 
     }
 
@@ -94,28 +86,20 @@ public class UserBean {
     }
     //In services there is a problem with this function
 //Look and correct two types of nicks.
-    public User setUser(String nickName, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+   // public User setUser(String nickName, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+public User updateUser(User newUser) {
 
-        User user;
+        User oldUser = getUser(newUser.getNickName());
+        this.setFields(oldUser, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPasswordHash());
 
-        try {
-            user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName = :nickName")
-                    .setParameter("nickName", nickName)
-                    .getSingleResult();
-        } catch (NoResultException noResult) {
-
-            logger.log(Level.WARNING, "No result in retrieving user", noResult);
-            return null;
-        }
-
-        user = this.setFields(user, firstName, lastName, newNickName, email, passwordHash);
-
-        return user;
+        return getUser(newUser.getNickName());
 
     }
 
 
     //we need to delete all entries from usergroup table too for this user
+    //if we set deleteUser(User user) it seems to me, that this entity will be detached from the context
+    //will merge help????
     public User deleteUser(String nickName) {
 
         User user;
@@ -141,12 +125,9 @@ public class UserBean {
     }
 
 
-    public List<String> getUserProjects(String nickName) {
-
+//    public List<String> getUserProjects(String nickName)
+    public List<String> getUserProjects(User user) {
         List<String> hashes = new LinkedList<String>();
-        User user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName=:nickname")
-                .setParameter("nickname", nickName)
-                .getSingleResult();
         List<UserGroup> groups = user.getGroups();
 
      /*   for (UserGroup g:) {
@@ -171,14 +152,12 @@ public class UserBean {
     }
 
 
-    public User setFields(User user, String firstName, String lastName, String newNickName, String email, String passwordHash) {
+    public void setFields(User user, String firstName, String lastName, String email, String passwordHash) {
 
         if(!firstName.equals(""))
             user.setFirstName(firstName);
         if(!lastName.equals(""))
             user.setLastName(lastName);
-        if(!newNickName.equals(""))
-            user.setNickName(newNickName);
         if(!email.equals(""))
             user.setEmail(email);
         if(!passwordHash.equals(""))
@@ -187,7 +166,6 @@ public class UserBean {
 
         em.persist(user);
 
-        return user;
     }
 
     public String getCurUserNick() {
@@ -196,29 +174,23 @@ public class UserBean {
     }
 
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public User updateUser(User user, String nickname) {
-        User u = em.find(User.class,1);
-        System.out.println(u.getNickName());
-        em.merge(u);
-        // User user1 = getUser(user.getNickName());
-        em.getTransaction().begin();
-        u.setNickName(nickname);
-        em.getTransaction().commit();
-        // em.refresh(u);
-        em.flush();
+    public boolean checkCorrectnessOfNick(String nickName) {
 
-        User u1 = getUser(nickname);
-        return u1;
+        User user;
+
+        try {
+            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
+                    .setParameter("nickname", nickName)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
+
+            logger.log(Level.WARNING, "No result in getUser()", noResult);
+            return true;
+        }
+
+        return false;
     }
 
-   /* public void wrongUpdateUser(String nickName, EntityManager em) {
-        em.getTransaction().begin();
-        User u = getUser(nickName, em);
-        u.setEmail("colsvfldkn");
-        em.getTransaction().commit();
-
-    }*/
 
 
 }

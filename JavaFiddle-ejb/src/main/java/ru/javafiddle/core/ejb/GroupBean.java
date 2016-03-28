@@ -55,7 +55,7 @@ public class GroupBean {
         //  em.getTransaction().begin();
         em.persist(ug);
 
-        ug = getUserGroup(user.getUserId(),group.getGroupId());
+        ug = getUserGroup(user.getUserId(), group.getGroupId());
         addUserGroupToGroupList(group, ug);
 
 
@@ -206,6 +206,17 @@ public class GroupBean {
 
     }
 
+    public Group createGroup(Group group) {
+
+       // Group g = new Group(groupName);
+
+        em.persist(group);
+        em.flush();
+
+        return group;
+
+
+    }
     public Group createGroup(String groupName) {
 
         Group g = new Group(groupName);
@@ -217,6 +228,7 @@ public class GroupBean {
 
 
     }
+
 
     public Access createAccess(String accessName) {
         Access a = new Access(accessName);

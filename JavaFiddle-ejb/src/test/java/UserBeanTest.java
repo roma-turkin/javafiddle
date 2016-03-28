@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.javafiddle.core.ejb.AccessBean;
 import ru.javafiddle.core.ejb.GroupBean;
 import ru.javafiddle.core.ejb.ProjectBean;
 import ru.javafiddle.core.ejb.UserBean;
@@ -45,11 +46,13 @@ public class UserBeanTest {
         UserBean userBean = null;
         GroupBean groupBean = null;
         ProjectBean projectBean = null;
+        AccessBean accessBean = null;
 
         try {
             userBean = (UserBean) context.lookup("java:global/JavaFiddle-ejb/UserBean");
             groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
             projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
+            accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
         }
@@ -57,7 +60,7 @@ public class UserBeanTest {
 
 
 
-        initialize(userBean, groupBean, projectBean);
+        initialize(userBean, groupBean, projectBean, accessBean);
         //1) Check user adding-------------------------------------------------------------------
         User u = userBean.getUser("skotti");
         //projectBean.createCopy();
@@ -81,10 +84,12 @@ public class UserBeanTest {
             System.out.println("SUCCESS");
         }*/
         //4)Updating user information
-        userBean.setUser("skotti", "Anastasia", "Ruzh", "skot", "aa", "12345");
-        Assert.assertNotNull("SET USER DIDN'T CHANGE INFO CORRECTLY",userBean.getUser("skot"));
-        userBean.setUser("skot", "Nastia", "Ruzh", "skotti", "aa", "12345");
-        Assert.assertNotNull("SET USER DIDN'T CHANGE INFO CORRECTLY",userBean.getUser("skotti"));
+        User newUser = new User( "Anastasia", "Ruzh", "skotti", "aa", "12345", null, null);
+        userBean.updateUser(newUser);
+        Assert.assertEquals("SET USER DIDN'T CHANGE INFO CORRECTLY","Anastasia",userBean.getUser("skotti").getFirstName());
+        newUser = new User( "Nastia", "Ruzh", "skotti", "aa", "12345", null, null);
+        userBean.updateUser(newUser);
+        Assert.assertEquals("SET USER DIDN'T CHANGE INFO CORRECTLY","Nastia", userBean.getUser("skotti").getFirstName());
 
 
        // Project p = projectBean.getProject("firstproj","default");
@@ -96,17 +101,24 @@ public class UserBeanTest {
 
     }
 
-    private void initialize(UserBean userBean, GroupBean groupBean, ProjectBean projectBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    private void initialize(UserBean userBean, GroupBean groupBean, ProjectBean projectBean, AccessBean accessBean) throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        User uu = userBean.register("Nastia", "Ruzh", "skotti", "aa", "12345");
-        userBean.register("Vania", "Truf", "vivi", "fff", "hvoehvfknd");
-        Group g = groupBean.createGroup("default");
-        Access a = groupBean.createAccess("full");
+        User user1 = new User("Nastia", "Ruzh", "skotti", "aa", "12345", null, null);
+        User uu = userBean.register(user1);
+        User user2 = new User("Vania", "Truf", "vivi", "fff", "hvoehvfknd", null, null);
+        User uu1 = userBean.register(user2);
+        Group group = new Group("default");
+        Group g = groupBean.createGroup(group);
+        Access access = new Access("full");
+        Access a = accessBean.createAccess(access);
+        UserGroup userGroup = new UserGroup(g,uu,a);
         groupBean.createUserGroup(uu,g,a);
-        User uu1 = userBean.register("Bar", "Stins", "barny", "aa", "123gg5");
-        groupBean.createUserGroup(uu1,g,a);
+        User user3 = new User("Bar", "Stins", "barny", "aa", "123gg5", null, null);
+        User uu2 = userBean.register(user3);
+      //  User uu1 = userBean.register("Bar", "Stins", "barny", "aa", "123gg5");
+        groupBean.createUserGroup(uu2,g,a);
 
-       // Project p = projectBean.createProject("firstproj", "default");
+       // Project p = projectBean.createProject(1, "", "firstproj");
 
     }
 

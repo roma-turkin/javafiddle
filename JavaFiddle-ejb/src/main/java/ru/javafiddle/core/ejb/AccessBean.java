@@ -42,6 +42,14 @@ public class AccessBean {
 
     }
 
+    public Access createAccess (Access access) {
+        em.persist(access);
+        em.flush();
+
+        return access;
+
+    }
+
 
 
 
