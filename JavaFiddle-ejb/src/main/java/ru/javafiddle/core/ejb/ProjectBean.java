@@ -39,12 +39,13 @@ public class ProjectBean {
     }
 
     //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
- //   public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
+ //public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
     public Project createProject(int groupId, Project project) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
  //groupid or Group???
         if (project.getHash() != null) {
-            if (!project.getHash().getHash().equals(""))
-                return createCopy(project.getHash());
+            if (project.getHash().getHash() != null)
+                if (!project.getHash().getHash().equals(""))
+                    return createCopy(project.getHash());
 
         }
         Group group;
