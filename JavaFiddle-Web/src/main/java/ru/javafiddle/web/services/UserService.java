@@ -61,7 +61,7 @@ public class UserService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUserInfo() {
 
-        try {
+//        try {
             String nickName = userBean.getCurUserNick();
 
             User user = userBean.getUser(nickName);
@@ -77,11 +77,11 @@ public class UserService {
 
             return Response.ok(userJF).build();
 
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
-        }
+//        } catch (NotFoundException e) {
+//            return Response.status(Response.Status.NOT_FOUND).build();
+//        } catch (Exception e) {
+//            return Response.serverError().build();
+//        }
 
     }
 
