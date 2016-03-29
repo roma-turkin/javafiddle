@@ -48,7 +48,6 @@ public class ProjectBean {
 
         }
         Group group;
-        //Project project = new Project();
         Hash hashes = new Hash();
 
         //-----------------------------------------get group, corresponding to this id
@@ -107,8 +106,6 @@ public class ProjectBean {
 
     }
 
-
-
     public Group addProject(Group group, Project project) {
 
         if (group.getProjects() == null) {
@@ -148,11 +145,7 @@ public class ProjectBean {
         Project project = getProjectByProjectHash(projectHash);
 
         em.remove(project);
-
-
     }
-
-
 
     public Project getProjectByProjectHash(String projectHash) {
 
@@ -168,25 +161,15 @@ public class ProjectBean {
         }
 
         return project;
-
     }
 
 
     public List<String> getUserProjects(User user) {
         List<String> hashes = new LinkedList<String>();
 
-        //List<UserGroup> groups = user.getGroups();
         TypedQuery<UserGroup> query =
                 em.createQuery("SELECT u FROM UserGroup u WHERE u.userId =:userid", UserGroup.class);
         List<UserGroup> groups = query.setParameter("userid", user.getUserId()).getResultList();
-
-     /*   for (UserGroup g:) {
-
-            List<Project> projects = UserGroup.getProjects();
-            for (Project p:projects) {
-                hashes.add(p.getHash().getHash());
-            }
-        }*/
 
         for (UserGroup userGroup:groups) {
 
@@ -198,7 +181,6 @@ public class ProjectBean {
         }
 
         return hashes;
-
     }
 
 

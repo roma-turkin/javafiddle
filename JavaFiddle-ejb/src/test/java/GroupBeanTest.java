@@ -126,7 +126,6 @@ public class GroupBeanTest {
         Access access2 = new Access("full");
         Access a2 = accessBean.createAccess(access2);
 
-       // groupBean.createUserGroup(uu,g,a);
 
 
     }

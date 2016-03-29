@@ -37,9 +37,7 @@ public class GroupBean {
 
 //we always know that the group were we are trying to add a user exits now
 //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
-
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-//    public void addMember(int groupId, String groupName,String userNickName, String accessRights) {
     public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
         if (group.getGroupId() == -1) {
@@ -57,28 +55,57 @@ public class GroupBean {
         ug = userGroup.getUserGroup(user.getUserId(), group.getGroupId());
         addUserGroupToGroupList(group, ug);
 
+    }
+
+    public void addUserGroupToGroupList(Group group, UserGroup userGroup) {
+        if (group.getMembers() == null) {
+
+            List<UserGroup> p = new LinkedList<>();
+            p.add(userGroup);
+            group.setMembers(p);
+        }
+
+        TypedQuery<UserGroup> query =
+                em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.groupId =:groupid", UserGroup.class);
+        List<UserGroup> p = query.setParameter("groupid", group.getGroupId()).getResultList();
+
+        p.add(userGroup);
+        group.setMembers(p);
+        em.persist(em.contains(group) ? group : em.merge(group));
+
+    }
+
+    public void deleteMember(int groupId, String userNickName) {
+
+        int userId = getUserId(userNickName);
+
+        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid",UserGroup.class);
+        List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
+                .setParameter("userid", userId)
+                .getResultList();
+
+
+        for (UserGroup ug:userGroupsToDelete) {
+            em.remove(ug);
+        }
 
     }
 
     public  Map<String, String> getMemberAccessMap(int groupId){
 
-        //int groupId = getGroupId(groupName);
-
-        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId",UserGroup.class);
+        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId", UserGroup.class);
         List<UserGroup> usergroup = q.setParameter("groupId", groupId)
                 .getResultList();
 
 
         Map<String, String> mappedUserGroup = new HashMap<String, String>(usergroup.size());
-        //UserGroup[] arrayOfUserGroup = (UserGroup[]) usergroup.toArray();
 
         for (UserGroup ug: usergroup) {
 
-            // UserGroup userGroup = arrayOfUserGroup[i];
-            User nickName = (User)em.createQuery("SELECT u.member FROM UserGroup u WHERE u.member.userId =:userid")
+            User nickName = (User) em.createQuery("SELECT u.member FROM UserGroup u WHERE u.member.userId =:userid")
                     .setParameter("userid", ug.getUserId())
                     .getSingleResult();
-            Access access =   (Access)em.createQuery("SELECT u.access FROM UserGroup u WHERE u.access.accessId =:accessid")
+            Access access =   (Access) em.createQuery("SELECT u.access FROM UserGroup u WHERE u.access.accessId =:accessid")
                     .setParameter("accessid", ug.getAccess().getAccessId())
                     .getSingleResult();
             mappedUserGroup.put(nickName.getNickName(), access.getAccessName());
@@ -109,27 +136,10 @@ public class GroupBean {
     }
     */
 
-    public void deleteMember(int groupId, String userNickName) {
-
-        int userId = getUserId(userNickName);
-
-        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid",UserGroup.class);
-        List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
-                .setParameter("userid", userId)
-                .getResultList();
-
-
-        for (UserGroup ug:userGroupsToDelete) {
-            em.remove(ug);
-
-        }
-
-
-    }
 
     private int getUserId(String userNickName) {
 
-        User user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
+        User user = (User) em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
                 .setParameter("nickname", userNickName)
                 .getSingleResult();
         return user.getUserId();
@@ -142,7 +152,7 @@ public class GroupBean {
             group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
                     .setParameter("groupid", groupId)
                     .getSingleResult();
-        }catch(NoResultException noResult) {
+        }catch( NoResultException noResult) {
             logger.log(Level.WARNING, "No result in getGroup()", noResult);
             return null;
         }
@@ -156,29 +166,6 @@ public class GroupBean {
         em.flush();
 
         return group;
-
-
-    }
-
-
-    public void addUserGroupToGroupList(Group group, UserGroup userGroup) {
-        if (group.getMembers() == null) {
-
-            List<UserGroup> p = new LinkedList<>();
-            p.add(userGroup);
-            group.setMembers(p);
-        }
-
-        //List<UserGroup> p = group.getMembers();
-        TypedQuery<UserGroup> query =
-                em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.groupId =:groupid", UserGroup.class);
-        List<UserGroup> p = query.setParameter("groupid", group.getGroupId()).getResultList();
-
-        p.add(userGroup);
-        group.setMembers(p);
-        em.persist(em.contains(group) ? group : em.merge(group));
-
-
     }
 
     public List<Group> getAllGroups() {

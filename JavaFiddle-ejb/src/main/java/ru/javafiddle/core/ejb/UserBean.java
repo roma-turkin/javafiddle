@@ -66,23 +66,6 @@ public class UserBean {
 
     }
 
-    public User getUser(String nickName) {
-
-        User user;
-
-        try {
-            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
-                    .setParameter("nickname", nickName)
-                    .getSingleResult();
-        } catch (NoResultException noResult) {
-
-            logger.log(Level.WARNING, "No result in getUser()", noResult);
-            return null;
-        }
-
-        return user;
-
-    }
 
 public User updateUser(User newUser) {
 
@@ -110,7 +93,23 @@ public User updateUser(User newUser) {
 
     }
 
+    public User getUser(String nickName) {
 
+        User user;
+
+        try {
+            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
+                    .setParameter("nickname", nickName)
+                    .getSingleResult();
+        } catch (NoResultException noResult) {
+
+            logger.log(Level.WARNING, "No result in getUser()", noResult);
+            return null;
+        }
+
+        return user;
+
+    }
 
     public void setFields(User user, String firstName, String lastName, String email, String passwordHash) {
 
@@ -122,7 +121,6 @@ public User updateUser(User newUser) {
             user.setEmail(email);
         if(!passwordHash.equals(""))
             user.setPasswordHash(passwordHash);
-
 
         em.persist(user);
 

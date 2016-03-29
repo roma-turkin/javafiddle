@@ -43,29 +43,13 @@ public class UserGroupBean {
 
     public UserGroup createUserGroup(User u, Group g, Access a) {
 
-
-/*
-        Access a = (Access)em.createQuery("SELECT a FROM Access a WHERE a.accessId =:accessid")
-                            .setParameter("accessid", accessId)
-                            .getSingleResult();
-
-        Group g = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId =:groupid")
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-
-        User u = (User)em.createQuery("SELECT u FROM User u WHERE u.userId =:userid")
-                .setParameter("userid", userId)
-                .getSingleResult();*/
-
         UserGroup ug = new UserGroup(g, u, a);
 
         ug.setUserId(u.getUserId());
         ug.setGroupId(g.getGroupId());
 
-        //  em.getTransaction().begin();
         em.persist(ug);
-        //       em.flush();
-        //  em.getTransaction().commit();
+
         return ug;
 
     }
