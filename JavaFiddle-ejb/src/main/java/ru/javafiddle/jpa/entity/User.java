@@ -43,7 +43,7 @@ public class User {
     @JoinColumn(name = "\"statusId\"")
     private Status status;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany( mappedBy = "member")
     private List<UserGroup> groups;
 
 

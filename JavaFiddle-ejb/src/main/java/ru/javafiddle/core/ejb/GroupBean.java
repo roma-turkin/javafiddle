@@ -168,7 +168,12 @@ public class GroupBean {
             p.add(userGroup);
             group.setMembers(p);
         }
-        List<UserGroup> p = group.getMembers();
+
+        //List<UserGroup> p = group.getMembers();
+        TypedQuery<UserGroup> query =
+                em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.groupId =:groupid", UserGroup.class);
+        List<UserGroup> p = query.setParameter("groupid", group.getGroupId()).getResultList();
+
         p.add(userGroup);
         group.setMembers(p);
         em.persist(em.contains(group) ? group : em.merge(group));
@@ -183,5 +188,14 @@ public class GroupBean {
 
         return listOfGroups;
 
+    }
+
+    public List<UserGroup> getGroupMembers(int groupId) {
+
+        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId",UserGroup.class);
+        List<UserGroup> userGroup = q.setParameter("groupId", groupId)
+                .getResultList();
+
+        return userGroup;
     }
 }

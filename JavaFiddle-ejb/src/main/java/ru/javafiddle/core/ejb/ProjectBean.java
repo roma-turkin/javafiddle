@@ -3,10 +3,9 @@ package ru.javafiddle.core.ejb;
 import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import ru.javafiddle.jpa.entity.*;
 
@@ -172,9 +171,14 @@ public class ProjectBean {
 
     }
 
+
     public List<String> getUserProjects(User user) {
         List<String> hashes = new LinkedList<String>();
-        List<UserGroup> groups = user.getGroups();
+
+        //List<UserGroup> groups = user.getGroups();
+        TypedQuery<UserGroup> query =
+                em.createQuery("SELECT u FROM UserGroup u WHERE u.userId =:userid", UserGroup.class);
+        List<UserGroup> groups = query.setParameter("userid", user.getUserId()).getResultList();
 
      /*   for (UserGroup g:) {
 
@@ -195,6 +199,17 @@ public class ProjectBean {
 
         return hashes;
 
+    }
+
+
+    //for testing reasons
+    public List<Project> getProjects(Group group) {
+
+        TypedQuery<Project> q= em.createQuery("SELECT p FROM Project p WHERE p.group.groupId =:groupid",Project.class);
+        List<Project> projects = q.setParameter("groupid", group.getGroupId())
+                .getResultList();
+
+        return projects;
     }
 
 

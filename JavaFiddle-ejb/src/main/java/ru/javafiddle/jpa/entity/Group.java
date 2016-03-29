@@ -21,10 +21,10 @@ public class Group {
     @Column(name = "\"groupName\"")
     private String groupName;
 
-    @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
+    @OneToMany(mappedBy = "group")
     List<Project> projects;
 
-    @OneToMany(fetch= FetchType.EAGER, mappedBy = "group")
+    @OneToMany(mappedBy = "group")
     private List<UserGroup>  members;
 
     public Group(String groupName) {

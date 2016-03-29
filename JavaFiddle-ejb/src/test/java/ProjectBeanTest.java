@@ -8,6 +8,7 @@ import javax.naming.NamingException;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -63,10 +64,10 @@ public class ProjectBeanTest {
         Project project = new Project("first_proj", null);
         project = projectBean.createProject(1,project);
 
-        Group g = groupBean.getGroupByName("default");
+        Group g = groupBean.getGroupByGroupId(1);
 
         Assert.assertNotNull(project);
-        for(Project p: g.getProjects()){
+        for(Project p: projectBean.getProjects(g)){
             Assert.assertEquals("Not only one entity was added", "first_proj", p.getProjectName());
         }
 
@@ -75,6 +76,11 @@ public class ProjectBeanTest {
         project2 = projectBean.createProject(1,project2);
         Assert.assertNotNull(project2);
         Assert.assertFalse("Hashes are identical", project.getHash().getHash().equals(project2.getHash().getHash()));
+
+        //getUserProjects()
+        User user = userBean.getUser("skotti");
+        List<String> projects = projectBean.getUserProjects(user);
+        Assert.assertNotNull("No projects", projects);
 
         //projectBean.changeProjectName(project2.getHash().getHash(),"second_proj");
         Project newProject = new Project("second_proj", null);

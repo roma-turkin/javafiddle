@@ -79,7 +79,7 @@ public class GroupBeanTest {
         group = groupBean.getGroupByGroupId(1);
         Assert.assertNotNull(group);
         System.out.println(group.getGroupName());
-        List<UserGroup> gr = group.getMembers();
+        List<UserGroup> gr = groupBean.getGroupMembers(1);
 
         Assert.assertNotNull("GET MEMBERS RETURNED NULL",gr);
         Assert.assertFalse("THE LIST OF MEMBERS IS EMPTY", gr.isEmpty());
@@ -92,7 +92,7 @@ public class GroupBeanTest {
         for (UserGroup ug:gr) {
             System.out.println(ug.getMember().getFirstName());
         }
-/*
+
 
 //check getAllMembers()----------------------------------------------------------------
         Assert.assertEquals("NOT ENOUGH MEMBERS IN MAP", 2,groupBean.getMemberAccessMap(groupId).size());
@@ -106,9 +106,9 @@ public class GroupBeanTest {
         groupBean.deleteMember(groupId,"barny");
         groupBean.deleteMember(groupId, "uollis");
         //check if was deleted
-        group = groupBean.getGroup("extended");
-        gr = group.getMembers();
-        Assert.assertTrue("ERROR", gr.isEmpty());*/
+        group = groupBean.getGroupByGroupId(1);
+        gr = groupBean.getGroupMembers(group.getGroupId());
+        Assert.assertTrue("ERROR", gr.isEmpty());
 
     }
 

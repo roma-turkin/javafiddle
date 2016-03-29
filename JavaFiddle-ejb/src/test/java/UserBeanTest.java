@@ -104,10 +104,8 @@ public class UserBeanTest {
         userGroupBean.createUserGroup(uu,g,a);
         User user3 = new User("Bar", "Stins", "barny", "aa", "123gg5", null, null);
         User uu2 = userBean.register(user3);
-      //  User uu1 = userBean.register("Bar", "Stins", "barny", "aa", "123gg5");
-        userGroupBean.createUserGroup(uu2,g,a);
 
-       // Project p = projectBean.createProject(1, "", "firstproj");
+        userGroupBean.createUserGroup(uu2,g,a);
 
     }
 
