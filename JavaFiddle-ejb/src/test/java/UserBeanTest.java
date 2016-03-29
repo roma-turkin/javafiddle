@@ -16,8 +16,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserBeanTest {
+
+    private static final Logger logger =
+            Logger.getLogger(ProjectBean.class.getName());
 
     EJBContainer ejbContainer;
     Context context;
@@ -70,6 +75,9 @@ public class UserBeanTest {
         //2) Check usergroup  adding-------------------------------------------------------------
         UserGroup uug = userGroupBean.getUserGroup(1,1);
         Assert.assertNotNull(uug);
+        logger.log(Level.INFO,"group id is"+ uug.getGroupId());
+        logger.log(Level.INFO,"user id is"+ uug.getUserId());
+        logger.log(Level.INFO,"nickname of user is"+ uug.getMember().getNickName());
 
         //3) Info printing
         System.out.println(uug.getGroupId());
