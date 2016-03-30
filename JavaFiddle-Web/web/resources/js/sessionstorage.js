@@ -22,7 +22,8 @@ function isCurrent(id) {
 }
 //CURRENT PROJECT
 function setCurrentProjectId(id) {
-    var fileId = id.substring(id.indexOf('_')+1, id.lastIndexOf('_'));
+    //id comes in format node_id_[type], so we need to extract id
+    var fileId = id.match(/[\d]+/);
     var projectId = -1;
     var userProjects = JSON.parse(sessionStorage.userProjects);
     userProjects.forEach(function(item) {
@@ -39,12 +40,12 @@ function isFileStored(projectStructure, fileId) {
     if(projectStructure.fileId == fileId) {
         return true;
     }
-    if(projectStructure.childFiles.length == 0) {
+    if(projectStructure.childNodes.length == 0) {
         return false;
     }
-    var childFiles = projectStructure.childFiles;
+    var childNodes = projectStructure.childNodes;
     var isStored = false;
-    childFiles.forEach(function(item) {
+    childNodes.forEach(function(item) {
         isStored = isStored || isFileStored(item,fileId);
     });
     return isStored;
@@ -130,7 +131,7 @@ function getCurrentFileText() {
 
         editor.session.getUndoManager().reset();
         editor.setReadOnly(false);
-    }else {
+    } else {
         getFileContent(id);
     }
     

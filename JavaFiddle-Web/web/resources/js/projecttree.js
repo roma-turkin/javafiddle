@@ -33,6 +33,13 @@ function buildTree() {
     });
 }
 
+/*
+This function recursively traverse the project tree sent from server,
+appending corresponding nodes to tree on page and setting corresponding
+types and functions
+Depending on type each node can be added with different function, that's why
+here's free if-else statements
+ */
 function appendNodes(projectStructure, selector) {
     if(projectStructure.type === "root" || projectStructure.type === "sources") {
 
@@ -52,12 +59,12 @@ function appendNodes(projectStructure, selector) {
                             <ul id ="node_' + projectStructure.fileId + '_' + projectStructure.type + '"/></li>');
     }
 
-    if(projectStructure.childFiles.length == 0) {
+    if(projectStructure.childNodes.length == 0) {
         return;
     }
 
-    for(var i = 0; i < projectStructure.childFiles.length; i++){
-        appendNodes(projectStructure.childFiles[i], '#node_'+ projectStructure.fileId + '_' + projectStructure.type);
+    for(var i = 0; i < projectStructure.childNodes.length; i++){
+        appendNodes(projectStructure.childNodes[i], '#node_'+ projectStructure.fileId + '_' + projectStructure.type);
     }
 
 }

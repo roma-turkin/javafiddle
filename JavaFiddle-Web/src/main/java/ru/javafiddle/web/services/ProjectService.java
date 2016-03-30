@@ -1,15 +1,14 @@
 package ru.javafiddle.web.services;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 import ru.javafiddle.core.ejb.FileBean;
 import ru.javafiddle.core.ejb.ProjectBean;
 
 import ru.javafiddle.core.ejb.UserBean;
 import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.web.models.ProjectInfo;
-import ru.javafiddle.web.models.ProjectStructure;
+import ru.javafiddle.web.models.ProjectTreeNode;
+import ru.javafiddle.web.utils.ProjectTreeBuilder;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
@@ -25,7 +24,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 
@@ -59,52 +57,10 @@ public class ProjectService {
     public Response getProjectStructure(@PathParam("projectHash") String projectHash) throws Exception {
 
         List<File> projectFiles = fileBean.getProjectFiles(projectHash);
-        ProjectStructure projectStructure = new ProjectStructure();
+        ProjectTreeBuilder projectTreeBuilder = new ProjectTreeBuilder();
+        ProjectTreeNode projectTree = projectTreeBuilder.build(projectFiles);
 
-        for(File f: projectFiles) {
-
-            String path = f.getPath();
-            String[] pathComponents = path.split("/");
-
-            ProjectStructure tmp = projectStructure;
-            for(int i=0; i<pathComponents.length -1; i++) {
-
-                if(tmp.getName() == null) {
-                    tmp.setName(pathComponents[i]);
-                    ProjectStructure newChild = new ProjectStructure();
-                    tmp.getChildFiles().add(newChild);
-                    tmp = newChild;
-                    continue;
-                }
-
-                if(tmp.getName().compareTo(pathComponents[i]) == 0) {
-                    List<ProjectStructure> childFiles = tmp.getChildFiles();
-                    boolean found = false;
-                    for(ProjectStructure ps: childFiles) {
-                        if(ps.getName().compareTo(pathComponents[i+1]) == 0) {
-                            tmp = ps;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if(!found) {
-                        ProjectStructure newChild = new ProjectStructure();
-                        tmp.getChildFiles().add(newChild);
-                        tmp = newChild;
-                    }
-                    continue;
-                }
-
-                throw new Exception("Invalid project stucture" + tmp.getName());
-
-            }
-
-            tmp.setName(f.getFileName());
-            tmp.setType(f.getType().getTypeName());
-            tmp.setFileId(f.getFileId());
-        }
-
-        return Response.ok(projectStructure).build();
+        return Response.ok(projectTree).build();
     }
 
     @POST
