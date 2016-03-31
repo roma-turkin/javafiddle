@@ -1,5 +1,10 @@
 package ru.javafiddle.core.ejb;
 
+import ru.javafiddle.jpa.entity.Access;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
+
 import javax.ejb.EJB;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -15,11 +20,10 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import ru.javafiddle.jpa.entity.*;
+
 
 
 @Stateless
-
 public class GroupBean {
 
     @EJB
@@ -31,12 +35,12 @@ public class GroupBean {
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    public GroupBean(){
+    public GroupBean() {
 
     }
 
-//we always know that the group were we are trying to add a user exits now
-//CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
+    //we always know that the group were we are trying to add a user exits now
+    //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
@@ -79,7 +83,7 @@ public class GroupBean {
 
         int userId = getUserId(userNickName);
 
-        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid",UserGroup.class);
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid", UserGroup.class);
         List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
                 .setParameter("userid", userId)
                 .getResultList();
@@ -91,7 +95,7 @@ public class GroupBean {
 
     }
 
-    public  Map<String, String> getMemberAccessMap(int groupId){
+    public  Map<String, String> getMemberAccessMap(int groupId) {
 
         TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId", UserGroup.class);
         List<UserGroup> usergroup = q.setParameter("groupId", groupId)
@@ -152,7 +156,7 @@ public class GroupBean {
             group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
                     .setParameter("groupid", groupId)
                     .getSingleResult();
-        }catch( NoResultException noResult) {
+        }catch (NoResultException noResult) {
             logger.log(Level.WARNING, "No result in getGroup()", noResult);
             return null;
         }
@@ -170,8 +174,8 @@ public class GroupBean {
 
     public List<Group> getAllGroups() {
 
-        TypedQuery<Group> q= em.createQuery("SELECT g FROM Group g ",Group.class);
-        List<Group> listOfGroups= q.getResultList();
+        TypedQuery<Group> q = em.createQuery("SELECT g FROM Group g ", Group.class);
+        List<Group> listOfGroups = q.getResultList();
 
         return listOfGroups;
 
@@ -179,7 +183,7 @@ public class GroupBean {
 
     public List<UserGroup> getGroupMembers(int groupId) {
 
-        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId",UserGroup.class);
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId", UserGroup.class);
         List<UserGroup> userGroup = q.setParameter("groupId", groupId)
                 .getResultList();
 

@@ -1,8 +1,9 @@
 package ru.javafiddle.core.ejb;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import ru.javafiddle.jpa.entity.Status;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
+
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
@@ -12,16 +13,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.client.Entity;
-
-import ru.javafiddle.jpa.entity.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -41,15 +41,15 @@ public class UserBean {
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    public UserBean(){
+    public UserBean() {
 
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User register(User user) {
         //search for registered class
-        Status st = em.find(Status.class,DEFAULT_USER_STATUS);
-        if(checkCorrectnessOfNick(user.getNickName())) {
+        Status st = em.find(Status.class, DEFAULT_USER_STATUS);
+        if (checkCorrectnessOfNick(user.getNickName())) {
             user.setStatus(st);
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -67,7 +67,7 @@ public class UserBean {
     }
 
 
-public User updateUser(User newUser) {
+    public User updateUser(User newUser) {
 
         User oldUser = getUser(newUser.getNickName());
         this.setFields(oldUser, newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getPasswordHash());
@@ -82,7 +82,7 @@ public User updateUser(User newUser) {
                 em.createQuery("SELECT u FROM UserGroup u WHERE u.userId =:userid", UserGroup.class);
         List<UserGroup> u = query.setParameter("userid", user.getUserId()).getResultList();
 
-        for(Iterator<UserGroup> i = u.iterator(); i.hasNext(); ) {
+        for (Iterator<UserGroup> i = u.iterator(); i.hasNext(); ) {
             UserGroup u1 = i.next();
 
             em.remove(u1);
@@ -98,7 +98,7 @@ public User updateUser(User newUser) {
         User user;
 
         try {
-            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
+            user = (User) em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
                     .setParameter("nickname", nickName)
                     .getSingleResult();
         } catch (NoResultException noResult) {
@@ -113,13 +113,13 @@ public User updateUser(User newUser) {
 
     public void setFields(User user, String firstName, String lastName, String email, String passwordHash) {
 
-        if(!firstName.equals(""))
+        if (!firstName.equals(""))
             user.setFirstName(firstName);
-        if(!lastName.equals(""))
+        if (!lastName.equals(""))
             user.setLastName(lastName);
-        if(!email.equals(""))
+        if (!email.equals(""))
             user.setEmail(email);
-        if(!passwordHash.equals(""))
+        if (!passwordHash.equals(""))
             user.setPasswordHash(passwordHash);
 
         em.persist(user);
@@ -137,7 +137,7 @@ public User updateUser(User newUser) {
         User user;
 
         try {
-            user = (User)em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
+            user = (User) em.createQuery("SELECT u FROM User u WHERE u.nickName =:nickname")
                     .setParameter("nickname", nickName)
                     .getSingleResult();
         } catch (NoResultException noResult) {

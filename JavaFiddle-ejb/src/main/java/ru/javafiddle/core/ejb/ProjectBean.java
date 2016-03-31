@@ -1,18 +1,28 @@
 package ru.javafiddle.core.ejb;
 
-import javax.ejb.EJB;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.persistence.*;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
+import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.Hash;
+import ru.javafiddle.jpa.entity.Library;
+import ru.javafiddle.jpa.entity.Project;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
 
-import ru.javafiddle.jpa.entity.*;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
+
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,9 +49,9 @@ public class ProjectBean {
     }
 
     //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
- //public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
+    //public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
     public Project createProject(int groupId, Project project) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
- //groupid or Group???
+    //groupid or Group???
         if (project.getHash() != null) {
             if (project.getHash().getHash() != null)
                 if (!project.getHash().getHash().equals(""))
@@ -78,7 +88,7 @@ public class ProjectBean {
     public Project createCopy(Hash hash) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
 
         Project oldProject = getProjectByProjectHash(hash.getHash());
-//------------------------------------------------------------we create a new project and set fields
+    //------------------------------------------------------------we create a new project and set fields
         Project newProject = new Project();
         newProject.setProjectName(oldProject.getProjectName());
         List<File> files = oldProject.getFiles();
@@ -88,15 +98,15 @@ public class ProjectBean {
         List<Library> libs = oldProject.getLibraries();
         List<Library> newLibList = new LinkedList<>(libs);
         newProject.setLibraries(newLibList);
-//------------------------------------------------------------we need to persist at first to get the id of our project
-//------------------------------------------------------------and then base the hash on this id
+    //------------------------------------------------------------we need to persist at first to get the id of our project
+    //------------------------------------------------------------and then base the hash on this id
         em.persist(newProject);
 
         Hash newHash = new Hash();
         newHash.setHash(hashBean.getHashForNewProject(newProject.getProjectId()));
         newProject.setHash(newHash);
-//------------------------------------------------------------we don't need to persist hash entity separetely
-//------------------------------------------------------------as cascade type is mentioned
+    //------------------------------------------------------------we don't need to persist hash entity separetely
+    //------------------------------------------------------------as cascade type is mentioned
         newHash.setProject(newProject);
 
         logger.info("Projecct-copy id got from hash " + newHash.getProject().getProjectId());
@@ -141,7 +151,7 @@ public class ProjectBean {
     }
 
 
-    public void deleteProject(String projectHash){
+    public void deleteProject(String projectHash) {
 
         Project project = getProjectByProjectHash(projectHash);
 
@@ -156,7 +166,7 @@ public class ProjectBean {
             project = (Project) em.createQuery("SELECT p FROM Project p WHERE p.hash.hash =:projecthash")
                     .setParameter("projecthash", projectHash)
                     .getSingleResult();
-        } catch( NoResultException noResult) {
+        } catch (NoResultException noResult) {
             logger.log(Level.WARNING, "No result in getProject()", noResult);
             return null;
         }
@@ -188,7 +198,7 @@ public class ProjectBean {
     //for testing reasons
     public List<Project> getProjects(Group group) {
 
-        TypedQuery<Project> q= em.createQuery("SELECT p FROM Project p WHERE p.group.groupId =:groupid",Project.class);
+        TypedQuery<Project> q = em.createQuery("SELECT p FROM Project p WHERE p.group.groupId =:groupid", Project.class);
         List<Project> projects = q.setParameter("groupid", group.getGroupId())
                 .getResultList();
 

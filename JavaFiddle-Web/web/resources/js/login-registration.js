@@ -33,7 +33,7 @@ function register(){
 
     $.ajax({
         type: "POST",
-        url: "https://localhost:8181/javaFiddle/fiddle/users",
+        url: "https://localhost:8181/javaFiddle/fiddle/user",
         contentType: "application/json",
         'data': JSON.stringify(userRegistrationData),
         dataType: "text",

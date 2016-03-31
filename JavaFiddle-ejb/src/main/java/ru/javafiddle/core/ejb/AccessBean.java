@@ -22,7 +22,7 @@ public class AccessBean {
     @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    public AccessBean(){
+    public AccessBean() {
 
     }
 
@@ -34,7 +34,7 @@ public class AccessBean {
             access = (Access) em.createQuery("SELECT p FROM Access p WHERE p.accessName =:accessname")
                     .setParameter("accessname", accessRights)
                     .getSingleResult();
-        }catch(NoResultException noResult) {
+        } catch (NoResultException noResult) {
             logger.log(Level.WARNING, "No result in getAccess()", noResult);
             return null;
         }

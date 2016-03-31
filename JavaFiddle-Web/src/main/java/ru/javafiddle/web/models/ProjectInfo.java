@@ -11,11 +11,13 @@ public class ProjectInfo {
     private String projectHash;
     private String projectName;
     private String userNickName;
+    private Integer groupId;
 
-    public ProjectInfo(String projectHash, String projectName, String userNickName) {
+    public ProjectInfo(String projectHash, String projectName, String userNickName, Integer groupId) {
         this.projectHash = projectHash;
         this.projectName = projectName;
         this.userNickName = userNickName;
+        this.groupId = groupId;
     }
 
     public ProjectInfo() {
@@ -43,5 +45,13 @@ public class ProjectInfo {
 
     public void setUserNickName(String userNickName) {
         this.userNickName = userNickName;
+    }
+
+    public Integer getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Integer groupId) {
+        this.groupId = groupId;
     }
 }
