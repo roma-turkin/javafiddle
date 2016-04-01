@@ -68,7 +68,8 @@
         <dependency>
             <groupId>org.glassfish.main.extras</groupId>
             <artifactId>glassfish-embedded-all</artifactId>
-            <version>4.1</version>
+            <version>4.0</version>
+            <scope>test</scope>
         </dependency>
 
 
