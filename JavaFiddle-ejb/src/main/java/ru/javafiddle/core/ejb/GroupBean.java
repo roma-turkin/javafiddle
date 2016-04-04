@@ -189,4 +189,17 @@ public class GroupBean {
 
         return userGroup;
     }
+
+    public Group getGroupByName(String groupName, User user) {
+
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.userId=:userid", UserGroup.class);
+        List<UserGroup> userGroup = q.setParameter("userid", user.getUserId())
+                .getResultList();
+
+        for (UserGroup ug:userGroup) {
+            if (ug.getGroup().getGroupName().equals(groupName))
+                return ug.getGroup();
+        }
+        return null;
+    }
 }
