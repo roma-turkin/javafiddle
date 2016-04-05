@@ -6,6 +6,7 @@ import ru.javafiddle.core.ejb.ProjectBean;
 
 import ru.javafiddle.core.ejb.UserBean;
 import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.web.exceptions.InvalidProjectStructureException;
 import ru.javafiddle.web.models.ProjectInfo;
 import ru.javafiddle.web.models.ProjectTreeNode;
 import ru.javafiddle.web.utils.ProjectTreeBuilder;
@@ -54,11 +55,17 @@ public class ProjectService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{projectHash}")
-    public Response getProjectStructure(@PathParam("projectHash") String projectHash) throws Exception {
+    public Response getProjectStructure(@PathParam("projectHash") String projectHash) {
 
         List<File> projectFiles = fileBean.getProjectFiles(projectHash);
         ProjectTreeBuilder projectTreeBuilder = new ProjectTreeBuilder();
-        ProjectTreeNode projectTree = projectTreeBuilder.build(projectFiles);
+        ProjectTreeNode projectTree;
+
+        try {
+            projectTree = projectTreeBuilder.build(projectFiles);
+        } catch (InvalidProjectStructureException ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
 
         return Response.ok(projectTree).build();
     }

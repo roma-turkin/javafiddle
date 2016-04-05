@@ -14,7 +14,7 @@ public class ProjectTreeBuilder {
 
     private ProjectTreeNode rootNode = new ProjectTreeNode();
 
-    public ProjectTreeNode build(List<File> projectFiles) throws Exception {
+    public ProjectTreeNode build(List<File> projectFiles) throws InvalidProjectStructureException {
 
         for (File f: projectFiles) {
             ProjectTreeNode newProjectTreeNode = new ProjectTreeNode(f.getFileId(),
@@ -33,9 +33,9 @@ public class ProjectTreeBuilder {
      * specified in the path
      * @param newProjectTreeNode
      * @param path
-     * @throws Exception
+     * @throws InvalidProjectStructureException
      */
-    private void appendNode(ProjectTreeNode newProjectTreeNode, String path) throws Exception {
+    private void appendNode(ProjectTreeNode newProjectTreeNode, String path) throws InvalidProjectStructureException {
 
         if (newProjectTreeNode == null || path == null) {
             throw new NullPointerException();
