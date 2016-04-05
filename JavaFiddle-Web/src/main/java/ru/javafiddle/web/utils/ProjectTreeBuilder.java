@@ -1,6 +1,7 @@
 package ru.javafiddle.web.utils;
 
 import ru.javafiddle.jpa.entity.File;
+import ru.javafiddle.web.exceptions.InvalidProjectStructureException;
 import ru.javafiddle.web.models.ProjectTreeNode;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class ProjectTreeBuilder {
                 continue;
             }
 
-            throw new Exception("Invalid project stucture" + tmp.getName());
+            throw new InvalidProjectStructureException(tmp.toString());
         }
 
 

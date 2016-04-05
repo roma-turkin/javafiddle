@@ -83,4 +83,12 @@ public class ProjectTreeNode {
         return null;
     }
 
+    @Override
+    public String toString() {
+        return "ProjectTreeNode{" +
+                "type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", fileId=" + fileId +
+                '}';
+    }
 }
