@@ -3,6 +3,8 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
+
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,11 +18,12 @@ import java.util.List;
 
 
 @Entity
+@Cacheable(false)
 @Table(name = "\"User\"")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "\"userId\"")
     private int userId;
 

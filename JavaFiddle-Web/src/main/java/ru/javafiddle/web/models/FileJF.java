@@ -10,14 +10,14 @@ public class FileJF {
 
     private Integer fileId;
     private String  name;
-    private byte[]  data;
+    private String  data;
     private String  type;
     private String  path;
 
     public FileJF() {
     }
 
-    public FileJF(int fileId, String name, byte[] data, String type, String path) {
+    public FileJF(int fileId, String name, String data, String type, String path) {
         this.fileId = fileId;
         this.name = name;
         this.data = data;
@@ -41,11 +41,11 @@ public class FileJF {
         this.name = name;
     }
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 

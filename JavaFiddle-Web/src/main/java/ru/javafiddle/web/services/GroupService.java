@@ -27,7 +27,7 @@ import java.util.Map;
 public class GroupService {
 
     @EJB
-    GroupBean groupsBean;
+    GroupBean groupBean;
 
     @EJB
     ProjectBean projectBean;
@@ -39,9 +39,10 @@ public class GroupService {
         try{
 
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.addMember(groupId,
-                    newGroupMember.getUserNickName(),
-                    newGroupMember.getAccessRights());
+            //!TODO let's postpone it for later untill signature in GroupBean methods will be established
+//            groupsBean.addMember(groupId,
+//                    newGroupMember.getUserNickName(),
+//                    newGroupMember.getAccessRights());
 
             return Response.ok().build();
 
@@ -61,7 +62,7 @@ public class GroupService {
 
             int groupId = projectBean.getGroupId(projectHash);
             //Map<nickname, access>
-            Map<String, String> groupMembers = groupsBean.getAllMembers(groupId);
+            Map<String, String> groupMembers = groupBean.getAllMembers(groupId);
 
             return Response.ok(groupMembers).build();
 
@@ -80,7 +81,7 @@ public class GroupService {
 
             int groupId         = projectBean.getGroupId(projectHash);
             String userNickName = groupMember.getUserNickName();
-            groupsBean.deleteMember(groupId,
+            groupBean.deleteMember(groupId,
                     userNickName);
 
             return Response.ok().build();
@@ -99,9 +100,10 @@ public class GroupService {
         try{
 
             int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.updateMember(groupId,
-                    groupMember.getUserNickName(),
-                    groupMember.getAccessRights());
+            //!TODO let's postpone it for later untill signature in GroupBean methods will be established
+//            groupsBean.updateMember(groupId,
+//                    groupMember.getUserNickName(),
+//                    groupMember.getAccessRights());
 
             return Response.ok().build();
 
