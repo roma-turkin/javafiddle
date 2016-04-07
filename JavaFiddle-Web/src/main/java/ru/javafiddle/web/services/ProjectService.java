@@ -1,19 +1,31 @@
 package ru.javafiddle.web.services;
 
-import ru.javafiddle.core.ejb.GroupBean;
+import com.google.gson.Gson;
+import ru.javafiddle.core.ejb.FileBean;
 import ru.javafiddle.core.ejb.ProjectBean;
-
 import ru.javafiddle.core.ejb.UserBean;
+import ru.javafiddle.core.ejb.GroupBean;
+
+import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Project;
+
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.web.exceptions.InvalidProjectStructureException;
+import ru.javafiddle.web.models.ProjectInfo;
+import ru.javafiddle.web.models.ProjectTreeNode;
+import ru.javafiddle.web.utils.ProjectTreeBuilder;
 
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * Created by artyom on 19.11.15.
@@ -28,7 +40,38 @@ public class ProjectService {
     GroupBean groupBean;
 
     @EJB
+    FileBean fileBean;
+
+    @EJB
     UserBean userBean;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUserProjectsList() {
+        String nickName = userBean.getCurUserNick();
+        User curUser = userBean.getUser(nickName);
+        List<String> projectHashes = projectBean.getUserProjects(curUser);
+        String json = new Gson().toJson(projectHashes);
+        return Response.ok(json).build();
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{projectHash}")
+    public Response getProjectStructure(@PathParam("projectHash") String projectHash) {
+
+        List<File> projectFiles = fileBean.getProjectFiles(projectHash);
+        ProjectTreeBuilder projectTreeBuilder = new ProjectTreeBuilder();
+        ProjectTreeNode projectTree;
+
+        try {
+            projectTree = projectTreeBuilder.build(projectFiles);
+        } catch (InvalidProjectStructureException ex) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+        }
+
+        return Response.ok(projectTree).build();
+    }
 
 //Comment until agreement in algorithm
 //    @POST
@@ -83,12 +126,6 @@ public class ProjectService {
         projectBean.updateProject(project);
 
         return Response.ok().build();
-    }
-
-
-    @Path("/{projectHash}/files")
-    public FileService initFileService() {
-        return new FileService();
     }
 
     @Path("/{projectHash}/libraries")
