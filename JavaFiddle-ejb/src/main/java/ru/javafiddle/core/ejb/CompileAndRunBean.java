@@ -29,6 +29,7 @@ public class CompileAndRunBean extends DynamicCompiler {
     @PersistenceContext
     EntityManager em;
 
+
     public static final String DEFAULT_PACKAGE_PREFFIX = "";
     private static final Logger LOG = Logger.getLogger(CompileAndRunBean.class);
 
@@ -48,9 +49,13 @@ public class CompileAndRunBean extends DynamicCompiler {
         System.setOut(printStream);
         BasicConfigurator.configure();
         List<File> sources;
-        FileBean fb = new FileBean();
-        sources = fb.getProjectFiles(projectHash);
-        init(ClassLoader.getSystemClassLoader());
+        FileBean fileBean = new FileBean();
+        sources = fileBean.getProjectFiles(projectHash);
+        try {
+            init(ClassLoader.getSystemClassLoader());
+        } catch (NullPointerException e) {
+            LOG.error("NullPointerException in getSystemClassLoader()", e);
+        }
         List<SimpleJavaFileObject> userSources = new ArrayList<>();
         for (int i = 0; i < sources.size(); i++) {
             File file = sources.get(i);
@@ -96,8 +101,8 @@ public class CompileAndRunBean extends DynamicCompiler {
     //!TODO
     public String run(String projectHash) {
         List<File> sources;
-        FileBean fb = new FileBean();
-        sources = fb.getProjectFiles(projectHash);
+        FileBean fileBean = new FileBean();
+        sources = fileBean.getProjectFiles(projectHash);
         String mes = "";
         if (!getMessage().equals("")) {
             Method mainMeth = findMain(sources, getClassLoader());

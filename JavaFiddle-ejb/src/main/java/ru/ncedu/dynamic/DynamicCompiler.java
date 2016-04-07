@@ -72,8 +72,10 @@ public class DynamicCompiler {
         ArrayList<String> javaOptions = new ArrayList<>();
 //         javaOptions.add("-g");
 //         javaOptions.add("-verbose");
-        javaOptions.add("-bootclasspath");
-        javaOptions.add("C:\\Program Files\\Java\\jdk1.7.0_79\\jre\\lib\\rt.jar");
+
+//        javaOptions.add("-bootclasspath");
+//        javaOptions.add("C:\\Program Files\\Java\\jdk1.7.0_79\\jre\\lib\\rt.jar");
+
         Iterable<? extends JavaFileObject> units = sourceFiles;
         CompilationTask task = compiler.getTask(null, manager, collector, javaOptions,
                 null, units);

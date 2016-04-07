@@ -6,80 +6,19 @@ import ru.javafiddle.jpa.entity.Project;
 import ru.javafiddle.jpa.entity.Type;
 
 import javax.ejb.Stateless;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Stateless
 
 public class FileBean {
 
-    @PersistenceContext
+    @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
-    @PersistenceUnit(unitName = "test")
-    EntityManagerFactory entityManagerFactory;
-
     public FileBean() {}
-
-
-
-//    /////////////////////////
-//    public List<File> getProjectFiles(String projectHash) {
-//        List<File> fileList = new ArrayList<>();
-//        int projectId = getProjectId(projectHash);
-//        DBWorker dbWorker = new DBWorker();
-//        String queryFiles = "select * from \"File\" f, \"Project\" p where f.\"projectId\" = p.\"projectId\"" + "and p.\"projectId\" = " + projectId;
-//        try {
-//            Statement statement = dbWorker.getConnection().createStatement();
-//            ResultSet resultSet = statement.executeQuery(queryFiles);
-//            while (resultSet.next()) {
-//                File file = new File();
-//                file.setData(resultSet.getBytes("data"));
-//                file.setFileId(resultSet.getInt("fileId"));
-//                file.setFileName(resultSet.getString("fileName"));
-//                file.setPath(resultSet.getString("path"));
-//                Type type = new Type();
-//                String queryType = "select t.\"typeName\", t.\"typeId\" from \"Type\" t, \"File\" f where f.\"typeId\" = t.\"typeId\" and f.\"typeId\" = "
-//                        + resultSet.getInt("typeId") + " and f.\"fileName\" = \'" + resultSet.getString("fileName") + "\'";
-//                Statement statement1 = dbWorker.getConnection().createStatement();
-//                ResultSet res = statement1.executeQuery(queryType);
-//                while(res.next()) {
-//                    type.setTypeName(res.getString("typeName"));
-//                    type.setTypeId(res.getInt("typeId"));
-//                }
-//                file.setType(type);
-//                fileList.add(file);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            dbWorker.getConnection().close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return fileList;
-//
-//    }
-//
-//    public int getProjectId(String projectHash) {
-//        DBWorker dbWorker = new DBWorker();
-//        int projectId = 0;
-//        String query = "select p.\"projectId\", p.\"projectName\" from \"Hash\" h, \"Project\" p "
-//                + "where h.\"id\" = p.\"id\" and h.\"hash\"=\'" + projectHash + "\'";
-//        try {
-//            Statement statement = dbWorker.getConnection().createStatement();
-//            ResultSet res = statement.executeQuery(query);
-//            while (res.next()) {
-//                projectId = res.getInt("projectId");
-//            }
-//            dbWorker.getConnection().close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return projectId;
-//    }
-//    ////////////////////////
 
     public List<File> getProjectFiles(String projectHash) {
 

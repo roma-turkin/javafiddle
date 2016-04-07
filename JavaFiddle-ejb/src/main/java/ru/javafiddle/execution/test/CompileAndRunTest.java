@@ -1,14 +1,14 @@
 package ru.javafiddle.execution.test;
 
-
-import org.junit.Assert;
 import org.junit.Test;
 import ru.javafiddle.core.ejb.CompileAndRunBean;
 
+import static org.junit.Assert.fail;
+
 /**
- * Created by nk on 17.03.2016.
+ * Created by nk on 08.04.2016.
  */
-public class HelloWorldTest extends Assert {
+public class CompileAndRunTest {
 
     @Test
     public void CompileAndRunTest() {
@@ -46,4 +46,7 @@ public class HelloWorldTest extends Assert {
         } catch (NullPointerException ex) {
         }
     }
+
+
+
 }
