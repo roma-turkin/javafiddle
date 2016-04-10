@@ -19,8 +19,8 @@ import static org.hamcrest.CoreMatchers.containsString;
 public class AuthorizationTest {
 
     private final String HOME_PAGE_URL = "https://localhost:8181/javaFiddle";
-    private final String EXICTING_USER_NICKNAME = "atsanda";
-    private final String EXICTING_USER_PASSWORD = "03061995";
+    private final String EXICTING_USER_NICKNAME = "newUser";
+    private final String EXICTING_USER_PASSWORD = "newUser";
     private final FormAuthConfig formAuthConfig = new FormAuthConfig("j_security_check", "j_username", "j_password");
 
 
@@ -44,37 +44,35 @@ public class AuthorizationTest {
     }
 
     @Test
-    public void shouldLoadHomePage() {
+    public void shouldLoadUserInfo() {
+
         com.jayway.restassured.response.Response r = given().
                 filter(new SystemOutFilter()).
                 relaxedHTTPSValidation().
                 auth().form(EXICTING_USER_NICKNAME, EXICTING_USER_PASSWORD, formAuthConfig).
         expect().
-                body(containsString("j_security_check")).
-                body(containsString("j_username")).
-                body(containsString("j_password")).
-                statusCode(200).
+                statusCode(200). //expect at least status 200
         when().
                 get(HOME_PAGE_URL + "/fiddle/users");
 
         System.out.println(r.body());
     }
 
-    @Test
-    public void shouldDeleteUser() {
-        com.jayway.restassured.response.Response r = given().
-                filter(new SystemOutFilter()).
-                relaxedHTTPSValidation().
-                auth().form(EXICTING_USER_NICKNAME, EXICTING_USER_PASSWORD, formAuthConfig).
-        expect().
-                body(containsString("j_security_check")).
-                body(containsString("j_username")).
-                body(containsString("j_password")).
-                statusCode(200).
-        when().
-                delete(HOME_PAGE_URL + "/fiddle/users/newUser");
-
-        System.out.println(r.body());
-    }
+//    @Test
+//    public void shouldDeleteUser() {
+//        com.jayway.restassured.response.Response r = given().
+//                filter(new SystemOutFilter()).
+//                relaxedHTTPSValidation().
+//                auth().form(EXICTING_USER_NICKNAME, EXICTING_USER_PASSWORD, formAuthConfig).
+//        expect().
+//                body(containsString("j_security_check")).
+//                body(containsString("j_username")).
+//                body(containsString("j_password")).
+//                statusCode(200).
+//        when().
+//                delete(HOME_PAGE_URL + "/fiddle/users/newUser");
+//
+//        System.out.println(r.body());
+//    }
 
 }
