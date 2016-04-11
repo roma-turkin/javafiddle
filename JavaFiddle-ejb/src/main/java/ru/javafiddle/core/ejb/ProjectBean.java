@@ -36,6 +36,9 @@ public class ProjectBean {
     @EJB
     private GroupBean groupBean;
 
+    @EJB
+    private FileBean fileBean;
+
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
 
@@ -92,8 +95,13 @@ public class ProjectBean {
         Project newProject = new Project();
         newProject.setProjectName(oldProject.getProjectName());
         List<File> files = oldProject.getFiles();
-        List<File> newFileList = new LinkedList<>(files);
+        List<File> newFileList = fileBean.createCopyOfFiles(files);
         newProject.setFileList(newFileList);
+    //------------------------------------------------------------for each file we assign to it this project
+        for (File file:newFileList) {
+            file.setProject(newProject);
+        }
+
         newProject.setGroup(oldProject.getGroup());
         List<Library> libs = oldProject.getLibraries();
         List<Library> newLibList = new LinkedList<>(libs);

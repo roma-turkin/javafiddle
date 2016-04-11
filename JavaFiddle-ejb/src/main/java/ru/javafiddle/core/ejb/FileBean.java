@@ -9,6 +9,9 @@ import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Hash;
 import ru.javafiddle.jpa.entity.Type;
 import ru.javafiddle.jpa.entity.Project;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @Stateless
@@ -108,6 +111,20 @@ public class FileBean {
         return type;
 
 
+    }
+
+    public List<File> createCopyOfFiles(List<File> files) {
+
+        List<File> newList = new LinkedList<>();
+
+        for ( File item:newList) {
+            File file = new File(item.getFileName(), Arrays.copyOf(item.getData(),item.getData().length), null, item.getType(),item.getPath());
+
+            newList.add(file);
+
+        }
+
+        return newList;
     }
 
 
