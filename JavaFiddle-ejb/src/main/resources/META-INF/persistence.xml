@@ -13,10 +13,9 @@
         <class>ru.javafiddle.jpa.entity.Status</class>
         <class>ru.javafiddle.jpa.entity.Type</class>
         <properties>
-            <!--property name="eclipselink.target-database" value="PostgreSQL"/>
-            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/-->
-            <property name="hibernate.dialect" value = "org.hibernate.dialect.PostgreSQL9Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <property name="eclipselink.target-database" value="PostgreSQL"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+
 
         </properties>
     </persistence-unit>
