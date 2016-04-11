@@ -13,6 +13,8 @@ import org.junit.runners.JUnit4;
 import javax.ws.rs.core.Response;
 
 import static com.jayway.restassured.RestAssured.expect;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
  * Created by artyom on 11.04.16.
@@ -21,6 +23,7 @@ import static com.jayway.restassured.RestAssured.expect;
 public class ProjectServiceTest {
 
     private final String USER_PROJECT_HASH = "7777777";
+    private final String USER_PROJECT_NAME = "projectTest";
 
     private final String SERVICES_PATH = "/fiddle";
 
@@ -33,13 +36,27 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void shouldGetUserInfo() {
+    public void shouldGetUserProjects() {
 
         expect().
+                body(equalTo("[\"" + USER_PROJECT_HASH + "\"]")).
                 contentType(ContentType.JSON).
                 statusCode(Response.Status.OK.getStatusCode()).
         when().
-                get(SERVICES_PATH + "/projects").
-        then().log().body();
+                get(SERVICES_PATH + "/projects");
+    }
+
+    @Test
+    public void shouldGetProjectStructure() {
+
+        expect().
+                body("name", equalTo(USER_PROJECT_NAME)).
+                body(containsString("type")).
+                body(containsString("fileId")).
+                body(containsString("childNodes")).
+                contentType(ContentType.JSON).
+                statusCode(Response.Status.OK.getStatusCode()).
+        when().
+                get(SERVICES_PATH + "/projects/" + USER_PROJECT_HASH);
     }
 }
