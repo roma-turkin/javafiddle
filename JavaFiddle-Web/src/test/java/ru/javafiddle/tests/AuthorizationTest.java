@@ -16,6 +16,7 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
 
 /**
+ * ATTENTION: you must provide an existence of testUser in database
  * Created by artyom on 28.03.16.
  */
 @RunWith(JUnit4.class)

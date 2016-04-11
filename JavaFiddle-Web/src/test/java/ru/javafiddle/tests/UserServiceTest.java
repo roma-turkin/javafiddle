@@ -16,6 +16,8 @@ import static com.jayway.restassured.RestAssured.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 /**
+ * ATTENTION: you must provide an existence of testUser in database
+ * with appropriate parameters
  * Created by artyom on 11.04.16.
  */
 @RunWith(JUnit4.class)
