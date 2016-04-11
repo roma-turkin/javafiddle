@@ -19,6 +19,8 @@ import java.util.List;
 @Table(name = "\"Type\"")
 public class Type {
 
+    public static final String PROJECT_FILE = "root";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"typeId\"")

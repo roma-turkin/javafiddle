@@ -18,6 +18,8 @@ import javax.persistence.Column;
 @Table(name = "\"Access\"")
 public class Access {
 
+    public static final String FULL = "RW";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"accessId\"")
