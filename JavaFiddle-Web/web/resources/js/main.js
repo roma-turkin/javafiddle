@@ -248,59 +248,7 @@ function closeAllTabs() {
 }
 
 
-// TREE
 
-function buildTree() {
-    $("#tree").empty();
-    $.ajax({
-        url: PATH + '/webapi/tree/tree',
-        type: 'GET',
-        dataType: "json",
-        async: false,
-        success: function(data) {
-            if (data.projects.length === 0) {
-                //Write "no projects yet" and the welcome tab.
-                $('#tree').append('<b>-No projects yet</b><br/><br/>');
-                //openStaticTab('welcome');
-                //setCurrentFileID('welcome_tab');
-                //openStaticTab('welcome');
-            }
-            else
-            for (var i = 0; i < data.projects.length; i++) {
-                var proj = data.projects[i];
-                $('#tree').append('<li id = "node_' + proj.id + '" class="open"><a href="#" class="root">' + proj.name + '</a><ul id ="node_' + proj.id + '_src"\></li>');
-                $('#node_' + proj.id + '_src').append('<li id = "node_' + proj.id + '_srcfolder" class="open"><a href="#" class="sources">src</a><ul id ="node_' + proj.id + '_list"\></li>');
-                $("#projectname").text(proj.name);
-                setProjectId(proj.id);
-                for (var j = 0; j < proj.packages.length; j++) {
-                    var pck = proj.packages[j];
-                    if (!(pck.name === "<default_package>"))
-                        $('#node_' + pck.parentId + '_list').append('<li id = "node_' + pck.id + '"><a href="#" class="package" onclick="changeNodeState($(this));">' + pck.name + '</a><ul id ="node_' + pck.id + '_list"\></li>');
-                }   
-                for (var j = 0; j < proj.packages.length; j++) {
-                    var pack = proj.packages[j];
-                    for (var k = 0; k < pack.files.length; k++) {
-                        var file = pack.files[k];
-                        var parent = (pack.name === "<default_package>") ? proj.id : pack.id; 
-                        $('#node_' + parent + '_list').append('<li id = "node_' + file.id + '"><a href="#" class="' + file.type + '" onclick="openTabFromTree($(this));">' + file.name + '</a></li>');
-                     }
-                }    
-            }
-            $('#tree').append('<li role="presentation"><a role="menuitem" tabindex="-1" href="#" onclick=\'$("#modal-newproj").modal("show");\'>Add New Project</a></li>');
-            
-            $(function () {
-                $('#tree').liHarmonica({
-                    onlyOne: false,
-                    speed: 100
-                });
-            });
-            openedNodesList().forEach(function(entry) {
-                $("#" + entry).children('a').addClass('harOpen');
-                $("#" + entry).children('ul').addClass('opened');
-            });
-        }
-    });
-}
 
 function loadLiHarmonica() {
     (function ($) {
@@ -440,35 +388,30 @@ function toggleConsole() {
 }
 
 // FILE REVISIONS (SERVICES)
-//
-function saveFile(id) {
-    console.log("Saving file " + id);
-   
-    if(arguments.length === 0) {
-        id = getCurrentFileID();
-        addCurrentFileText();
-        $('#latest_update').text("Saving...");
-    }
-    
-    var time = new Date().getTime();
+//!TODO working with dates
+function saveFile(toBeSavedFileTabId) {
+
+    var curFileTabId = (arguments.length === 0) ? getCurrentFileID() : toBeSavedFileTabId; //node_[number]_tab
+    var curFileId = curFileTabId.match(/[\d]+/);//id extraction
+    var toBeSavedFile = JSON.parse(sessionStorage.getItem("file_" + curFileId));
+
+    //data extraction
+    addCurrentFileText();
+    var toBeSavedData = getOpenedFileText(curFileTabId);
+    toBeSavedFile.data = toBeSavedData;
+
+    console.log("Saving file " + toBeSavedFile.fileId);
+    $('#latest_update').text("Saving...");
+
     $.ajax({
-        url: PATH + '/webapi/data/file',
-        type:'POST', 
-        async: false,
-        data: {id: id, timeStamp: time, value: getOpenedFileText(id)},
+        type: "PUT",
+        url: PATH + "/fiddle/files/" + toBeSavedFile.fileId,
+        contentType: "application/json",
+        'data': JSON.stringify(toBeSavedFile),
         success: function(data) {
-            if (id === "node_4_tab") {
-                sessionStorage.clear();
-                buildTree();
-                closeAllTabs();
-                id = addDefaultFileToGit();
-                console.log("Default File addition worked: " + id);
-                selectTab(addTabToPanel("node_" + id + "_tab","Main", "runnable active"));
-                console.log("New tree has been built");
-            }
-            unModifiedTab(id);
-            addCurrentFileTimeStamp(time);
-            if (isCurrent(id))
+            unModifiedTab(curFileTabId);
+            sessionStorage.setItem("file_" + toBeSavedFile.fileId, JSON.stringify(toBeSavedFile));
+            if (isCurrent(curFileTabId))
                 $('#latest_update').text("All changes saved.");
         },
         error: function(jqXHR) {
@@ -477,6 +420,7 @@ function saveFile(id) {
         }
     });
 }
+
 
 function saveAllFiles() {
     addCurrentFileText();
@@ -529,21 +473,25 @@ function openProjectByHash(projecthash) {
 }
 
 function getFileContent(id) {
-    if(arguments.length === 0)
+    if(arguments.length === 0) {
         id = getCurrentFileID();
+    }
+    var fileId = id.match(/[\d]+/);
+
     $.ajax({
-        url: PATH + '/webapi/data/file',
-        type:'GET',
-        data: {id : id},
-        async: false,
+        url: PATH + "/fiddle/files/" + fileId,
+        type: "GET",
         dataType: "json",
-        contentType: "application/json",
-        success: function(data) {
-            editor.setValue(data.value);
+        async: false,
+        success: function(data)
+        {
+            editor.setValue(data.data);
             editor.clearSelection();
             editor.session.getUndoManager().reset();
             editor.setReadOnly(false);
-            addCurrentFileTimeStamp(data.time); //TO BE REDONE
+            sessionStorage.setItem("file_" + data.fileId, JSON.stringify(data));
+            //!TODO temporary 500 must be redone
+            addCurrentFileTimeStamp(500);
             changeModifiedState(id, false);
         },
         error: function(jqXHR) {

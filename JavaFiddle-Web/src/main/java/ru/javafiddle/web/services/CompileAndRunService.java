@@ -48,14 +48,13 @@ public class CompileAndRunService {
                     if(fileId == null) { //file has not been added yet
                         filesBean.addFile(projectHash,
                                 f.getName(),
-                                f.getData(),
+                                f.getData().getBytes(),
                                 f.getType(),
                                 f.getPath());
                     } else {
-                        filesBean.updateFile(projectHash,
-                                fileId,
+                        filesBean.updateFile(fileId,
                                 f.getName(),
-                                f.getData(),
+                                f.getData().getBytes(),
                                 f.getType(),
                                 f.getPath());
                     }

@@ -3,7 +3,21 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-import javax.persistence.*;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity
@@ -27,7 +41,7 @@ public class Project {
     private List<File> files;
 
     @ManyToMany
-    @JoinTable(name = "\"LibraryToProject\"" ,
+    @JoinTable(name = "\"LibraryToProject\"",
             joinColumns = @JoinColumn(name = "\"libraryId\""),
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
