@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
-    <persistence-unit name="JFPersistenceUnit" transaction-type="JTA" >
-        <jta-data-source>JFResources</jta-data-source>
+    <persistence-unit name="JFPersistenceUnit" >
+        <jta-data-source>jdbc/javafiddle</jta-data-source>
         <class>ru.javafiddle.jpa.entity.Access</class>
         <class>ru.javafiddle.jpa.entity.File</class>
         <class>ru.javafiddle.jpa.entity.Group</class>
@@ -13,8 +13,11 @@
         <class>ru.javafiddle.jpa.entity.Status</class>
         <class>ru.javafiddle.jpa.entity.Type</class>
         <properties>
-            <property name="eclipselink.target-database" value="PostgreSQL"/>
-            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/>
+            <!--property name="eclipselink.target-database" value="PostgreSQL"/>
+            <property name="eclipselink.ddl-generation" value="create-or-extend-tables"/-->
+            <property name="hibernate.dialect" value = "org.hibernate.dialect.PostgreSQL9Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+
         </properties>
     </persistence-unit>
 </persistence>
