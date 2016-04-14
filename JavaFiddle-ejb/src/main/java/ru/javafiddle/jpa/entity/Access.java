@@ -28,8 +28,7 @@ public class Access {
     @Column(name = "\"accessName\"")
     private String accessName;
 
-    public Access( String accessName) {
-        // this.accessId = accessId;
+    public Access(String accessName) {
         this.accessName = accessName;
     }
 
