@@ -19,7 +19,7 @@ import java.util.List;
 @Table(name = "\"Type\"")
 public class Type {
 
-    public static final String PROJECT_FILE = "root";
+    public static final int PROJECT_FILE_TYPEID = 2;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

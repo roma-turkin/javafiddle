@@ -1,10 +1,11 @@
 package ru.javafiddle.core.ejb;
 
+import ru.javafiddle.jpa.entity.Type;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.metamodel.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -51,6 +51,6 @@ public class UserServiceTest {
                 contentType(ContentType.JSON).
                 statusCode(Response.Status.OK.getStatusCode()).
         when().
-                get(SERVICES_PATH + "/users");
+                get(SERVICES_PATH + "/user");
     }
 }

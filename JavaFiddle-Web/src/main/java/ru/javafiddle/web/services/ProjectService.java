@@ -5,6 +5,7 @@ import ru.javafiddle.core.ejb.AccessBean;
 import ru.javafiddle.core.ejb.FileBean;
 import ru.javafiddle.core.ejb.HashBean;
 import ru.javafiddle.core.ejb.ProjectBean;
+import ru.javafiddle.core.ejb.TypeBean;
 import ru.javafiddle.core.ejb.UserBean;
 import ru.javafiddle.core.ejb.GroupBean;
 
@@ -13,6 +14,7 @@ import ru.javafiddle.jpa.entity.Access;
 import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Group;
 import ru.javafiddle.jpa.entity.Hash;
+import ru.javafiddle.jpa.entity.Library;
 import ru.javafiddle.jpa.entity.Project;
 
 import ru.javafiddle.jpa.entity.Type;
@@ -37,6 +39,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -65,6 +68,9 @@ public class ProjectService {
 
     @EJB
     AccessBean accessBean;
+
+    @EJB
+    TypeBean typeBean;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -100,16 +106,19 @@ public class ProjectService {
     public Response createProject(ProjectInfo projectInfo, @Context UriInfo uriInfo) {
 
         try {
-            Project project;
+            //get Group
+            Integer groupId = projectInfo.getGroupId();
+            Group group = (groupId == null) ? getDefaultGroup() : groupBean.getGroupByGroupId(groupId);
 
-            //if hash field is not null then create a copy of the project
+            //if hash field is not null then clone the project
             String hash = projectInfo.getProjectHash();
             if (hash != null) {
-                project = projectBean.getProjectByProjectHash(hash);
+                Project project = projectBean.getProjectByProjectHash(hash);
                 if (project == null) { //if specified hash does not exist return NOT_FOUND status
                     return Response.status(Response.Status.NOT_FOUND).build();
                 }
-                projectBean.createProject(project.getGroup().getGroupId(), project);
+                project.setGroup(group); //set specified group
+                cloneProject(project);
                 return Response.ok().build();
             }
 
@@ -118,15 +127,8 @@ public class ProjectService {
 
             if (projectName != null) {
 
-                project = new Project(projectName, null);
-
-                if (projectInfo.getGroupId() != null) {
-                    project = projectBean.createProject(projectInfo.getGroupId(), project);
-                } else {
-                    Group group = getDefaultGroup();
-                    project = projectBean.createProject(group.getGroupId(), project);
-                }
-
+                Project project = new Project(projectName, group);
+                project = projectBean.createProject(project);
                 createProjectFile(project);
                 return Response.ok().build();
             }
@@ -134,7 +136,7 @@ public class ProjectService {
             // if both name and hash are null it is impossible to create project
             return Response.status(Response.Status.BAD_REQUEST).build();
 
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException | IllegalAccessException | InstantiationException e) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -191,11 +193,34 @@ public class ProjectService {
     }
 
     private void createProjectFile(Project project) {
-        fileBean.addFile(project.getHash().getHash(),
-                project.getProjectName(),
-                null,
-                Type.PROJECT_FILE,
-                project.getProjectName() + "/");
+
+        File projectFile = new File();
+        projectFile.setFileName(project.getProjectName());
+        projectFile.setPath(project.getProjectName() + "/");
+        projectFile.setType(typeBean.getType(Type.PROJECT_FILE_TYPEID));
+        projectFile.setProject(project);
+
+        fileBean.createFile(projectFile);
+    }
+
+    private void cloneProject(Project project) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Project clonedProject = new Project();
+        clonedProject.setProjectName(project.getProjectName());
+        clonedProject.setGroup(project.getGroup());
+        clonedProject.setLibraries(project.getLibraries());
+
+        clonedProject = projectBean.createProject(clonedProject);
+
+        //copy all files
+        for(File file: project.getFiles()) {
+            File newFile = new File();
+            newFile.setType(file.getType());
+            newFile.setData(file.getData().clone());
+            newFile.setPath(file.getPath());
+            newFile.setProject(clonedProject);
+            newFile.setFileName(file.getFileName());
+            fileBean.createFile(newFile);
+        }
     }
 
 }

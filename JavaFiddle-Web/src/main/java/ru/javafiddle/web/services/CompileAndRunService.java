@@ -33,39 +33,40 @@ public class CompileAndRunService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
     public Response compile(ProjectJF project) {
-
-        //It's a question what ProjectJF should contain
-        try {
-            String projectHash = project.getProjectHash();
-            String compilationOutput = null;
-            if(projectHash == null){
-                //!user is guest!
-                //!what to do
-            }else{
-                //save firstly
-                for(FileJF f: project.getProjectFiles()){
-                    Integer fileId = f.getFileId();
-                    if(fileId == null) { //file has not been added yet
-                        filesBean.addFile(projectHash,
-                                f.getName(),
-                                f.getData().getBytes(),
-                                f.getType(),
-                                f.getPath());
-                    } else {
-                        filesBean.updateFile(fileId,
-                                f.getName(),
-                                f.getData().getBytes(),
-                                f.getType(),
-                                f.getPath());
-                    }
-                }
-
-                compilationOutput = compileAndRunBean.compile(projectHash);
-            }
-            return Response.ok().entity(compilationOutput).build();
-        }catch (Exception e) {
-            return Response.serverError().build();
-        }
+//!TODO beans are changed, so method must be implemented with new ones
+//        //It's a question what ProjectJF should contain
+//        try {
+//            String projectHash = project.getProjectHash();
+//            String compilationOutput = null;
+//            if(projectHash == null){
+//                //!user is guest!
+//                //!what to do
+//            }else{
+//                //save firstly
+//                for(FileJF f: project.getProjectFiles()){
+//                    Integer fileId = f.getFileId();
+//                    if(fileId == null) { //file has not been added yet
+//                        filesBean.addFile(projectHash,
+//                                f.getName(),
+//                                f.getData().getBytes(),
+//                                f.getType(),
+//                                f.getPath());
+//                    } else {
+//                        filesBean.updateFile(fileId,
+//                                f.getName(),
+//                                f.getData().getBytes(),
+//                                f.getType(),
+//                                f.getPath());
+//                    }
+//                }
+//
+//                compilationOutput = compileAndRunBean.compile(projectHash);
+//            }
+//            return Response.ok().entity(compilationOutput).build();
+//        }catch (Exception e) {
+//            return Response.serverError().build();
+//        }
+        return Response.serverError().build();
     }
 
     @Path("/run")
