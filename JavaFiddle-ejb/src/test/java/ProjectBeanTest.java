@@ -36,6 +36,7 @@ public class ProjectBeanTest {
         ejbContainer.close();
         System.out.println("Test EJBContainer is closed" );
     }
+
 //!TODO
 //    @org.junit.Test
 //    public void testProjectOperations() throws UnsupportedEncodingException, NoSuchAlgorithmException, InstantiationException, IllegalAccessException {

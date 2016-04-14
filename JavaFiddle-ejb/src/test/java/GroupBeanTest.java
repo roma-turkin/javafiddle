@@ -53,11 +53,11 @@ public class GroupBeanTest {
         UserGroupBean userGroupBean = null;
 
         try {
-            groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
-            projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
-            userBean = (UserBean) context.lookup("java:global/JavaFiddle-ejb/UserBean");
-            accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
-            userGroupBean = (UserGroupBean) context.lookup("java:global/JavaFiddle-ejb/UserGroupBean");
+            groupBean = (GroupBean) context.lookup("java:global/classes/GroupBean");
+            projectBean = (ProjectBean) context.lookup("java:global/classes/ProjectBean");
+            userBean = (UserBean) context.lookup("java:global/classes/UserBean");
+            accessBean = (AccessBean) context.lookup("java:global/classes/AccessBean");
+            userGroupBean = (UserGroupBean) context.lookup("java:global/classes/UserGroupBean");
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
         }
@@ -100,7 +100,8 @@ public class GroupBeanTest {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
 
-
+//getGroupByName()----------------------------------------------------------------------
+        Assert.assertEquals("The name was not the same as expected", groupBean.getGroupByName("extended",user1).getGroupName(),"extended" );
 
 //Delete operation--------------------------------------------------------
         groupBean.deleteMember(groupId,"barny");

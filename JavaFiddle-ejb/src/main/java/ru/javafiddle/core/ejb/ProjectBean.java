@@ -36,6 +36,9 @@ public class ProjectBean {
     @EJB
     private GroupBean groupBean;
 
+    @EJB
+    private FileBean fileBean;
+
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
 
@@ -74,75 +77,6 @@ public class ProjectBean {
 
         return project;
     }
-
-//    //services : WITHOUT GROUPNAME WE CANNOT CREATE SERVICES AS WE NEED TO UPDATE PROJECT LIST IN GROUP
-//    //public Project createProject(int groupId, String hash, String projectName) throws UnsupportedEncodingException, NoSuchAlgorithmException {//groupName?
-//    public Project createProject(int groupId, Project project) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
-//    //groupid or Group???
-//        if (project.getHash() != null) {
-//            if (project.getHash().getHash() != null)
-//                if (!project.getHash().getHash().equals(""))
-//                    return createCopy(project.getHash());
-//
-//        }
-//        Group group;
-//        Hash hashes = new Hash();
-//
-//        //-----------------------------------------get group, corresponding to this id
-//        group = groupBean.getGroupByGroupId(groupId);
-//
-//        //-----------------------------------------set information related to project
-//        project.setProjectName(project.getProjectName());
-//        project.setGroup(group);
-//        em.persist(project);
-//        em.flush();
-//        //-----------------------------------------set hash
-//        String projectHash = hashBean.getHashForNewProject(project.getProjectId());
-//        hashes.setHash(projectHash);
-//        project.setHash(hashes);
-//        hashes.setProject(project);
-//
-//        em.persist(project);
-//        //-----------------------------------------logging
-//        logger.info("New hash id is" + hashes.getId());
-//        addProject(group, project);
-//        logger.info("The number of projects in this group is  " + group.getProjects().size());
-//
-//        return project;
-//
-//    }
-//
-//    public Project createCopy(Hash hash) throws UnsupportedEncodingException, NoSuchAlgorithmException, IllegalAccessException, InstantiationException {
-//
-//        Project oldProject = getProjectByProjectHash(hash.getHash());
-//    //------------------------------------------------------------we create a new project and set fields
-//        Project newProject = new Project();
-//        newProject.setProjectName(oldProject.getProjectName());
-//        List<File> files = oldProject.getFiles();
-//        List<File> newFileList = new LinkedList<>(files);
-//        newProject.setFileList(newFileList);
-//        newProject.setGroup(oldProject.getGroup());
-//        List<Library> libs = oldProject.getLibraries();
-//        List<Library> newLibList = new LinkedList<>(libs);
-//        newProject.setLibraries(newLibList);
-//    //------------------------------------------------------------we need to persist at first to get the id of our project
-//    //------------------------------------------------------------and then base the hash on this id
-//        em.persist(newProject);
-//
-//        Hash newHash = new Hash();
-//        newHash.setHash(hashBean.getHashForNewProject(newProject.getProjectId()));
-//        newProject.setHash(newHash);
-//    //------------------------------------------------------------we don't need to persist hash entity separetely
-//    //------------------------------------------------------------as cascade type is mentioned
-//        newHash.setProject(newProject);
-//
-//        logger.info("Projecct-copy id got from hash " + newHash.getProject().getProjectId());
-//        logger.info("Hash id " + newHash.getId());
-//        logger.info("Checked hash for a project is " + newHash.getProject().getHash().getHash());
-//        em.flush();
-//        return getProjectByProjectHash(newHash.getHash());
-//
-//    }
 
     public Group addProject(Group group, Project project) {
 

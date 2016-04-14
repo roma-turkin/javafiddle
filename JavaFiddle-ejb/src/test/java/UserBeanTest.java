@@ -52,11 +52,11 @@ public class UserBeanTest {
         UserGroupBean userGroupBean = null;
 
         try {
-            userBean = (UserBean) context.lookup("java:global/JavaFiddle-ejb/UserBean");
-            groupBean = (GroupBean) context.lookup("java:global/JavaFiddle-ejb/GroupBean");
-            projectBean = (ProjectBean) context.lookup("java:global/JavaFiddle-ejb/ProjectBean");
-            accessBean = (AccessBean) context.lookup("java:global/JavaFiddle-ejb/AccessBean");
-            userGroupBean = (UserGroupBean) context.lookup("java:global/JavaFiddle-ejb/UserGroupBean");
+            userBean = (UserBean) context.lookup("java:global/classes/UserBean");
+            groupBean = (GroupBean) context.lookup("java:global/classes/GroupBean");
+            projectBean = (ProjectBean) context.lookup("java:global/classes/ProjectBean");
+            accessBean = (AccessBean) context.lookup("java:global/classes/AccessBean");
+            userGroupBean = (UserGroupBean) context.lookup("java:global/classes/UserGroupBean");
         } catch (NamingException ex) {
             System.out.println("Unable to initialize UserBean instance: " + ex);
         }
