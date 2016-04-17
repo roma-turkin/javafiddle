@@ -1,11 +1,15 @@
 import org.junit.*;
 import ru.javafiddle.core.ejb.*;
 import ru.javafiddle.jpa.entity.*;
+import ru.javafiddle.jpa.entity.File;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.NamingException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +24,21 @@ public class ProjectBeanTest {
     EJBContainer ejbContainer;
     Context context;
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/test/resources/META-INF/persistence.xml");
+        Path destinationPath = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
+        Path destinationPath2 = Paths.get(System.getProperty("user.dir")+"/target/classes//META-INF/persistence.xml");
+
+        java.io.File temp = new java.io.File(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
+        java.io.File temp2 = new java.io.File(System.getProperty("user.dir")+"/target/classes/META-INF/persistence.xml");
+
+        if(temp.exists() || temp2.exists()) {
+            temp.delete();
+            temp2.delete();
+        }
+
+        Files.copy(sourcePath, destinationPath);
+        Files.copy(sourcePath, destinationPath2);
         Map<String, Object> properties = new HashMap<String, Object>();
         //properties.put(EJBContainer.MODULES, new File("target/classes");
         properties.put("org.glassfish.ejb.embedded.glassfish.installation.root",
@@ -32,8 +50,19 @@ public class ProjectBeanTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws IOException {
         ejbContainer.close();
+        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/test.persistence.xml");
+        Path destinationPath = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
+        Path destinationPath2 = Paths.get(System.getProperty("user.dir")+"/target/classes//META-INF/persistence.xml");
+        java.io.File temp = new java.io.File(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
+        java.io.File temp2 = new java.io.File(System.getProperty("user.dir")+"/target/classes/META-INF/persistence.xml");
+        if(temp.exists() || temp2.exists()) {
+            temp.delete();
+            temp2.delete();
+        }
+        Files.copy(sourcePath, destinationPath);
+        Files.copy(sourcePath, destinationPath2);
         System.out.println("Test EJBContainer is closed" );
     }
 
