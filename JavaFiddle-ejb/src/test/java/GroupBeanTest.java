@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  * Created by mac on 14.03.16.
  */
 public class GroupBeanTest {
-
+/*
 
     private static final Logger logger =
             Logger.getLogger(ProjectBean.class.getName());
@@ -158,6 +158,6 @@ public class GroupBeanTest {
 
 
 
-    }
+    }*/
 }
 

@@ -36,7 +36,7 @@ public class UserBeanTest {
     @Before
     public void setUp() throws NamingException, IOException {
 
-        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/test/resources/META-INF/persistence.xml");
+ /*       Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/test/resources/META-INF/persistence.xml");
         Path destinationPath = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
         Path destinationPath2 = Paths.get(System.getProperty("user.dir")+"/target/classes//META-INF/persistence.xml");
       //  Files.copy(new File("/Users/mac/javaff/javafiddle/JavaFiddle-ejb/target/test-classes/META-INF/persistence.xml").toPath(), new File("/Users/mac/javaff/javafiddle/JavaFiddle-ejb/target/classes/META-INF/persistence.xml").toPath());
@@ -53,7 +53,7 @@ public class UserBeanTest {
         }
 
         Files.copy(sourcePath, destinationPath);
-        Files.copy(sourcePath, destinationPath2);
+        Files.copy(sourcePath, destinationPath2);*/
         Properties properties = new Properties();
         properties.setProperty(Context.INITIAL_CONTEXT_FACTORY,
                 "org.apache.openejb.client.LocalInitialContextFactory");
@@ -70,7 +70,7 @@ public class UserBeanTest {
     @After
     public void tearDown() throws IOException {
         ejbContainer.close();
-        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/test.persistence.xml");
+    /*    Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/test.persistence.xml");
         Path destinationPath = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
         Path destinationPath2 = Paths.get(System.getProperty("user.dir")+"/target/classes//META-INF/persistence.xml");
 
@@ -84,7 +84,7 @@ public class UserBeanTest {
         }
 
         Files.copy(sourcePath, destinationPath);
-        Files.copy(sourcePath, destinationPath2);
+        Files.copy(sourcePath, destinationPath2);*/
         System.out.println("Test EJBContainer is closed" );
     }
 

@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by mac on 16.03.16.
  */
 public class ProjectBeanTest {
-
+/*
 
     EJBContainer ejbContainer;
     Context context;
@@ -151,6 +151,6 @@ public class ProjectBeanTest {
     }
 
 
-
+*/
 
 }
