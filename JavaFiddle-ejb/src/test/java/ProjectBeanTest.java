@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by mac on 16.03.16.
  */
 public class ProjectBeanTest {
-/*
+
 
     EJBContainer ejbContainer;
     Context context;
@@ -52,7 +52,7 @@ public class ProjectBeanTest {
     @After
     public void tearDown() throws IOException {
         ejbContainer.close();
-        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/test.persistence.xml");
+        Path sourcePath      = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence_test.xml");
         Path destinationPath = Paths.get(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
         Path destinationPath2 = Paths.get(System.getProperty("user.dir")+"/target/classes//META-INF/persistence.xml");
         java.io.File temp = new java.io.File(System.getProperty("user.dir")+"/src/main/resources/META-INF/persistence.xml");
@@ -151,6 +151,6 @@ public class ProjectBeanTest {
     }
 
 
-*/
+
 
 }
