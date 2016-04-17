@@ -110,7 +110,7 @@
                     <configuration>
                         <tasks>
                             <!--backup the "proper" persistence.xml-->
-                            <copy file="src/main/resources/META-INF/persistence.xml" tofile="src/main/resources/META-INF/persistence.xml.proper"/>
+                            <move file="src/main/resources/META-INF/persistence.xml" tofile="src/main/resources/META-INF/persistence.xml.proper"/>
                             <!--replace the "proper" persistence.xml with the "test" version-->
                             <copy file="src/test/resources/META-INF/persistence.xml" tofile="src/main/resources/META-INF/persistence.xml"/>
                         </tasks>
