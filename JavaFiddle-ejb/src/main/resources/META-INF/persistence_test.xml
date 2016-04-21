@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="JFPersistenceUnit" transaction-type="JTA" >
-        <jta-data-source>jdbc/javafiddle</jta-data-source>
+        <jta-data-source>JFResources</jta-data-source>
         <class>ru.javafiddle.jpa.entity.Access</class>
         <class>ru.javafiddle.jpa.entity.File</class>
         <class>ru.javafiddle.jpa.entity.Group</class>

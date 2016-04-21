@@ -105,10 +105,9 @@ public class CompileAndRunBean extends DynamicCompiler {
     //!TODO
     public String run(String projectHash) {
         List<File> sources;
-        //FileBean fileBean = new FileBean();
         sources = fileBean.getProjectFiles(projectHash);
         String mes = "";
-        if (StringUtils.isEmpty(getMessage())) {
+        if (!StringUtils.isEmpty(getMessage())) {
             Method mainMeth = findMain(sources, getClassLoader());
             String[] arguments = {};
             try {
@@ -130,7 +129,6 @@ public class CompileAndRunBean extends DynamicCompiler {
     }
 
     public Method findMain(List<File> sources, final ClassLoader clazzLoader) {
-        int count = 0;
         Class clazz;
         Method mainMeth = null;
         for (int i = 0; i < sources.size(); i++) {
@@ -160,6 +158,7 @@ public class CompileAndRunBean extends DynamicCompiler {
     }
 
     public boolean isMain(Method method) {
+        LOG.info(method.getGenericParameterTypes()[0].getTypeName());
         if (method.getName().equals("main") && Modifier.isStatic(method.getModifiers())
                 && Modifier.isPublic(method.getModifiers()) && method.getReturnType().equals(Void.TYPE)) {
             Type[] params = method.getGenericParameterTypes();
@@ -224,7 +223,7 @@ public class CompileAndRunBean extends DynamicCompiler {
         return counstructResource(className, source, DEFAULT_PACKAGE_PREFFIX);
     }
 
-    public static SimpleJavaFileObject counstructResource(String className, String source, String packagePreffix) {
+    public SimpleJavaFileObject counstructResource(String className, String source, String packagePreffix) {
         if (className.lastIndexOf(".java") < 0) {
             return new ByteArrayResource(className, source.getBytes());
         } else {
