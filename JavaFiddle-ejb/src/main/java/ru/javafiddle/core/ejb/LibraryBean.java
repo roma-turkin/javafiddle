@@ -42,9 +42,8 @@ public class LibraryBean {
 
     }
 
-    //!TODO
     public List<String> getAll(String projectHash) {
-
+//!TODO
 //        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")
 //                .setParameter("projecthash", projectHash)
 //                .getSingleResult();
@@ -66,7 +65,6 @@ public class LibraryBean {
 
     }
 
-    //!TODO
     public void remove(String projectHash, String libraryName) {
 
 //        Hash hash = (Hash)em.createQuery("SELECT h FROM Hash h where h.hash =:projecthash")

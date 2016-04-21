@@ -1,5 +1,14 @@
 package ru.javafiddle.core.ejb;
 
+import ru.javafiddle.jpa.entity.Access;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.User;
+import ru.javafiddle.jpa.entity.UserGroup;
+
+import javax.ejb.EJB;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -8,169 +17,189 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import ru.javafiddle.jpa.entity.Access;
-import ru.javafiddle.jpa.entity.UserGroup;
-import ru.javafiddle.jpa.entity.Group;
-import ru.javafiddle.jpa.entity.User;
+
 
 
 @Stateless
-
 public class GroupBean {
 
-    @PersistenceContext
+    @EJB
+    private UserGroupBean userGroup;
+
+    private static final Logger logger =
+            Logger.getLogger(ProjectBean.class.getName());
+
+    @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
     public GroupBean() {
-    }
-
-    //we should get at first userId, then add this element to UserGroups
-    //when we are in this method we definitly have group with such id
-    public void addMember(int groupId, String userNickName, String accessRights) {
-
-        //check if this group exists
-       /* Group group;
-        if (groupId == 0) {
-            group = new Group();
-            group.setGroupName("default");//still it is not clear about group names
-            em.persist(group);
-        }*/
-        User user = getUser(userNickName);
-        Access access = getAccess(accessRights);
-
-
-        Group g = getGroup(groupId);
-        UserGroup userGroup = (UserGroup)em.createQuery("SELECT us FROM UserGroup us WHERE us.group.groupId=:groupId");
-        /*Group group = getGroup(groupId);
-        if (group == null) {
-            group = new Group();
-            group.setGroupId(groupId);
-            group.setGroupName("default");//still it is not clear about group names
-        }*/
-        userGroup.setAccess(access);
-
-        em.getTransaction().begin();
-        em.persist(userGroup);
-        em.getTransaction().commit();
-
-        //check if this group exists in list of groups
-        //group = (Group)em.createQuery("SELECT g from Group g WHERE g.groupId =:groupid")
-        //      .setParameter("groupid", groupId)
-        //      .getSingleResult();
-        //How can we get groupId from our services?
-
 
     }
 
-    public  Map<String, String> getAllMembers(String groupId, String userNickName, String accessRights){
+    //we always know that the group were we are trying to add a user exits now
+    //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
-        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p JOIN Group g WHERE g.groupId=:groupid", UserGroup.class);
-        List<UserGroup> usergroup = q.setParameter("groupid", groupId)
-                .getResultList();
-
-
-        Map<String, String> mappedUserGroup = new HashMap<String, String>(usergroup.size());
-        UserGroup[] arrayOfUserGroup = (UserGroup[]) usergroup.toArray();
-
-        for (int i = 0;i < usergroup.size(); i++) {
-
-            UserGroup userGroup = arrayOfUserGroup[i];//how to operate with user list????
-           /* String nickName = (String)em.createQuery("SELECT distinct u.nickName FROM UserGroup p JOIN User u WHERE p.userId =:userid ")
-                    .setParameter("userid", userGroup.getUserId())
-                    .getSingleResult();
-            String access =   (String)em.createQuery("SELECT distinct a.accessName FROM UserGroup u JOIN u.access a WHERE u.userid")
-                    .setParameter("userid", userGroup.getUserId())
-                    .getSingleResult();
-             mappedUserGroup.put(nickName, access);
-*/
+        if (group.getGroupId() == -1) {
+            createGroup(group);
         }
-        return mappedUserGroup;
+
+        UserGroup ug = new UserGroup(group, user, access);
+
+
+        ug.setUserId(user.getUserId());
+        ug.setGroupId(group.getGroupId());
+
+        em.persist(ug);
+        em.flush();
+        ug = userGroup.getUserGroup(user.getUserId(), group.getGroupId());
+        addUserGroupToGroupList(group, ug);
 
     }
 
+    public void addUserGroupToGroupList(Group group, UserGroup userGroup) {
+        if (group.getMembers() == null) {
 
-    public void updateMember(int groupId, String userNickName, String accessRights) {
+            List<UserGroup> p = new LinkedList<>();
+            p.add(userGroup);
+            group.setMembers(p);
+        }
 
+        TypedQuery<UserGroup> query =
+                em.createQuery("SELECT ug FROM UserGroup ug WHERE ug.groupId =:groupid", UserGroup.class);
+        List<UserGroup> p = query.setParameter("groupid", group.getGroupId()).getResultList();
 
-        int userId = getUserId(userNickName);
-        User user = getUser(userNickName);
+        p.add(userGroup);
+        group.setMembers(p);
+        em.persist(em.contains(group) ? group : em.merge(group));
 
-        /*UserGroup usergroup = (UserGroup)em.createQuery("SELECT u FROM UserGroup u JOIN u.client c JOIN u.group g WHERE g.groupId=:groupid AND (SELECT FROM c )")
-                .setParameter("userid", userId)
-                .setParameter("groupid", groupId)
-                .getSingleResult();
-*/
-
-        //Change info
-       /* usergroup.getAccess().setAccessName(accessRights);
-        int index = usergroup.getClient().indexOf(user);
-        usergroup.getClient().get(index).setNickName(userNickName);
-*/
     }
 
     public void deleteMember(int groupId, String userNickName) {
 
         int userId = getUserId(userNickName);
 
-        UserGroup usergroup = (UserGroup)em.createQuery("SELECT p FROM UserGroup p WHERE p.userId =:userid and p.groupId =:groupid")
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupid AND p.userId =:userid", UserGroup.class);
+        List<UserGroup> userGroupsToDelete = q.setParameter("groupid", groupId)
                 .setParameter("userid", userId)
-                .setParameter("groupid", groupId)
-                .getSingleResult();
+                .getResultList();
 
-      /*  List<UserGroup> listOfSpecificGroupUsers = (LinkedList<UserGroup>)em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId =:groupid")
-                .setParameter("groupid", groupId)
-                .getResultList();*/
 
-      /*  if (listOfSpecificGroupUsers.isEmpty()) {
-            Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId =:groupid")
-                    .setParameter("groupid", groupId)
+        for (UserGroup ug:userGroupsToDelete) {
+            em.remove(ug);
+        }
+
+    }
+
+    public  Map<String, String> getMemberAccessMap(int groupId) {
+
+        TypedQuery<UserGroup> q= em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId", UserGroup.class);
+        List<UserGroup> usergroup = q.setParameter("groupId", groupId)
+                .getResultList();
+
+
+        Map<String, String> mappedUserGroup = new HashMap<String, String>(usergroup.size());
+
+        for (UserGroup ug: usergroup) {
+
+            User nickName = (User) em.createQuery("SELECT u.member FROM UserGroup u WHERE u.member.userId =:userid")
+                    .setParameter("userid", ug.getUserId())
                     .getSingleResult();
-            em.getTransaction().begin();
-            em.remove(group);
-            em.getTransaction().commit();
-        }*/
+            Access access =   (Access) em.createQuery("SELECT u.access FROM UserGroup u WHERE u.access.accessId =:accessid")
+                    .setParameter("accessid", ug.getAccess().getAccessId())
+                    .getSingleResult();
+            mappedUserGroup.put(nickName.getNickName(), access.getAccessName());
+
+        }
+        return mappedUserGroup;
+
+    }
+
+
+/*    public void updateMember(int groupId, String userNickName, String accessRights) {
+//do we update usernickname also?
+
+        int userId = getUserId(userNickName);
+        User user = getUser(userNickName);
+
+        UserGroup u = (UserGroup)em.createQuery("SELECT g FROM UserGroup g WHERE g.userId=:userid and g.groupId=:groupid")
+                        .setParameter("userid", userId)
+                        .setParameter("groupid", groupId)
+                        .getSingleResult();
+        Access a = getAccess(accessRights);
+
+        u.setAccess(a);
 
         em.getTransaction().begin();
-        em.remove(usergroup);
+        em.persist(u);
         em.getTransaction().commit();
     }
+    */
+
 
     private int getUserId(String userNickName) {
 
-        User user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
+        User user = (User) em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
                 .setParameter("nickname", userNickName)
                 .getSingleResult();
         return user.getUserId();
     }
 
-    private User getUser(String userNickName) {
+    public Group getGroupByGroupId(int groupId) {
 
-        User user = (User)em.createQuery("SELECT p FROM User p WHERE p.nickName=:nickname")
-                .setParameter("nickname", userNickName)
-                .getSingleResult();
+        Group group = null;
+        try {
+            group = (Group) em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
+                    .setParameter("groupid", groupId)
+                    .getSingleResult();
+        }catch (NoResultException noResult) {
+            logger.log(Level.WARNING, "No result in getGroup()", noResult);
+            return null;
+        }
 
-        return user;
-    }
-
-    private Access getAccess(String accessRights) {
-
-        Access access = (Access)em.createQuery("SELECT p.accessId FROM Access p WHERE p.accessName =:accessrights")
-                .setParameter("accessrights", accessRights)
-                .getSingleResult();
-        return access;
-    }
-
-    private Group getGroup(int groupId) {
-
-        Group group = (Group)em.createQuery("SELECT g FROM Group g WHERE g.groupId=:groupid")
-                .setParameter("groupid", groupId)
-                .getSingleResult();
         return group;
     }
 
-    //!TODO
-    public Map<String, String> getAllMembers(int groupId){
+    public Group createGroup(Group group) {
+
+        em.persist(group);
+        em.flush();
+
+        return group;
+    }
+
+    public List<Group> getAllGroups() {
+
+        TypedQuery<Group> q = em.createQuery("SELECT g FROM Group g ", Group.class);
+        List<Group> listOfGroups = q.getResultList();
+
+        return listOfGroups;
+
+    }
+
+    public List<UserGroup> getGroupMembers(int groupId) {
+
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.groupId=:groupId", UserGroup.class);
+        List<UserGroup> userGroup = q.setParameter("groupId", groupId)
+                .getResultList();
+
+        return userGroup;
+    }
+
+    public Group getGroupByName(String groupName, User user) {
+
+        TypedQuery<UserGroup> q = em.createQuery("SELECT p FROM UserGroup p WHERE p.userId=:userid", UserGroup.class);
+        List<UserGroup> userGroup = q.setParameter("userid", user.getUserId())
+                .getResultList();
+
+        for (UserGroup ug:userGroup) {
+            if (ug.getGroup().getGroupName().equals(groupName))
+                return ug.getGroup();
+        }
         return null;
     }
 }

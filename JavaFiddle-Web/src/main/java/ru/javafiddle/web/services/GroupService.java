@@ -1,8 +1,14 @@
 package ru.javafiddle.web.services;
 
+import ru.javafiddle.core.ejb.AccessBean;
 import ru.javafiddle.core.ejb.GroupBean;
 import ru.javafiddle.core.ejb.ProjectBean;
 
+import ru.javafiddle.core.ejb.UserBean;
+import ru.javafiddle.jpa.entity.Access;
+import ru.javafiddle.jpa.entity.Group;
+import ru.javafiddle.jpa.entity.Project;
+import ru.javafiddle.jpa.entity.User;
 import ru.javafiddle.web.models.GroupMember;
 
 import javax.ejb.EJB;
@@ -27,89 +33,108 @@ import java.util.Map;
 public class GroupService {
 
     @EJB
-    GroupBean groupsBean;
+    GroupBean groupBean;
 
     @EJB
     ProjectBean projectBean;
+
+    @EJB
+    UserBean userBean;
+
+    @EJB
+    AccessBean accessBean;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addNewGroupMember(GroupMember newGroupMember, @PathParam("projectHash") String projectHash) {
 
-        try{
+        Project project = projectBean.getProjectByProjectHash(projectHash);
+        if (project == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
+        }
 
-            int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.addMember(groupId,
-                    newGroupMember.getUserNickName(),
-                    newGroupMember.getAccessRights());
+        Group group = project.getGroup();
 
-            return Response.ok().build();
+        User user = userBean.getUser(newGroupMember.getUserNickName());
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no user with nick " + newGroupMember.getUserNickName())
+                    .build();
+        }
 
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        Access access = accessBean.getAccess(newGroupMember.getAccessRights());
+        if (access == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no such access " + newGroupMember.getAccessRights())
+                    .build();
+        }
+
+        try {
+            groupBean.addMember(group, user, access);
         } catch (Exception e) {
             return Response.serverError().build();
         }
+
+        return Response.ok().build();
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGroupMembers(@PathParam("projectHash") String projectHash) {
 
-        try{
-
-            int groupId = projectBean.getGroupId(projectHash);
-            //Map<nickname, access>
-            Map<String, String> groupMembers = groupsBean.getAllMembers(groupId);
-
-            return Response.ok(groupMembers).build();
-
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
+        Project project = projectBean.getProjectByProjectHash(projectHash);
+        if (project == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
+
+        //Map<nickname, access>
+        Map<String, String> groupMembers = groupBean.getMemberAccessMap(project.getGroup().getGroupId());
+
+        return Response.ok(groupMembers).build();
     }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteGroupMember(GroupMember groupMember, @PathParam("projectHash") String projectHash) {
 
-        try{
-
-            int groupId         = projectBean.getGroupId(projectHash);
-            String userNickName = groupMember.getUserNickName();
-            groupsBean.deleteMember(groupId,
-                    userNickName);
-
-            return Response.ok().build();
-
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
+        Project project = projectBean.getProjectByProjectHash(projectHash);
+        if (project == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
+
+        groupBean.deleteMember(project.getGroup().getGroupId(), groupMember.getUserNickName());
+
+        return Response.ok().build();
     }
 
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateGroupMember(GroupMember groupMember, @PathParam("projectHash") String projectHash) {
-
-        try{
-
-            int groupId = projectBean.getGroupId(projectHash);
-            groupsBean.updateMember(groupId,
-                    groupMember.getUserNickName(),
-                    groupMember.getAccessRights());
-
-            return Response.ok().build();
-
-        } catch (NotFoundException e) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        } catch (Exception e) {
-            return Response.serverError().build();
-        }
-    }
+    //there's no method in GroupBean, which allows us to implement this functionality
+    //!TODO when GROUPBEAN will be implemented
+//    @PUT
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Response updateGroupMember(GroupMember groupMember, @PathParam("projectHash") String projectHash) {
+//
+//        groupBean.
+//
+//        try{
+//
+//            int groupId = projectBean.getGroupId(projectHash);
+//            groupsBean.updateMember(groupId,
+//                    groupMember.getUserNickName(),
+//                    groupMember.getAccessRights());
+//
+//            return Response.ok().build();
+//
+//        } catch (NotFoundException e) {
+//            return Response.status(Response.Status.BAD_REQUEST).build();
+//        } catch (Exception e) {
+//            return Response.serverError().build();
+//        }
+//    }
 
 }

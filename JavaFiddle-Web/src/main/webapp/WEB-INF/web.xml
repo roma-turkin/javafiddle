@@ -38,7 +38,7 @@
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>Registration service</web-resource-name>
-            <url-pattern>/fiddle/users</url-pattern>
+            <url-pattern>/fiddle/user</url-pattern>
             <http-method>POST</http-method>
         </web-resource-collection>
         <user-data-constraint>
@@ -56,7 +56,7 @@
         </web-resource-collection>
         <web-resource-collection>
             <web-resource-name>JFConfidentialResources</web-resource-name>
-            <url-pattern>/fiddle/users/*</url-pattern>
+            <url-pattern>/fiddle/user/*</url-pattern>
             <http-method-omission>POST</http-method-omission>
         </web-resource-collection>
         <auth-constraint>

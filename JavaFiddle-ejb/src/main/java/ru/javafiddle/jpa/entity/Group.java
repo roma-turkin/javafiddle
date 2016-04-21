@@ -5,6 +5,7 @@ package ru.javafiddle.jpa.entity;
  */
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +20,8 @@ import java.util.List;
 @Table(name = "\"Group\"")
 public class Group {
 
+    public static final String DEFAULT_GROUP_NAME = "default";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"groupId\"")
@@ -27,10 +30,10 @@ public class Group {
     @Column(name = "\"groupName\"")
     private String groupName;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(fetch= FetchType.EAGER,mappedBy = "group")
     List<Project> projects;
 
-    @OneToMany(mappedBy = "group")
+    @OneToMany(fetch= FetchType.EAGER, mappedBy = "group")
     private List<UserGroup>  members;
 
     public Group(String groupName) {

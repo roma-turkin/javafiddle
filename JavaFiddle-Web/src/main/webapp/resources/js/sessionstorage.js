@@ -22,20 +22,33 @@ function isCurrent(id) {
 }
 //CURRENT PROJECT
 function setCurrentProjectId(id) {
-    var projectId;
-    $.ajax({
-        url: PATH + '/webapi/tree/getProjectIdOfClass',
-        type: 'POST',
-        data: {classId: id},
-        success: function(data) {
-            projectId = data;
-            sessionStorage.setItem("projectID",data);
-        },
-        error: function() {
-            console.log('sessionstorage:' + data);
+    //id comes in format node_id_[type], so we need to extract id
+    var fileId = id.match(/[\d]+/);
+    var projectId = -1;
+    var userProjects = JSON.parse(sessionStorage.userProjects);
+    userProjects.forEach(function(item) {
+        if(isFileStored(JSON.parse(sessionStorage.getItem(item)), fileId)) {
+            sessionStorage.setItem("projectID", item);
+            projectId = item;
         }
     });
     return projectId;
+}
+
+//!TODO must be tested
+function isFileStored(projectStructure, fileId) {
+    if(projectStructure.fileId == fileId) {
+        return true;
+    }
+    if(projectStructure.childNodes.length == 0) {
+        return false;
+    }
+    var childNodes = projectStructure.childNodes;
+    var isStored = false;
+    childNodes.forEach(function(item) {
+        isStored = isStored || isFileStored(item,fileId);
+    });
+    return isStored;
 }
 
 
@@ -118,8 +131,9 @@ function getCurrentFileText() {
 
         editor.session.getUndoManager().reset();
         editor.setReadOnly(false);
-    } else
+    } else {
         getFileContent(id);
+    }
     
     changeModifiedState(id, modified);
 }
@@ -261,7 +275,8 @@ function changeNodeState($el) {
 }
 
 function setProjectId(id) {
-    sessionStorage.setItem("projectID", "node_" + id);
+    sessionStorage.setItem("projectID", id);
+    //sessionStorage.setItem("projectID", "node_" + id);
 }
 
 function getProjectId() {
