@@ -50,19 +50,25 @@ public class GroupService {
 
         Project project = projectBean.getProjectByProjectHash(projectHash);
         if (project == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
 
         Group group = project.getGroup();
 
         User user = userBean.getUser(newGroupMember.getUserNickName());
         if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no user with nick " + newGroupMember.getUserNickName())
+                    .build();
         }
 
         Access access = accessBean.getAccess(newGroupMember.getAccessRights());
         if (access == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no such access " + newGroupMember.getAccessRights())
+                    .build();
         }
 
         try {
@@ -80,7 +86,9 @@ public class GroupService {
 
         Project project = projectBean.getProjectByProjectHash(projectHash);
         if (project == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
 
         //Map<nickname, access>
@@ -95,7 +103,9 @@ public class GroupService {
 
         Project project = projectBean.getProjectByProjectHash(projectHash);
         if (project == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
 
         groupBean.deleteMember(project.getGroup().getGroupId(), groupMember.getUserNickName());

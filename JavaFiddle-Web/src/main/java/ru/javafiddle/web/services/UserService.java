@@ -69,7 +69,9 @@ public class UserService {
         User user = userBean.getUser(nickName);
 
         if (user == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no user with nick " + nickName)
+                    .build();
         }
 
         //!TODO implement class or method with such conversion
@@ -93,7 +95,9 @@ public class UserService {
         User toBeUpdatedUser = userBean.getUser(nickName);
 
         if (toBeUpdatedUser == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no user with nick " + nickName)
+                    .build();
         }
 
         //!TODO implement class or method with such conversion
@@ -117,7 +121,9 @@ public class UserService {
         User toBeDeletedUser = userBean.getUser(nickName);
 
         if (toBeDeletedUser == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no user with nick " + nickName)
+                    .build();
         }
 
         userBean.deleteUser(toBeDeletedUser);

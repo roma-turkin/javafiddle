@@ -115,7 +115,9 @@ public class ProjectService {
             if (hash != null) {
                 Project project = projectBean.getProjectByProjectHash(hash);
                 if (project == null) { //if specified hash does not exist return NOT_FOUND status
-                    return Response.status(Response.Status.NOT_FOUND).build();
+                    return Response.status(Response.Status.NOT_FOUND)
+                            .entity("There's no project with hash " + hash)
+                            .build();
                 }
                 project.setGroup(group); //set specified group
                 cloneProject(project);
@@ -158,7 +160,9 @@ public class ProjectService {
 
         Project project = projectBean.getProjectByProjectHash(projectHash);
         if (project == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("There's no project with hash " + projectHash)
+                    .build();
         }
 
         project.setProjectName(newProjectName);

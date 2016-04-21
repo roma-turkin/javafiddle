@@ -30,7 +30,7 @@ public class AuthorizationTest {
     @BeforeClass
     public static void autoAuth() {
         RestAssured.basePath = "/javaFiddle";
-        RestAssured.baseURI = "https://localhost:9090";
+        RestAssured.baseURI = "https://localhost:8181";
         RestAssured.config = RestAssuredConfig.config().sslConfig(SSLConfig.sslConfig().relaxedHTTPSValidation("SSL"));
     }
 
