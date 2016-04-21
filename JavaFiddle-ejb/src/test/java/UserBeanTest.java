@@ -117,11 +117,12 @@ public class UserBeanTest {
         //2) Check usergroup  adding-------------------------------------------------------------
         UserGroup uug = userGroupBean.getUserGroup(1,1);
         Assert.assertNotNull(uug);
+
         System.out.println("group id is"+ uug.getGroupId());
         System.out.println("user id is"+ uug.getUserId());
         System.out.println("nickname of user is"+ uug.getMember().getNickName());
 
-        //3) Info printing
+         //3) Info printing
         System.out.println(uug.getGroupId());
         System.out.println(u.getFirstName());
 

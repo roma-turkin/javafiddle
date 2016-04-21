@@ -46,7 +46,6 @@ public class UserBean {
     }
 
     public User register(User user) {
-        //search for registered class
         Status st = em.find(Status.class, DEFAULT_USER_STATUS);
         if (checkCorrectnessOfNick(user.getNickName())) {
             user.setStatus(st);
