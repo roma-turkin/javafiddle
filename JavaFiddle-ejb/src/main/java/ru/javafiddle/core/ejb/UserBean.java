@@ -45,7 +45,6 @@ public class UserBean {
 
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public User register(User user) {
         //search for registered class
         Status st = em.find(Status.class, DEFAULT_USER_STATUS);

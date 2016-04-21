@@ -41,7 +41,6 @@ public class GroupBean {
 
     //we always know that the group were we are trying to add a user exits now
     //CALL THIS METHOD WHEN THE PERSON IS CREATING A GROUP BY HIMSELF!!
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addMember(Group group, User user, Access access) throws IllegalAccessException, InstantiationException {
 
         if (group.getGroupId() == -1) {

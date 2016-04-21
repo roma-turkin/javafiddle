@@ -15,17 +15,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Created by mac on 14.03.16.
  */
 public class GroupBeanTest {
 
-
-    private static final Logger logger =
-            Logger.getLogger(ProjectBean.class.getName());
 
     EJBContainer ejbContainer;
     Context context;
@@ -110,12 +104,13 @@ public class GroupBeanTest {
         System.out.println(group.getGroupName());
         List<UserGroup> gr = groupBean.getGroupMembers(1);
 
-        Assert.assertNotNull("GET MEMBERS RETURNED NULL",gr);
-        Assert.assertFalse("THE LIST OF MEMBERS IS EMPTY", gr.isEmpty());
+        Assert.assertNotNull("Get members returns null",gr);
+        Assert.assertFalse("The list of members is empty", gr.isEmpty());
         if (gr == null || gr.isEmpty()) {
 
-            logger.log(Level.SEVERE, "NO ENTITY WAS ADDED");
-            System.exit(-1);
+
+            System.out.println("No entity was added");
+            Assert.fail("No entity was added");
 
         }
         for (UserGroup ug:gr) {
@@ -124,7 +119,7 @@ public class GroupBeanTest {
 
 
 //check getAllMembers()----------------------------------------------------------------
-        Assert.assertEquals("NOT ENOUGH MEMBERS IN MAP", 2,groupBean.getMemberAccessMap(groupId).size());
+        Assert.assertEquals("Not enough members in map", 2,groupBean.getMemberAccessMap(groupId).size());
         for (Map.Entry<String, String> entry : groupBean.getMemberAccessMap(groupId).entrySet()) {
             System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         }
