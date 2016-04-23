@@ -20,6 +20,8 @@ import java.util.List;
 @Table(name = "\"Group\"")
 public class Group {
 
+    public static final String DEFAULT_GROUP_NAME = "default";
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "\"groupId\"")

@@ -37,7 +37,7 @@ public class Project {
     @JoinColumn(name = "\"groupId\"")
     private Group group;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true,mappedBy = "project")
     private List<File> files;
 
     @ManyToMany
@@ -46,7 +46,7 @@ public class Project {
             inverseJoinColumns = @JoinColumn(name = "\"projectId\""))
     private List<Library> libs;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "\"id\"")
     private Hash hash;
 
@@ -82,30 +82,18 @@ public class Project {
         this.group = group;
     }
 
-    public List<File> getFiles() {
-        return files;
-    }
+    public List<File> getFiles() { return files; }
 
-    public void setFileList(List<File> files) {
-        this.files = files;
-    }
+    public void setFileList(List<File> files) { this.files = files; }
 
-    public Hash getHash() {
-        return hash;
-    }
+    public Hash getHash() { return hash; }
 
-    public void setHash(Hash hash) {
-        this.hash = hash;
-    }
+    public void setHash( Hash hash) { this.hash = hash; }
 
 
-    public List<Library> getLibraries() {
-        return libs;
-    }
+    public List<Library> getLibraries() { return libs; }
 
-    public void setLibraries(List<Library> libs) {
-        this.libs = libs;
-    }
+    public void setLibraries( List<Library> libs) { this.libs = libs; }
 
     @Override
     public String toString() {

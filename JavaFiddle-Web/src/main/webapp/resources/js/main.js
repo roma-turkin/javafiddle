@@ -672,7 +672,7 @@ function hashIsCorrect(hash) {
 function getCurUser() {
 
     $.ajax({
-        url: "https://localhost:8181/javaFiddle/fiddle/users",
+        url: "https://localhost:8181/javaFiddle/fiddle/user",
         type: "GET",
         dataType: "json",
         async: false,

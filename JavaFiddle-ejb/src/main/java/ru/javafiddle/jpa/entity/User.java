@@ -3,7 +3,6 @@ package ru.javafiddle.jpa.entity;
 /**
  * Created by Fedor on 18.11.2015.
  */
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,7 +41,6 @@ public class User {
     @Column(name = "\"passwordHash\"")
     private String passwordHash;
 
-    //!TODO change type to Date
     @Column(name = "\"registrationDate\"")
     private String registrationDate;
 
@@ -64,7 +62,7 @@ public class User {
         this.status = status;
     }
 
-    public User(){
+    public User() {
     }
 
     public int getUserId() {

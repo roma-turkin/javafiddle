@@ -1,8 +1,5 @@
 package ru.javafiddle.core.ejb;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
 import javax.persistence.PersistenceContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -12,15 +9,16 @@ import ru.javafiddle.jpa.entity.File;
 import ru.javafiddle.jpa.entity.Hash;
 import ru.javafiddle.jpa.entity.Type;
 import ru.javafiddle.jpa.entity.Project;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Stateless
 
 public class FileBean {
 
-    @PersistenceContext
+    @PersistenceContext(name = "JFPersistenceUnit")
     EntityManager em;
 
     public FileBean() {
@@ -36,23 +34,10 @@ public class FileBean {
 
     }
 
-    public void addFile(String projectHash, String fileName, byte[] data, String fileType, String pathToFile) {
-
-
-        File file = new File();
-        Project project = getProject(projectHash);
-        Type type = getFile(fileType);
-
-        file.setFileName(fileName);
-        file.setData(data);
-        file.setType(type);
-        file.setPath(pathToFile);
-        file.setProject(project);
-
+    public void createFile(File file) {
+        //!TODO validation check
         em.persist(file);
-
     }
-
 
     public File updateFile(int fileId, String fileName, byte[] data, String fileType, String pathToFile) {
 
@@ -67,8 +52,6 @@ public class FileBean {
         em.persist(file);
 
         return file;
-
-
     }
 
     public Type getType(String fileType) {
@@ -117,8 +100,5 @@ public class FileBean {
 
 
     }
-
-
-
 }
 

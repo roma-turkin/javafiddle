@@ -16,12 +16,12 @@ public class CompileAndRunBean {
     EntityManager em;
 
     //!TODO
-    public String compile(String projectHash){
+    public String compile(String projectHash) {
         return null;
     }
 
     //!TODO
-    public String run(String projectHash){
+    public String run(String projectHash) {
         return null;
     }
 }
