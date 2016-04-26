@@ -80,26 +80,23 @@ public class CompileAndRunBean extends DynamicCompiler {
     public String compile(String projectHash) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(baos);
-        synchronized (System.out) {
-            PrintStream old = System.out;
-            System.setOut(printStream);
-            BasicConfigurator.configure();
-            List<File> sources;
-            //FileBean fileBean = new FileBean();
-            sources = fileBean.getProjectFiles(projectHash);
-            init(ClassLoader.getSystemClassLoader());
-            List<SimpleJavaFileObject> userSources = constructResources(sources);
-            String message = "";
-            try {
-                message = compileToClass(userSources);
-            } catch (Exception e) {
-                LOG.error("Exception, can't compile", e);
-            }
-            LOG.info(message);
-            System.out.flush();
-            System.setOut(old);
+        PrintStream old = System.out;
+        System.setOut(printStream);
+        BasicConfigurator.configure();
+        List<File> sources;
+        sources = fileBean.getProjectFiles(projectHash);
+        init(ClassLoader.getSystemClassLoader());
+        List<SimpleJavaFileObject> userSources = constructResources(sources);
+        String message = "";
+        try {
+            message = compileToClass(userSources);
+        } catch (Exception e) {
+            LOG.error("Exception, can't compile", e);
         }
-        return baos.toString();
+        LOG.info(message);
+        System.out.flush();
+        System.setOut(old);
+        return message;
     }
 
     //!TODO
@@ -113,13 +110,11 @@ public class CompileAndRunBean extends DynamicCompiler {
             try {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 PrintStream printStream = new PrintStream(baos);
-                synchronized (System.out) {
-                    PrintStream old = System.out;
-                    System.setOut(printStream);
-                    mainMeth.invoke(null, (Object) arguments);
-                    System.out.flush();
-                    System.setOut(old);
-                }
+                PrintStream old = System.out;
+                System.setOut(printStream);
+                mainMeth.invoke(null, (Object) arguments);
+                System.out.flush();
+                System.setOut(old);
                 mes = baos.toString();
             } catch (InvocationTargetException | IllegalAccessException e) {
                 LOG.error(e.getMessage(), e);
@@ -158,7 +153,6 @@ public class CompileAndRunBean extends DynamicCompiler {
     }
 
     public boolean isMain(Method method) {
-        LOG.info(method.getGenericParameterTypes()[0].getTypeName());
         if (method.getName().equals("main") && Modifier.isStatic(method.getModifiers())
                 && Modifier.isPublic(method.getModifiers()) && method.getReturnType().equals(Void.TYPE)) {
             Type[] params = method.getGenericParameterTypes();

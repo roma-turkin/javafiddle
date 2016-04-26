@@ -107,34 +107,39 @@ public class CompileAndRunBeanTest {
         Assert.assertNotNull(userGroupBean);
 
         initialization(userGroupBean, groupBean, userBean, accessBean);
-
+        initTypes(typeBean);
         Group g = groupBean.getGroupByGroupId(1);
         Assert.assertNotNull("NO GROUP", g);
-        Project project = new Project("Hello", null);
-        project.setGroup(g);
-        Project p = projectBean.createProject(project);
-        Assert.assertNotNull(p);
-        logger.log(Level.INFO, "Project is " + p.getProjectName() + " " + p.getHash().getHash());
 
-        String source = "package test;\n public class Hello {\n static {\n System.out.println(\"hello\");\n }\n public Hello() {\n System.out.println(\"world\");\n }  \n" +
-                "public static void main(String[] args) {\n System.out.println(\"HELLO WORLD\");\n } \n}";
-        initTypes(typeBean);
-        logger.log(Level.INFO, "Type from initType() is " + typeBean.getType(1));
-        Type type = typeBean.getType(CompileAndRunBean.FileType.CLASS.getType());
-        Assert.assertNotNull(type);
-        logger.log(Level.INFO, "Type is " + type.getTypeName());
-
-        initFilesHelloWorld(source, fileBean, typeBean, project, type);
-
+        Project p = initFilesHelloWorld(projectBean, typeBean, fileBean, g);
+        String resultHello = "";
         try {
-            compileAndRunBean.compile(project.getHash().getHash());
-            logger.log(Level.INFO, "Result of running: " + compileAndRunBean.run(project.getHash().getHash()));
+            logger.log(Level.INFO, "Result of compilation: " + compileAndRunBean.compile(p.getHash().getHash()));
+            resultHello = compileAndRunBean.run(p.getHash().getHash());
+            logger.log(Level.INFO, "Result of running: " + resultHello);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        String res = "hello\n" +
+                "HELLO WORLD\n";
+//        Assert.assertEquals(resultHello, res);
 
-
-
+        Project proj = initEnumCars(projectBean, typeBean, fileBean, g);
+        String resEn = "All car prices:\n" +
+                "lamborghini costs 900 thousand dollars.\n" +
+                "tata costs 2 thousand dollars.\n" +
+                "audi costs 50 thousand dollars.\n" +
+                "fiat costs 15 thousand dollars.\n" +
+                "honda costs 12 thousand dollars.\n";
+        String resultEn = "";
+        try {
+            logger.log(Level.INFO, "Result of compilation: " + compileAndRunBean.compile(proj.getHash().getHash()));
+            resultEn = compileAndRunBean.run(proj.getHash().getHash());
+            logger.log(Level.INFO, "Result of running: " + resultEn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        Assert.assertSame(resultEn, resEn);
     }
 
     public void initialization(UserGroupBean userGroupBean, GroupBean groupBean, UserBean userBean, AccessBean accessBean) {
@@ -168,9 +173,24 @@ public class CompileAndRunBeanTest {
         typeBean.createType(type7);
         Type type8 = new Type("class");
         typeBean.createType(type8);
+        Type type9 = new Type("interface");
+        typeBean.createType(type9);
+        Type type10 = new Type("exception");
+        typeBean.createType(type10);
+        Type type11 = new Type("enum");
+        typeBean.createType(type11);
+        Type type12 = new Type("annotation");
+        typeBean.createType(type12);
     }
 
-    public void initFilesHelloWorld(String source, FileBean fileBean, TypeBean typeBean, Project project, Type type) {
+    public Project initFilesHelloWorld(ProjectBean projectBean, TypeBean typeBean, FileBean fileBean, Group g) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Project project = new Project("Hello", null);
+        project.setGroup(g);
+        Project p = projectBean.createProject(project);
+        String source = "package test;\n public class Hello {\n static {\n System.out.println(\"hello\");\n }\n public Hello() {\n System.out.println(\"world\");\n }  \n" +
+                "public static void main(String[] args) {\n System.out.println(\"HELLO WORLD\");\n } \n}";
+        logger.log(Level.INFO, "Type from initType() is " + typeBean.getType(1));
+        Type type = typeBean.getType(CompileAndRunBean.FileType.CLASS.getType());
         File helloFile = new File("Hello", source.getBytes(), project, type, "Hello/src/test/Hello");
         fileBean.createFile(helloFile);
         File root = new File("Hello", null, project, typeBean.getType(2), "Hello/");
@@ -179,8 +199,52 @@ public class CompileAndRunBeanTest {
         fileBean.createFile(sources);
         File pack = new File("test", null, project, typeBean.getType(4), "Hello/src/test");
         fileBean.createFile(pack);
+        return p;
     }
 
-
+    public Project initEnumCars(ProjectBean projectBean, TypeBean typeBean, FileBean fileBean, Group g) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+        Project project = new Project("CarsEnumProject", null);
+        project.setGroup(g);
+        Project proj = projectBean.createProject(project);
+        String carsEnum = "package test;\n" +
+                "\n" +
+                "public enum CarsEnum {\n" +
+                "\tlamborghini(900),tata(2),audi(50),fiat(15),honda(12);\n" +
+                "\t   private int price;\n" +
+                "\t   CarsEnum(int p) {\n" +
+                "\t      price = p;\n" +
+                "\t   }\n" +
+                "\t   public int getPrice() {\n" +
+                "\t      return price;\n" +
+                "\t   } \n" +
+                "}";
+        String mainCars = "package hello;\n" +
+                "\n" +
+                "import test.CarsEnum;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\tpublic static void main(String args[]){\n" +
+                "\t      System.out.println(\"All car prices:\");\n" +
+                "\t      for (CarsEnum c : CarsEnum.values())\n" +
+                "\t      System.out.println(c + \" costs \" \n" +
+                "\t      + c.getPrice() + \" thousand dollars.\");\n" +
+                "\t   }\n" +
+                "}";
+        Type typeClass = typeBean.getType(CompileAndRunBean.FileType.CLASS.getType());
+        Type typeEnum = typeBean.getType(CompileAndRunBean.FileType.ENUM.getType());
+        File carsEnumFile = new File("CarsEnum", carsEnum.getBytes(), project, typeEnum, "CarsEnumProject/src/test/CarsEnum");
+        File mainCarsFile = new File("Main", mainCars.getBytes(), project, typeClass, "CarsEnumProject/src/hello/Main");
+        fileBean.createFile(carsEnumFile);
+        fileBean.createFile(mainCarsFile);
+        File root = new File("CarsEnumProject", null, project, typeBean.getType(2), "CarsEnumProject/");
+        fileBean.createFile(root);
+        File sources = new File("src", null, project, typeBean.getType(3), "CarsEnumProject/src");
+        fileBean.createFile(sources);
+        File pack = new File("test", null, project, typeBean.getType(4), "CarsEnumProject/src/test");
+        fileBean.createFile(pack);
+        File packMain = new File("hello", null, project, typeBean.getType(4), "CarsEnumProject/src/hello");
+        fileBean.createFile(packMain);
+        return proj;
+    }
 
 }
