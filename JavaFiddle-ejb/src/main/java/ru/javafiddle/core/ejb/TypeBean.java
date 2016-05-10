@@ -41,4 +41,9 @@ public class TypeBean {
 
     }
 
+    public void createType (Type type) {
+        em.persist(type);
+        em.flush();
+
+    }
 }

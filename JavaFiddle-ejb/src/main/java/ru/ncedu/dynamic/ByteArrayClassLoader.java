@@ -1,10 +1,13 @@
 package ru.ncedu.dynamic;
 
+import org.apache.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.SecureClassLoader;
-import java.util.*;
-import org.apache.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ByteArrayClassLoader extends SecureClassLoader {
 
@@ -94,5 +97,13 @@ public class ByteArrayClassLoader extends SecureClassLoader {
             LOG.trace(this + ": Found class:(" + name + ")=" + cls);
         }
         return cls;
+    }
+
+    public Map<String, ByteArrayResource> getResources() {
+        return resources;
+    }
+
+    public Map<String, ByteArrayJavaFileObject> getCache() {
+        return cache;
     }
 }
